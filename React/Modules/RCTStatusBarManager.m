@@ -9,7 +9,6 @@
 
 #import "RCTStatusBarManager.h"
 
-#import "RCTEventDispatcher.h"
 #import "RCTLog.h"
 #import "RCTUtils.h"
 

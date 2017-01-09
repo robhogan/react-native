@@ -9,8 +9,6 @@
 
 #import "RCTKeyboardObserver.h"
 
-#import "RCTEventDispatcher.h"
-
 static NSDictionary *RCTParseKeyboardNotification(NSNotification *notification);
 
 @implementation RCTKeyboardObserver

@@ -11,7 +11,6 @@
 
 #import <React/RCTBridge.h>
 #import <React/RCTConvert.h>
-#import <React/RCTEventDispatcher.h>
 #import <React/RCTUtils.h>
 
 NSString *const RCTLocalNotificationReceived = @"LocalNotificationReceived";
