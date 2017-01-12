@@ -10,7 +10,6 @@
 #import "RCTShadowView.h"
 
 #import "RCTConvert.h"
-#import "RCTLog.h"
 #import "RCTUtils.h"
 #import "UIView+Private.h"
 #import "UIView+React.h"

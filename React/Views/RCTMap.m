@@ -9,11 +9,8 @@
 
 #import "RCTMap.h"
 
-#import "RCTEventDispatcher.h"
-#import "RCTLog.h"
 #import "RCTMapAnnotation.h"
 #import "RCTMapOverlay.h"
-#import "RCTUtils.h"
 #import "UIView+React.h"
 
 const CLLocationDegrees RCTMapDefaultSpan = 0.005;

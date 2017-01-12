@@ -10,8 +10,6 @@
 #import "RCTAppState.h"
 
 #import "RCTAssert.h"
-#import "RCTBridge.h"
-#import "RCTEventDispatcher.h"
 #import "RCTUtils.h"
 
 static NSString *RCTCurrentAppBackgroundState()

@@ -9,7 +9,6 @@
 
 #import "RCTTabBarManager.h"
 
-#import "RCTBridge.h"
 #import "RCTTabBar.h"
 
 @implementation RCTConvert (UITabBar)

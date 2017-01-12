@@ -9,10 +9,8 @@
 
 #import "RCTWebViewManager.h"
 
-#import "RCTBridge.h"
 #import "RCTUIManager.h"
 #import "RCTWebView.h"
-#import "UIView+React.h"
 
 @interface RCTWebViewManager () <RCTWebViewDelegate>
 

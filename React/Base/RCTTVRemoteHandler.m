@@ -9,18 +9,9 @@
 
 #import "RCTTVRemoteHandler.h"
 
-#import <UIKit/UIGestureRecognizerSubclass.h>
-
-#import "RCTAssert.h"
 #import "RCTBridge.h"
-#import "RCTEventDispatcher.h"
-#import "RCTLog.h"
-#import "RCTRootView.h"
 #import "RCTTVNavigationEventEmitter.h"
 #import "RCTUIManager.h"
-#import "RCTUtils.h"
-#import "RCTView.h"
-#import "UIView+React.h"
 
 @implementation RCTTVRemoteHandler {
   NSMutableArray<UIGestureRecognizer *> *_tvRemoteGestureRecognizers;

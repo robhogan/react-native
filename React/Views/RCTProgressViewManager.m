@@ -9,8 +9,6 @@
 
 #import "RCTProgressViewManager.h"
 
-#import "RCTConvert.h"
-
 @implementation RCTConvert (RCTProgressViewManager)
 
 RCT_ENUM_CONVERTER(UIProgressViewStyle, (@{

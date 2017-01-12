@@ -11,7 +11,6 @@
 
 #import <objc/runtime.h>
 
-#import "RCTAssert.h"
 #import "RCTLog.h"
 #import "RCTShadowView.h"
 

@@ -9,7 +9,6 @@
 
 #import "RCTDisplayLink.h"
 
-#import <Foundation/Foundation.h>
 #import <QuartzCore/CADisplayLink.h>
 
 #import "RCTAssert.h"

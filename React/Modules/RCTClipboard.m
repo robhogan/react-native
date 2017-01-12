@@ -11,8 +11,6 @@
 
 #import "RCTUtils.h"
 
-#import <UIKit/UIKit.h>
-
 @implementation RCTClipboard
 
 RCT_EXPORT_MODULE()

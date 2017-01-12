@@ -9,16 +9,9 @@
 
 #import "RCTViewManager.h"
 
-#import "RCTBorderStyle.h"
-#import "RCTBridge.h"
-#import "RCTConvert.h"
-#import "RCTEventDispatcher.h"
-#import "RCTLog.h"
 #import "RCTShadowView.h"
 #import "RCTUIManager.h"
-#import "RCTUtils.h"
 #import "RCTView.h"
-#import "UIView+React.h"
 
 #if TARGET_OS_TV
 #import "RCTTVView.h"

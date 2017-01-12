@@ -9,9 +9,7 @@
 
 #import "RCTAlertManager.h"
 
-#import "RCTAssert.h"
 #import "RCTConvert.h"
-#import "RCTLog.h"
 #import "RCTUtils.h"
 
 @implementation RCTConvert (UIAlertViewStyle)

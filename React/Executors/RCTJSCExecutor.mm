@@ -15,19 +15,15 @@
 #import <string>
 #import <unordered_map>
 
-#import <UIKit/UIDevice.h>
-
 #import <cxxreact/JSBundleType.h>
 #import <jschelpers/JavaScriptCore.h>
 
 #import "JSCSamplingProfiler.h"
 #import "RCTAssert.h"
 #import "RCTBridge+Private.h"
-#import "RCTDefines.h"
 #import "RCTDevMenu.h"
 #import "RCTJSCErrorHandling.h"
 #import "RCTJSCProfiler.h"
-#import "RCTJavaScriptLoader.h"
 #import "RCTLog.h"
 #import "RCTPerformanceLogger.h"
 #import "RCTProfile.h"

@@ -11,30 +11,15 @@
 
 #import <AVFoundation/AVFoundation.h>
 
-#import <yoga/Yoga.h>
-
 #import "RCTAccessibilityManager.h"
-#import "RCTAnimationType.h"
-#import "RCTAssert.h"
 #import "RCTBridge+Private.h"
-#import "RCTBridge.h"
-#import "RCTComponent.h"
 #import "RCTComponentData.h"
-#import "RCTConvert.h"
-#import "RCTDefines.h"
-#import "RCTEventDispatcher.h"
-#import "RCTLog.h"
 #import "RCTModuleData.h"
 #import "RCTModuleMethod.h"
 #import "RCTProfile.h"
 #import "RCTRootShadowView.h"
 #import "RCTRootViewInternal.h"
-#import "RCTScrollableProtocol.h"
-#import "RCTShadowView.h"
 #import "RCTUtils.h"
-#import "RCTView.h"
-#import "RCTViewManager.h"
-#import "UIView+React.h"
 
 static void RCTTraverseViewNodes(id<RCTComponent> view, void (^block)(id<RCTComponent>))
 {

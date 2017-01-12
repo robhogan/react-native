@@ -8,7 +8,6 @@
  */
 
 #import "RCTImageSource.h"
-#import "RCTUtils.h"
 
 @interface RCTImageSource ()
 

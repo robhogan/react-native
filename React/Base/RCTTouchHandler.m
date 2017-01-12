@@ -14,11 +14,9 @@
 #import "RCTAssert.h"
 #import "RCTBridge.h"
 #import "RCTEventDispatcher.h"
-#import "RCTLog.h"
 #import "RCTTouchEvent.h"
 #import "RCTUIManager.h"
 #import "RCTUtils.h"
-#import "UIView+React.h"
 
 // TODO: this class behaves a lot like a module, and could be implemented as a
 // module if we were to assume that modules and RootViews had a 1:1 relationship

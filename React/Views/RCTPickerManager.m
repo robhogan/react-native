@@ -9,7 +9,6 @@
 
 #import "RCTPickerManager.h"
 
-#import "RCTBridge.h"
 #import "RCTPicker.h"
 #import "RCTFont.h"
 

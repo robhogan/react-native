@@ -10,7 +10,6 @@
 #import "RCTActivityIndicatorViewManager.h"
 
 #import "RCTActivityIndicatorView.h"
-#import "RCTConvert.h"
 
 @implementation RCTConvert (UIActivityIndicatorView)
 

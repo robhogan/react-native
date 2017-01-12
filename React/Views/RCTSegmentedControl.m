@@ -9,8 +9,6 @@
 
 #import "RCTSegmentedControl.h"
 
-#import "RCTConvert.h"
-#import "RCTEventDispatcher.h"
 #import "UIView+React.h"
 
 @implementation RCTSegmentedControl

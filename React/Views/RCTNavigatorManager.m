@@ -9,11 +9,8 @@
 
 #import "RCTNavigatorManager.h"
 
-#import "RCTBridge.h"
-#import "RCTConvert.h"
 #import "RCTNavigator.h"
 #import "RCTUIManager.h"
-#import "UIView+React.h"
 
 @implementation RCTNavigatorManager
 

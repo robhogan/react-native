@@ -9,7 +9,6 @@
 
 #import "RCTModalHostViewManager.h"
 
-#import "RCTBridge.h"
 #import "RCTModalHostView.h"
 #import "RCTModalHostViewController.h"
 #import "RCTShadowView.h"

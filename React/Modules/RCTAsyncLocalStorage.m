@@ -9,13 +9,7 @@
 
 #import "RCTAsyncLocalStorage.h"
 
-#import <Foundation/Foundation.h>
-
-#import <CommonCrypto/CommonCryptor.h>
-#import <CommonCrypto/CommonDigest.h>
-
 #import "RCTConvert.h"
-#import "RCTLog.h"
 #import "RCTUtils.h"
 
 static NSString *const RCTStorageDirectory = @"RCTAsyncLocalStorage_V1";

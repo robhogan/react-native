@@ -21,9 +21,7 @@
 #import "RCTDefines.h"
 #import "RCTEventDispatcher.h"
 #import "RCTKeyCommands.h"
-#import "RCTLog.h"
 #import "RCTProfile.h"
-#import "RCTRootView.h"
 #import "RCTUtils.h"
 #import "RCTWebSocketObserverProtocol.h"
 

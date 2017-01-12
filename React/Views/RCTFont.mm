@@ -8,7 +8,6 @@
  */
 
 #import "RCTFont.h"
-#import "RCTLog.h"
 
 #import <CoreText/CoreText.h>
 

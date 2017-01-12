@@ -9,10 +9,7 @@
 
 #import "RCTSwitchManager.h"
 
-#import "RCTBridge.h"
-#import "RCTEventDispatcher.h"
 #import "RCTSwitch.h"
-#import "UIView+React.h"
 
 @implementation RCTSwitchManager
 

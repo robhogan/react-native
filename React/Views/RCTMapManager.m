@@ -9,17 +9,12 @@
 
 #import "RCTMapManager.h"
 
-#import "RCTBridge.h"
 #import "RCTConvert+CoreLocation.h"
 #import "RCTConvert+MapKit.h"
-#import "RCTEventDispatcher.h"
 #import "RCTMap.h"
 #import "RCTUtils.h"
-#import "UIView+React.h"
 #import "RCTMapAnnotation.h"
 #import "RCTMapOverlay.h"
-
-#import <MapKit/MapKit.h>
 
 static NSString *const RCTMapViewKey = @"MapView";
 

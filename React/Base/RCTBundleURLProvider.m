@@ -9,9 +9,6 @@
 
 #import "RCTBundleURLProvider.h"
 
-#import "RCTConvert.h"
-#import "RCTDefines.h"
-
 NSString *const RCTBundleURLProviderUpdatedNotification = @"RCTBundleURLProviderUpdatedNotification";
 
 const NSUInteger kRCTBundleURLProviderDefaultPort = 8081;

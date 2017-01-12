@@ -9,18 +9,13 @@
 
 #import "RCTUtils.h"
 
-#import <mach/mach_time.h>
 #import <objc/message.h>
-#import <objc/runtime.h>
-
-#import <UIKit/UIKit.h>
 
 #import <CommonCrypto/CommonCrypto.h>
 
 #import <zlib.h>
 #import <dlfcn.h>
 
-#import "RCTAssert.h"
 #import "RCTLog.h"
 
 NSString *const RCTErrorUnspecified = @"EUNSPECIFIED";

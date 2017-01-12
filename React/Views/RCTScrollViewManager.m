@@ -9,7 +9,6 @@
 
 #import "RCTScrollViewManager.h"
 
-#import "RCTBridge.h"
 #import "RCTScrollView.h"
 #import "RCTShadowView.h"
 #import "RCTUIManager.h"

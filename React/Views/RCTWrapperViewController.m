@@ -9,12 +9,9 @@
 
 #import "RCTWrapperViewController.h"
 
-#import <UIKit/UIScrollView.h>
-
 #import "RCTEventDispatcher.h"
 #import "RCTNavItem.h"
 #import "RCTUtils.h"
-#import "RCTViewControllerProtocol.h"
 #import "UIView+React.h"
 #import "RCTAutoInsetsProtocol.h"
 

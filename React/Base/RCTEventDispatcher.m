@@ -10,10 +10,7 @@
 #import "RCTEventDispatcher.h"
 
 #import "RCTAssert.h"
-#import "RCTBridge.h"
 #import "RCTBridge+Private.h"
-#import "RCTUtils.h"
-#import "RCTProfile.h"
 
 const NSInteger RCTTextUpdateLagWarningThreshold = 3;
 

@@ -14,10 +14,8 @@
 #import <cxxreact/JSBundleType.h>
 #import <jschelpers/JavaScriptCore.h>
 
-#import "RCTBridge.h"
 #import "RCTConvert.h"
 #import "RCTMultipartDataTask.h"
-#import "RCTPerformanceLogger.h"
 #import "RCTUtils.h"
 
 NSString *const RCTJavaScriptLoaderErrorDomain = @"RCTJavaScriptLoaderErrorDomain";

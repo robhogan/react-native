@@ -11,9 +11,6 @@
 
 #import <objc/message.h>
 
-#import <CoreText/CoreText.h>
-
-#import "RCTDefines.h"
 #import "RCTImageSource.h"
 #import "RCTParserUtils.h"
 #import "RCTUtils.h"

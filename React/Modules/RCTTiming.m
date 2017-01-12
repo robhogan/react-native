@@ -12,8 +12,6 @@
 #import "RCTAssert.h"
 #import "RCTBridge.h"
 #import "RCTBridge+Private.h"
-#import "RCTLog.h"
-#import "RCTUtils.h"
 
 static const NSTimeInterval kMinimumSleepInterval = 1;
 

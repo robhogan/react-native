@@ -9,14 +9,9 @@
 
 #import "RCTWebView.h"
 
-#import <UIKit/UIKit.h>
-
 #import "RCTAutoInsetsProtocol.h"
 #import "RCTConvert.h"
-#import "RCTEventDispatcher.h"
-#import "RCTLog.h"
 #import "RCTUtils.h"
-#import "RCTView.h"
 #import "UIView+React.h"
 
 NSString *const RCTJSNavigationScheme = @"react-js-navigation";

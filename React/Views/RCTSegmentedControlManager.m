@@ -9,8 +9,6 @@
 
 #import "RCTSegmentedControlManager.h"
 
-#import "RCTBridge.h"
-#import "RCTConvert.h"
 #import "RCTSegmentedControl.h"
 
 @implementation RCTSegmentedControlManager

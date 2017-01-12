@@ -9,7 +9,6 @@
 
 #import "RCTNavItemManager.h"
 
-#import "RCTConvert.h"
 #import "RCTNavItem.h"
 
 @implementation RCTConvert (BarButtonSystemItem)

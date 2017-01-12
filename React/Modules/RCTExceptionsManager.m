@@ -10,10 +10,7 @@
 #import "RCTExceptionsManager.h"
 
 #import "RCTConvert.h"
-#import "RCTDefines.h"
-#import "RCTLog.h"
 #import "RCTRedBox.h"
-#import "RCTRootView.h"
 
 @implementation RCTExceptionsManager
 {
