@@ -314,17 +314,7 @@ const ReactNative = {
   },
   get ViewPropTypes() {
     return require('ViewPropTypes');
-  },
-
-  // Deprecated
-  get Navigator() {
-    invariant(
-      false,
-      'Navigator is deprecated and has been removed from this package. It can now be installed ' +
-        'and imported from `react-native-deprecated-custom-components` instead of `react-native`. ' +
-        'Learn about alternative navigation solutions at http://facebook.github.io/react-native/docs/navigation.html',
-    );
-  },
+  }
 };
 
 module.exports = ReactNative;
