@@ -5,22 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict
+ *  strict
  */
 
-export type Rect = $ReadOnly<{|
-  bottom?: ?number,
-  left?: ?number,
-  right?: ?number,
-  top?: ?number,
-|}>;
 
-export type RectOrSize = Rect | number;
 
-export function createSquare(size: number): Rect {
+export function createSquare(size) {
   return {bottom: size, left: size, right: size, top: size};
 }
 
-export function normalizeRect(rectOrSize: ?RectOrSize): ?Rect {
+export function normalizeRect(rectOrSize) {
   return typeof rectOrSize === 'number' ? createSquare(rectOrSize) : rectOrSize;
 }

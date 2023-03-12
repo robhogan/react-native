@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
@@ -16,53 +16,23 @@ const SceneTracker = require('../Utilities/SceneTracker');
 const infoLog = require('../Utilities/infoLog');
 const invariant = require('invariant');
 const renderApplication = require('./renderApplication');
-import type {IPerformanceLogger} from '../Utilities/createPerformanceLogger';
 
 import {coerceDisplayMode} from './DisplayMode';
 import createPerformanceLogger from '../Utilities/createPerformanceLogger';
 import NativeHeadlessJsTaskSupport from './NativeHeadlessJsTaskSupport';
 import HeadlessJsTaskError from './HeadlessJsTaskError';
-import type {RootTag} from 'react-native/Libraries/Types/RootTagTypes';
 
-type Task = (taskData: any) => Promise<void>;
-export type TaskProvider = () => Task;
-type TaskCanceller = () => void;
-type TaskCancelProvider = () => TaskCanceller;
 
-export type ComponentProvider = () => React$ComponentType<any>;
-export type ComponentProviderInstrumentationHook = (
-  component: ComponentProvider,
-  scopedPerformanceLogger: IPerformanceLogger,
-) => React$ComponentType<any>;
-export type AppConfig = {
-  appKey: string,
-  component?: ComponentProvider,
-  run?: Function,
-  section?: boolean,
-  ...
-};
-export type Runnable = {
-  component?: ComponentProvider,
-  run: Function,
-  ...
-};
-export type Runnables = {[appKey: string]: Runnable, ...};
-export type Registry = {
-  sections: Array<string>,
-  runnables: Runnables,
-  ...
-};
-export type WrapperComponentProvider = any => React$ComponentType<any>;
 
-const runnables: Runnables = {};
+const runnables = {};
 let runCount = 1;
-const sections: Runnables = {};
-const taskProviders: Map<string, TaskProvider> = new Map();
-const taskCancelProviders: Map<string, TaskCancelProvider> = new Map();
-let componentProviderInstrumentationHook: ComponentProviderInstrumentationHook =
-  (component: ComponentProvider) => component();
+const sections = {};
+const taskProviders = new Map();
+const taskCancelProviders = new Map();
+let componentProviderInstrumentationHook =
+  (component) => component();
 
-let wrapperComponentProvider: ?WrapperComponentProvider;
+let wrapperComponentProvider;
 let showArchitectureIndicator = false;
 
 /**
@@ -71,15 +41,15 @@ let showArchitectureIndicator = false;
  * See https://reactnative.dev/docs/appregistry
  */
 const AppRegistry = {
-  setWrapperComponentProvider(provider: WrapperComponentProvider) {
+  setWrapperComponentProvider(provider) {
     wrapperComponentProvider = provider;
   },
 
-  enableArchitectureIndicator(enabled: boolean): void {
+  enableArchitectureIndicator(enabled) {
     showArchitectureIndicator = enabled;
   },
 
-  registerConfig(config: Array<AppConfig>): void {
+  registerConfig(config) {
     config.forEach(appConfig => {
       if (appConfig.run) {
         AppRegistry.registerRunnable(appConfig.appKey, appConfig.run);
@@ -105,10 +75,10 @@ const AppRegistry = {
    * See https://reactnative.dev/docs/appregistry#registercomponent
    */
   registerComponent(
-    appKey: string,
-    componentProvider: ComponentProvider,
-    section?: boolean,
-  ): string {
+    appKey,
+    componentProvider,
+    section,
+  ) {
     let scopedPerformanceLogger = createPerformanceLogger();
     runnables[appKey] = {
       componentProvider,
@@ -140,34 +110,34 @@ const AppRegistry = {
     return appKey;
   },
 
-  registerRunnable(appKey: string, run: Function): string {
+  registerRunnable(appKey, run) {
     runnables[appKey] = {run};
     return appKey;
   },
 
-  registerSection(appKey: string, component: ComponentProvider): void {
+  registerSection(appKey, component) {
     AppRegistry.registerComponent(appKey, component, true);
   },
 
-  getAppKeys(): Array<string> {
+  getAppKeys() {
     return Object.keys(runnables);
   },
 
-  getSectionKeys(): Array<string> {
+  getSectionKeys() {
     return Object.keys(sections);
   },
 
-  getSections(): Runnables {
+  getSections() {
     return {
       ...sections,
     };
   },
 
-  getRunnable(appKey: string): ?Runnable {
+  getRunnable(appKey) {
     return runnables[appKey];
   },
 
-  getRegistry(): Registry {
+  getRegistry() {
     return {
       sections: AppRegistry.getSectionKeys(),
       runnables: {...runnables},
@@ -175,7 +145,7 @@ const AppRegistry = {
   },
 
   setComponentProviderInstrumentationHook(
-    hook: ComponentProviderInstrumentationHook,
+    hook,
   ) {
     componentProviderInstrumentationHook = hook;
   },
@@ -186,10 +156,10 @@ const AppRegistry = {
    * See https://reactnative.dev/docs/appregistry#runapplication
    */
   runApplication(
-    appKey: string,
-    appParameters: any,
-    displayMode?: number,
-  ): void {
+    appKey,
+    appParameters,
+    displayMode,
+  ) {
     if (appKey !== 'LogBox') {
       const logParams = __DEV__
         ? '" with ' + JSON.stringify(appParameters)
@@ -217,10 +187,10 @@ const AppRegistry = {
    * Update initial props for a surface that's already rendered
    */
   setSurfaceProps(
-    appKey: string,
-    appParameters: any,
-    displayMode?: number,
-  ): void {
+    appKey,
+    appParameters,
+    displayMode,
+  ) {
     if (appKey !== 'LogBox') {
       const msg =
         'Updating props for Surface "' +
@@ -249,7 +219,7 @@ const AppRegistry = {
    *
    * See https://reactnative.dev/docs/appregistry#unmountapplicationcomponentatroottag
    */
-  unmountApplicationComponentAtRootTag(rootTag: RootTag): void {
+  unmountApplicationComponentAtRootTag(rootTag) {
     // NOTE: RootTag type
     // $FlowFixMe[incompatible-call] RootTag: RootTag is incompatible with number, needs an updated synced version of the ReactNativeTypes.js file
     ReactNative.unmountComponentAtNodeAndRemoveContainer(rootTag);
@@ -260,7 +230,7 @@ const AppRegistry = {
    *
    * See https://reactnative.dev/docs/appregistry#registerheadlesstask
    */
-  registerHeadlessTask(taskKey: string, taskProvider: TaskProvider): void {
+  registerHeadlessTask(taskKey, taskProvider) {
     // $FlowFixMe[object-this-reference]
     this.registerCancellableHeadlessTask(taskKey, taskProvider, () => () => {
       /* Cancel is no-op */
@@ -273,10 +243,10 @@ const AppRegistry = {
    * See https://reactnative.dev/docs/appregistry#registercancellableheadlesstask
    */
   registerCancellableHeadlessTask(
-    taskKey: string,
-    taskProvider: TaskProvider,
-    taskCancelProvider: TaskCancelProvider,
-  ): void {
+    taskKey,
+    taskProvider,
+    taskCancelProvider,
+  ) {
     if (taskProviders.has(taskKey)) {
       console.warn(
         `registerHeadlessTask or registerCancellableHeadlessTask called multiple times for same key '${taskKey}'`,
@@ -291,7 +261,7 @@ const AppRegistry = {
    *
    * See https://reactnative.dev/docs/appregistry#startheadlesstask
    */
-  startHeadlessTask(taskId: number, taskKey: string, data: any): void {
+  startHeadlessTask(taskId, taskKey, data) {
     const taskProvider = taskProviders.get(taskKey);
     if (!taskProvider) {
       console.warn(`No task registered for key ${taskKey}`);
@@ -329,7 +299,7 @@ const AppRegistry = {
    *
    * See https://reactnative.dev/docs/appregistry#cancelheadlesstask
    */
-  cancelHeadlessTask(taskId: number, taskKey: string): void {
+  cancelHeadlessTask(taskId, taskKey) {
     const taskCancelProvider = taskCancelProviders.get(taskKey);
     if (!taskCancelProvider) {
       throw new Error(`No task canceller registered for key '${taskKey}'`);

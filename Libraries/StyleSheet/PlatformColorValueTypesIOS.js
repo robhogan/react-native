@@ -5,18 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
-import type {ColorValue} from './StyleSheet';
 
-export type DynamicColorIOSTuple = {
-  light: ColorValue,
-  dark: ColorValue,
-  highContrastLight?: ColorValue,
-  highContrastDark?: ColorValue,
-};
 
-export const DynamicColorIOS = (tuple: DynamicColorIOSTuple): ColorValue => {
+export const DynamicColorIOS = (tuple) => {
   throw new Error('DynamicColorIOS is not available on this platform.');
 };

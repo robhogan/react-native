@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict
+ *  strict
  */
 
 'use strict';
@@ -27,9 +27,9 @@
  * Freezing the object and adding the throw mechanism is expensive and will
  * only be used in DEV.
  */
-function deepFreezeAndThrowOnMutationInDev<T: {...} | Array<mixed>>(
-  object: T,
-): T {
+function deepFreezeAndThrowOnMutationInDev(
+  object,
+) {
   if (__DEV__) {
     if (
       typeof object !== 'object' ||
@@ -41,7 +41,7 @@ function deepFreezeAndThrowOnMutationInDev<T: {...} | Array<mixed>>(
     }
 
     // $FlowFixMe[not-an-object] `object` can be an array, but Object.keys works with arrays too
-    const keys = Object.keys((object: {...} | Array<mixed>));
+    const keys = Object.keys((object));
     // $FlowFixMe[method-unbinding] added when improving typing for this parameters
     const hasOwnProperty = Object.prototype.hasOwnProperty;
 
@@ -72,7 +72,7 @@ function deepFreezeAndThrowOnMutationInDev<T: {...} | Array<mixed>>(
 
 /* $FlowFixMe[missing-local-annot] The type annotation(s) required by Flow's
  * LTI update could not be added via codemod */
-function throwOnImmutableMutation(key: empty, value) {
+function throwOnImmutableMutation(key, value) {
   throw Error(
     'You attempted to set the key `' +
       key +
@@ -83,7 +83,7 @@ function throwOnImmutableMutation(key: empty, value) {
   );
 }
 
-function identity(value: mixed) {
+function identity(value) {
   return value;
 }
 

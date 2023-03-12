@@ -4,18 +4,16 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
 'use strict';
 
-import type {DangerouslyImpreciseStyleProp} from './StyleSheet';
-import type {____FlattenStyleProp_Internal} from './StyleSheetTypes';
 
-function flattenStyle<+TStyleProp: DangerouslyImpreciseStyleProp>(
-  style: ?TStyleProp,
-): ?____FlattenStyleProp_Internal<TStyleProp> {
+function flattenStyle(
+  style,
+) {
   if (style === null || typeof style !== 'object') {
     return undefined;
   }
@@ -24,7 +22,7 @@ function flattenStyle<+TStyleProp: DangerouslyImpreciseStyleProp>(
     return style;
   }
 
-  const result: {[string]: $FlowFixMe} = {};
+  const result = {};
   for (let i = 0, styleLength = style.length; i < styleLength; ++i) {
     const computedStyle = flattenStyle(style[i]);
     if (computedStyle) {

@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
@@ -12,9 +12,8 @@ import Platform from '../../Utilities/Platform';
 import * as React from 'react';
 import View from '../View/View';
 
-import type {ViewProps} from '../View/ViewPropTypes';
 
-let exported: React.AbstractComponent<ViewProps, React.ElementRef<typeof View>>;
+let exported;
 
 /**
  * Renders nested content and automatically applies paddings reflect the portion

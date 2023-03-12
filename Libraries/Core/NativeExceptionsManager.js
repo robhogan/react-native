@@ -4,91 +4,49 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict
+ *  strict
  * @format
  */
 
-import type {TurboModule} from '../TurboModule/RCTExport';
 import * as TurboModuleRegistry from '../TurboModule/TurboModuleRegistry';
 
-export type StackFrame = {|
-  column: ?number,
-  file: ?string,
-  lineNumber: ?number,
-  methodName: string,
-  collapse?: boolean,
-|};
 
-export type ExceptionData = {
-  message: string,
-  originalMessage: ?string,
-  name: ?string,
-  componentStack: ?string,
-  stack: Array<StackFrame>,
-  id: number,
-  isFatal: boolean,
-  // flowlint-next-line unclear-type:off
-  extraData?: Object,
-  ...
-};
 
-export interface Spec extends TurboModule {
-  // Deprecated: Use `reportException`
-  +reportFatalException: (
-    message: string,
-    stack: Array<StackFrame>,
-    exceptionId: number,
-  ) => void;
-  // Deprecated: Use `reportException`
-  +reportSoftException: (
-    message: string,
-    stack: Array<StackFrame>,
-    exceptionId: number,
-  ) => void;
-  +reportException?: (data: ExceptionData) => void;
-  +updateExceptionMessage: (
-    message: string,
-    stack: Array<StackFrame>,
-    exceptionId: number,
-  ) => void;
-  // TODO(T53311281): This is a noop on iOS now. Implement it.
-  +dismissRedbox?: () => void;
-}
 
 const Platform = require('../Utilities/Platform');
 
 const NativeModule =
-  TurboModuleRegistry.getEnforcing<Spec>('ExceptionsManager');
+  TurboModuleRegistry.getEnforcing('ExceptionsManager');
 
 const ExceptionsManager = {
   reportFatalException(
-    message: string,
-    stack: Array<StackFrame>,
-    exceptionId: number,
+    message,
+    stack,
+    exceptionId,
   ) {
     NativeModule.reportFatalException(message, stack, exceptionId);
   },
   reportSoftException(
-    message: string,
-    stack: Array<StackFrame>,
-    exceptionId: number,
+    message,
+    stack,
+    exceptionId,
   ) {
     NativeModule.reportSoftException(message, stack, exceptionId);
   },
   updateExceptionMessage(
-    message: string,
-    stack: Array<StackFrame>,
-    exceptionId: number,
+    message,
+    stack,
+    exceptionId,
   ) {
     NativeModule.updateExceptionMessage(message, stack, exceptionId);
   },
-  dismissRedbox(): void {
+  dismissRedbox() {
     if (Platform.OS !== 'ios' && NativeModule.dismissRedbox) {
       // TODO(T53311281): This is a noop on iOS now. Implement it.
       NativeModule.dismissRedbox();
     }
   },
-  reportException(data: ExceptionData): void {
+  reportException(data) {
     if (NativeModule.reportException) {
       NativeModule.reportException(data);
       return;

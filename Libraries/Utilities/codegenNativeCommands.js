@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  */
 
 let dispatchCommand;
@@ -19,12 +19,9 @@ if (global.RN$Bridgeless) {
     require('../../Libraries/Renderer/shims/ReactNative').dispatchCommand;
 }
 
-type Options<T = string> = $ReadOnly<{|
-  supportedCommands: $ReadOnlyArray<T>,
-|}>;
 
-function codegenNativeCommands<T: interface {}>(options: Options<$Keys<T>>): T {
-  const commandObj: {[$Keys<T>]: (...$ReadOnlyArray<mixed>) => void} = {};
+function codegenNativeCommands(options) {
+  const commandObj = {};
 
   options.supportedCommands.forEach(command => {
     commandObj[command] = (ref, ...args) => {
@@ -32,7 +29,7 @@ function codegenNativeCommands<T: interface {}>(options: Options<$Keys<T>>): T {
     };
   });
 
-  return ((commandObj: any): T);
+  return ((commandObj));
 }
 
 export default codegenNativeCommands;

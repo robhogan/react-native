@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @noformat
- * @flow strict-local
+ *  strict-local
  * @generated SignedSource<<b17df4f82c9d4fe20645f360eadf82bc>>
  *
  * This file was sync'd from the facebook/react repository.

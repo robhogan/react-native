@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  */
 
 'use strict';
@@ -16,7 +16,7 @@
  * This is shamelessly stolen from react-devtools:
  * https://github.com/facebook/react-devtools/blob/HEAD/backend/getData.js
  */
-function getData(element: Object): Object {
+function getData(element) {
   let children = null;
   let props = null;
   let state = null;
@@ -122,9 +122,9 @@ function getData(element: Object): Object {
 }
 
 function setInProps(
-  internalInst: any,
-  path: Array<string | number>,
-  value: any,
+  internalInst,
+  path,
+  value,
 ) {
   const element = internalInst._currentElement;
   internalInst._currentElement = {
@@ -134,17 +134,17 @@ function setInProps(
   internalInst._instance.forceUpdate();
 }
 
-function setInState(inst: any, path: Array<string | number>, value: any) {
+function setInState(inst, path, value) {
   setIn(inst.state, path, value);
   inst.forceUpdate();
 }
 
-function setInContext(inst: any, path: Array<string | number>, value: any) {
+function setInContext(inst, path, value) {
   setIn(inst.context, path, value);
   inst.forceUpdate();
 }
 
-function setIn(obj: Object, path: Array<string | number>, value: any) {
+function setIn(obj, path, value) {
   const last = path.pop();
   const parent = path.reduce((obj_, attr) => (obj_ ? obj_[attr] : null), obj);
   if (parent) {
@@ -152,7 +152,7 @@ function setIn(obj: Object, path: Array<string | number>, value: any) {
   }
 }
 
-function childrenList(children: any) {
+function childrenList(children) {
   const res = [];
   for (const name in children) {
     res.push(children[name]);
@@ -161,10 +161,10 @@ function childrenList(children: any) {
 }
 
 function copyWithSetImpl(
-  obj: any | Array<any>,
-  path: Array<string | number>,
-  idx: number,
-  value: any,
+  obj,
+  path,
+  idx,
+  value,
 ) {
   if (idx >= path.length) {
     return value;
@@ -177,10 +177,10 @@ function copyWithSetImpl(
 }
 
 function copyWithSet(
-  obj: Object | Array<any>,
-  path: Array<string | number>,
-  value: any,
-): Object | Array<any> {
+  obj,
+  path,
+  value,
+) {
   return copyWithSetImpl(obj, path, 0, value);
 }
 

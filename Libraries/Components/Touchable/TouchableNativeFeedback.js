@@ -4,106 +4,29 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
 import Pressability, {
-  type PressabilityConfig,
 } from '../../Pressability/Pressability';
 import {PressabilityDebugView} from '../../Pressability/PressabilityDebug';
-import typeof TouchableWithoutFeedback from './TouchableWithoutFeedback';
 import {Commands} from 'react-native/Libraries/Components/View/ViewNativeComponent';
 import ReactNative from 'react-native/Libraries/Renderer/shims/ReactNative';
-import type {PressEvent} from 'react-native/Libraries/Types/CoreEventTypes';
 import Platform from '../../Utilities/Platform';
 import View from '../../Components/View/View';
 import processColor from '../../StyleSheet/processColor';
 import * as React from 'react';
 import invariant from 'invariant';
 
-type Props = $ReadOnly<{|
-  ...React.ElementConfig<TouchableWithoutFeedback>,
 
-  /**
-   * Determines the type of background drawable that's going to be used to
-   * display feedback. It takes an object with `type` property and extra data
-   * depending on the `type`. It's recommended to use one of the static
-   * methods to generate that dictionary.
-   */
-  background?: ?(
-    | $ReadOnly<{|
-        type: 'ThemeAttrAndroid',
-        attribute:
-          | 'selectableItemBackground'
-          | 'selectableItemBackgroundBorderless',
-        rippleRadius: ?number,
-      |}>
-    | $ReadOnly<{|
-        type: 'RippleAndroid',
-        color: ?number,
-        borderless: boolean,
-        rippleRadius: ?number,
-      |}>
-  ),
 
-  /**
-   * TV preferred focus (see documentation for the View component).
-   */
-  hasTVPreferredFocus?: ?boolean,
-
-  /**
-   * TV next focus down (see documentation for the View component).
-   */
-  nextFocusDown?: ?number,
-
-  /**
-   * TV next focus forward (see documentation for the View component).
-   */
-  nextFocusForward?: ?number,
-
-  /**
-   * TV next focus left (see documentation for the View component).
-   */
-  nextFocusLeft?: ?number,
-
-  /**
-   * TV next focus right (see documentation for the View component).
-   */
-  nextFocusRight?: ?number,
-
-  /**
-   * TV next focus up (see documentation for the View component).
-   */
-  nextFocusUp?: ?number,
-
-  /**
-   * Set to true to add the ripple effect to the foreground of the view, instead
-   * of the background. This is useful if one of your child views has a
-   * background of its own, or you're e.g. displaying images, and you don't want
-   * the ripple to be covered by them.
-   *
-   * Check TouchableNativeFeedback.canUseNativeForeground() first, as this is
-   * only available on Android 6.0 and above. If you try to use this on older
-   * versions, this will fallback to background.
-   */
-  useForeground?: ?boolean,
-|}>;
-
-type State = $ReadOnly<{|
-  pressability: Pressability,
-|}>;
-
-class TouchableNativeFeedback extends React.Component<Props, State> {
+class TouchableNativeFeedback extends React.Component {
   /**
    * Creates a value for the `background` prop that uses the Android theme's
    * default background for selectable elements.
    */
-  static SelectableBackground: (rippleRadius: ?number) => $ReadOnly<{|
-    attribute: 'selectableItemBackground',
-    type: 'ThemeAttrAndroid',
-    rippleRadius: ?number,
-  |}> = (rippleRadius: ?number) => ({
+  static SelectableBackground = (rippleRadius) => ({
     type: 'ThemeAttrAndroid',
     attribute: 'selectableItemBackground',
     rippleRadius,
@@ -113,11 +36,7 @@ class TouchableNativeFeedback extends React.Component<Props, State> {
    * Creates a value for the `background` prop that uses the Android theme's
    * default background for borderless selectable elements. Requires API 21+.
    */
-  static SelectableBackgroundBorderless: (rippleRadius: ?number) => $ReadOnly<{|
-    attribute: 'selectableItemBackgroundBorderless',
-    type: 'ThemeAttrAndroid',
-    rippleRadius: ?number,
-  |}> = (rippleRadius: ?number) => ({
+  static SelectableBackgroundBorderless = (rippleRadius) => ({
     type: 'ThemeAttrAndroid',
     attribute: 'selectableItemBackgroundBorderless',
     rippleRadius,
@@ -128,16 +47,7 @@ class TouchableNativeFeedback extends React.Component<Props, State> {
    * the supplied color. If `borderless` is true, the ripple will render outside
    * of the view bounds. Requires API 21+.
    */
-  static Ripple: (
-    color: string,
-    borderless: boolean,
-    rippleRadius: ?number,
-  ) => $ReadOnly<{|
-    borderless: boolean,
-    color: ?number,
-    rippleRadius: ?number,
-    type: 'RippleAndroid',
-  |}> = (color: string, borderless: boolean, rippleRadius: ?number) => {
+  static Ripple = (color, borderless, rippleRadius) => {
     const processedColor = processColor(color);
     invariant(
       processedColor == null || typeof processedColor === 'number',
@@ -154,14 +64,14 @@ class TouchableNativeFeedback extends React.Component<Props, State> {
   /**
    * Whether `useForeground` is supported.
    */
-  static canUseNativeForeground: () => boolean = () =>
+  static canUseNativeForeground = () =>
     Platform.OS === 'android' && Platform.Version >= 23;
 
-  state: State = {
+  state = {
     pressability: new Pressability(this._createPressabilityConfig()),
   };
 
-  _createPressabilityConfig(): PressabilityConfig {
+  _createPressabilityConfig() {
     return {
       cancelable: !this.props.rejectResponderTermination,
       disabled:
@@ -202,7 +112,7 @@ class TouchableNativeFeedback extends React.Component<Props, State> {
     };
   }
 
-  _dispatchPressedStateChange(pressed: boolean): void {
+  _dispatchPressedStateChange(pressed) {
     if (Platform.OS === 'android') {
       const hostComponentRef = ReactNative.findHostInstance_DEPRECATED(this);
       if (hostComponentRef == null) {
@@ -216,7 +126,7 @@ class TouchableNativeFeedback extends React.Component<Props, State> {
     }
   }
 
-  _dispatchHotspotUpdate(event: PressEvent): void {
+  _dispatchHotspotUpdate(event) {
     if (Platform.OS === 'android') {
       const {locationX, locationY} = event.nativeEvent;
       const hostComponentRef = ReactNative.findHostInstance_DEPRECATED(this);
@@ -235,7 +145,7 @@ class TouchableNativeFeedback extends React.Component<Props, State> {
     }
   }
 
-  render(): React.Node {
+  render() {
     const element = React.Children.only(this.props.children);
     const children = [element.props.children];
     if (__DEV__) {
@@ -301,11 +211,11 @@ class TouchableNativeFeedback extends React.Component<Props, State> {
     );
   }
 
-  componentDidUpdate(prevProps: Props, prevState: State) {
+  componentDidUpdate(prevProps, prevState) {
     this.state.pressability.configure(this._createPressabilityConfig());
   }
 
-  componentWillUnmount(): void {
+  componentWillUnmount() {
     this.state.pressability.reset();
   }
 }
@@ -314,13 +224,13 @@ const getBackgroundProp =
   Platform.OS === 'android'
     ? /* $FlowFixMe[missing-local-annot] The type annotation(s) required by
        * Flow's LTI update could not be added via codemod */
-      (background, useForeground: boolean) =>
+      (background, useForeground) =>
         useForeground && TouchableNativeFeedback.canUseNativeForeground()
           ? {nativeForegroundAndroid: background}
           : {nativeBackgroundAndroid: background}
     : /* $FlowFixMe[missing-local-annot] The type annotation(s) required by
        * Flow's LTI update could not be added via codemod */
-      (background, useForeground: boolean) => null;
+      (background, useForeground) => null;
 
 TouchableNativeFeedback.displayName = 'TouchableNativeFeedback';
 

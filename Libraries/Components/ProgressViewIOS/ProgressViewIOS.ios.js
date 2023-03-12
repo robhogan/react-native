@@ -5,56 +5,21 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
 import * as React from 'react';
-import StyleSheet, {type ColorValue} from '../../StyleSheet/StyleSheet';
+import StyleSheet, {} from '../../StyleSheet/StyleSheet';
 
 import RCTProgressViewNativeComponent from './RCTProgressViewNativeComponent';
-import type {ImageSource} from '../../Image/ImageSource';
-import type {ViewProps} from '../View/ViewPropTypes';
 
-type Props = $ReadOnly<{|
-  ...ViewProps,
-
-  /**
-   * The progress bar style.
-   */
-  progressViewStyle?: ?('default' | 'bar'),
-
-  /**
-   * The progress value (between 0 and 1).
-   */
-  progress?: ?number,
-
-  /**
-   * The tint color of the progress bar itself.
-   */
-  progressTintColor?: ?ColorValue,
-
-  /**
-   * The tint color of the progress bar track.
-   */
-  trackTintColor?: ?ColorValue,
-
-  /**
-   * A stretchable image to display as the progress bar.
-   */
-  progressImage?: ?ImageSource,
-
-  /**
-   * A stretchable image to display behind the progress bar.
-   */
-  trackImage?: ?ImageSource,
-|}>;
 
 /**
  * Use `ProgressViewIOS` to render a UIProgressView on iOS.
  */
 const ProgressViewIOS = (
-  props: Props,
-  forwardedRef?: ?React.Ref<typeof RCTProgressViewNativeComponent>,
+  props,
+  forwardedRef,
 ) => (
   <RCTProgressViewNativeComponent
     {...props}
@@ -72,4 +37,4 @@ const styles = StyleSheet.create({
 const ProgressViewIOSWithRef = React.forwardRef(ProgressViewIOS);
 
 module.exports =
-  (ProgressViewIOSWithRef: typeof RCTProgressViewNativeComponent);
+  (ProgressViewIOSWithRef);

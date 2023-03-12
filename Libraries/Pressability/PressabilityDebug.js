@@ -4,21 +4,16 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
 import normalizeColor from '../StyleSheet/normalizeColor';
-import type {ColorValue} from '../StyleSheet/StyleSheet';
-import {normalizeRect, type RectOrSize} from '../StyleSheet/Rect';
+import {normalizeRect,} from '../StyleSheet/Rect';
 
 import View from '../Components/View/View';
 import * as React from 'react';
 
-type Props = $ReadOnly<{|
-  color: ColorValue,
-  hitSlop: ?RectOrSize,
-|}>;
 
 /**
  * Displays a debug overlay to visualize press targets when enabled via the
@@ -35,7 +30,7 @@ type Props = $ReadOnly<{|
  *   );
  *
  */
-export function PressabilityDebugView(props: Props): React.Node {
+export function PressabilityDebugView(props) {
   if (__DEV__) {
     if (isEnabled()) {
       const normalizedColor = normalizeColor(props.color);
@@ -71,14 +66,14 @@ export function PressabilityDebugView(props: Props): React.Node {
 
 let isDebugEnabled = false;
 
-export function isEnabled(): boolean {
+export function isEnabled() {
   if (__DEV__) {
     return isDebugEnabled;
   }
   return false;
 }
 
-export function setEnabled(value: boolean): void {
+export function setEnabled(value) {
   if (__DEV__) {
     isDebugEnabled = value;
   }

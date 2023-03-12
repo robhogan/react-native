@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
 'use strict';
@@ -14,7 +14,7 @@ const BridgeSpyStallHandler = require('./BridgeSpyStallHandler');
 const JSEventLoopWatchdog = require('./JSEventLoopWatchdog');
 
 const InteractionStallDebugger = {
-  install(options: {thresholdMS: number, ...}): void {
+  install(options) {
     JSEventLoopWatchdog.install(options);
     BridgeSpyStallHandler.register();
   },

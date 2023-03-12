@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
@@ -12,18 +12,17 @@ import {
   jsTypeToCppType,
   toCppNamespace,
   toCppType,
-  type JsTypeString,
 } from './Converters';
 
 export class Property {
-  domain: string;
-  name: string;
-  description: ?string;
-  exported: ?boolean;
-  experimental: ?boolean;
-  optional: ?boolean;
+  domain;
+  name;
+  description;
+  exported;
+  experimental;
+  optional;
 
-  static create(domain: string, obj: any): Property {
+  static create(domain, obj) {
     if (obj.$ref) {
       return new RefProperty(domain, obj);
     } else if (obj.type === 'array') {
@@ -33,10 +32,10 @@ export class Property {
   }
 
   static createArray(
-    domain: string,
-    elements: Array<any>,
-    ignoreExperimental: boolean,
-  ): Array<Property> {
+    domain,
+    elements,
+    ignoreExperimental,
+  ) {
     let props = elements.map(elem => Property.create(domain, elem));
     if (ignoreExperimental) {
       props = props.filter(prop => !prop.experimental);
@@ -44,7 +43,7 @@ export class Property {
     return props;
   }
 
-  constructor(domain: string, obj: any) {
+  constructor(domain, obj) {
     this.domain = domain;
     this.name = obj.name;
     this.description = obj.description;
@@ -53,15 +52,15 @@ export class Property {
     this.optional = obj.optional;
   }
 
-  getRefDebuggerName(): ?string {
+  getRefDebuggerName() {
     throw new Error('subclass must implement');
   }
 
-  getFullCppType(): string {
+  getFullCppType() {
     throw new Error('subclass must implement');
   }
 
-  getCppIdentifier(): string {
+  getCppIdentifier() {
     // need to munge identifier if it matches a C++ keyword like "this"
     if (this.name === 'this') {
       return 'thisObj';
@@ -69,15 +68,15 @@ export class Property {
     return this.name;
   }
 
-  getInitializer(): string {
+  getInitializer() {
     throw new Error('subclass must implement');
   }
 }
 
 function maybeWrapOptional(
-  type: string,
-  optional: ?boolean,
-  recursive: ?boolean,
+  type,
+  optional,
+  recursive,
 ) {
   if (optional) {
     return recursive ? `std::unique_ptr<${type}>` : `folly::Optional<${type}>`;
@@ -86,9 +85,9 @@ function maybeWrapOptional(
 }
 
 function toDomainAndId(
-  curDomain: string,
-  absOrRelRef: string,
-): [string, string] {
+  curDomain,
+  absOrRelRef,
+) {
   let [domain, id] = ['', ''];
 
   // absOrRelRef can be:
@@ -108,28 +107,28 @@ function toDomainAndId(
   return [domain, id];
 }
 
-function toFullCppType(curDomain: string, absOrRelRef: string) {
+function toFullCppType(curDomain, absOrRelRef) {
   const [domain, id] = toDomainAndId(curDomain, absOrRelRef);
   return `${toCppNamespace(domain)}::${toCppType(id)}`;
 }
 
 class PrimitiveProperty extends Property {
-  type: JsTypeString;
+  type;
 
-  constructor(domain: string, obj: any) {
+  constructor(domain, obj) {
     super(domain, obj);
     this.type = obj.type;
   }
 
-  getRefDebuggerName(): ?string {
+  getRefDebuggerName() {
     return undefined;
   }
 
-  getFullCppType(): string {
+  getFullCppType() {
     return maybeWrapOptional(jsTypeToCppType(this.type), this.optional);
   }
 
-  getInitializer(): string {
+  getInitializer() {
     // folly::Optional doesn't need to be explicitly zero-init
     if (this.optional) {
       return '';
@@ -148,26 +147,26 @@ class PrimitiveProperty extends Property {
 }
 
 class RefProperty extends Property {
-  $ref: string;
-  recursive: ?boolean;
+  $ref;
+  recursive;
 
-  constructor(domain: string, obj: any) {
+  constructor(domain, obj) {
     super(domain, obj);
     this.$ref = obj.$ref;
     this.recursive = obj.recursive;
   }
 
-  getRefDebuggerName(): ?string {
+  getRefDebuggerName() {
     const [domain, id] = toDomainAndId(this.domain, this.$ref);
     return `${domain}.${id}`;
   }
 
-  getFullCppType(): string {
+  getFullCppType() {
     const fullCppType = toFullCppType(this.domain, this.$ref);
     return maybeWrapOptional(`${fullCppType}`, this.optional, this.recursive);
   }
 
-  getInitializer(): string {
+  getInitializer() {
     // must zero-init non-optional ref props since the ref could just be an
     // alias to a C++ primitive type like int which we always want to zero-init
     return this.optional ? '' : '{}';
@@ -175,27 +174,25 @@ class RefProperty extends Property {
 }
 
 class ArrayProperty extends Property {
-  type: 'array';
-  items:
-    | {|type: JsTypeString, recursive: false|}
-    | {|$ref: string, recursive: ?boolean|};
+  type;
+  items;
 
-  constructor(domain: string, obj: any) {
+  constructor(domain, obj) {
     super(domain, obj);
     this.type = obj.type;
     this.items = obj.items;
   }
 
-  getRefDebuggerName(): ?string {
+  getRefDebuggerName() {
     if (this.items && this.items.$ref && !this.items.recursive) {
       const [domain, id] = toDomainAndId(this.domain, this.items.$ref);
       return `${domain}.${id}`;
     }
   }
 
-  getFullCppType(): string {
-    let elemType: string = 'folly::dynamic';
-    let recursive: ?(false | boolean) = false;
+  getFullCppType() {
+    let elemType = 'folly::dynamic';
+    let recursive = false;
 
     if (this.items) {
       if (this.items.type) {
@@ -213,7 +210,7 @@ class ArrayProperty extends Property {
     );
   }
 
-  getInitializer(): string {
+  getInitializer() {
     return '';
   }
 }

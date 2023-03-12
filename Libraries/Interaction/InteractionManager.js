@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
 const BatchedBridge = require('../BatchedBridge/BatchedBridge');
@@ -16,16 +16,11 @@ const invariant = require('invariant');
 
 import EventEmitter from '../vendor/emitter/EventEmitter';
 
-export type Handle = number;
-import type {Task} from './TaskQueue';
 
-const _emitter = new EventEmitter<{
-  interactionComplete: [],
-  interactionStart: [],
-}>();
+const _emitter = new EventEmitter();
 
-const DEBUG_DELAY: 0 = 0;
-const DEBUG: false = false;
+const DEBUG_DELAY = 0;
+const DEBUG = false;
 
 /**
  * InteractionManager allows long-running work to be scheduled after any
@@ -86,16 +81,9 @@ const InteractionManager = {
    * Schedule a function to run after all interactions have completed. Returns a cancellable
    * "promise".
    */
-  runAfterInteractions(task: ?Task): {
-    then: <U>(
-      onFulfill?: ?(void) => ?(Promise<U> | U),
-      onReject?: ?(error: mixed) => ?(Promise<U> | U),
-    ) => Promise<U>,
-    cancel: () => void,
-    ...
-  } {
-    const tasks: Array<Task> = [];
-    const promise = new Promise((resolve: () => void) => {
+  runAfterInteractions(task) {
+    const tasks = [];
+    const promise = new Promise((resolve) => {
       _scheduleUpdate();
       if (task) {
         tasks.push(task);
@@ -118,7 +106,7 @@ const InteractionManager = {
   /**
    * Notify manager that an interaction has started.
    */
-  createInteractionHandle(): Handle {
+  createInteractionHandle() {
     DEBUG && infoLog('InteractionManager: create interaction handle');
     _scheduleUpdate();
     const handle = ++_inc;
@@ -129,7 +117,7 @@ const InteractionManager = {
   /**
    * Notify manager that an interaction has completed.
    */
-  clearInteractionHandle(handle: Handle) {
+  clearInteractionHandle(handle) {
     DEBUG && infoLog('InteractionManager: clear interaction handle');
     invariant(!!handle, 'InteractionManager: Must provide a handle to clear.');
     _scheduleUpdate();
@@ -138,14 +126,14 @@ const InteractionManager = {
   },
 
   // $FlowFixMe[method-unbinding] added when improving typing for this parameters
-  addListener: (_emitter.addListener.bind(_emitter): $FlowFixMe),
+  addListener: (_emitter.addListener.bind(_emitter)),
 
   /**
    * A positive number will use setTimeout to schedule any tasks after the
    * eventLoopRunningTime hits the deadline value, otherwise all tasks will be
    * executed in one setImmediate batch (default).
    */
-  setDeadline(deadline: number) {
+  setDeadline(deadline) {
     _deadline = deadline;
   },
 };
@@ -154,7 +142,7 @@ const _interactionSet = new Set();
 const _addInteractionSet = new Set();
 const _deleteInteractionSet = new Set();
 const _taskQueue = new TaskQueue({onMoreTasks: _scheduleUpdate});
-let _nextUpdateHandle: $FlowFixMe | TimeoutID = 0;
+let _nextUpdateHandle = 0;
 let _inc = 0;
 let _deadline = -1;
 

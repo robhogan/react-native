@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict
+ *  strict
  * @format
  */
 
@@ -12,7 +12,6 @@
 
 const React = require('react');
 
-opaque type DoNotCommitUsageOfPureComponentDebug = {...};
 
 /**
  * Identifies which prop or state changes triggered a re-render of a PureComponent. Usage:
@@ -25,11 +24,8 @@ opaque type DoNotCommitUsageOfPureComponentDebug = {...};
  * Should only be used for local testing, and will trigger a flow failure if you try to
  * commit any usages.
  */
-class PureComponentDebug<
-  P: DoNotCommitUsageOfPureComponentDebug,
-  S: ?{...} = void,
-> extends React.Component<P, S> {
-  shouldComponentUpdate(nextProps: P, nextState: S): boolean {
+class PureComponentDebug extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
     const tag = this.constructor.name;
     let ret = false;
     const prevPropsKeys = Object.keys(this.props);

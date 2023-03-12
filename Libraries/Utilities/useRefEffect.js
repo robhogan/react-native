@@ -4,13 +4,12 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict
+ *  strict
  * @format
  */
 
 import {useCallback, useRef} from 'react';
 
-type CallbackRef<T> = T => mixed;
 
 /**
  * Constructs a callback ref that provides similar semantics as `useEffect`. The
@@ -26,10 +25,10 @@ type CallbackRef<T> = T => mixed;
  *
  * WARNING: The `effect` callback should be stable (e.g. using `useCallback`).
  */
-export default function useRefEffect<TInstance>(
-  effect: TInstance => (() => void) | void,
-): CallbackRef<TInstance | null> {
-  const cleanupRef = useRef<(() => void) | void>(undefined);
+export default function useRefEffect(
+  effect,
+) {
+  const cleanupRef = useRef(undefined);
   return useCallback(
     instance => {
       if (cleanupRef.current) {

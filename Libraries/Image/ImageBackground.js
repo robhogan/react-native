@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
@@ -15,9 +15,6 @@ import * as React from 'react';
 import StyleSheet from '../StyleSheet/StyleSheet';
 import flattenStyle from '../StyleSheet/flattenStyle';
 import View from '../Components/View/View';
-import type {HostComponent} from '../Renderer/shims/ReactNativeTypes';
-import type {ImageBackgroundProps} from './ImageProps';
-import type {ViewProps} from '../Components/View/ViewPropTypes';
 
 /**
  * Very simple drop-in replacement for <Image> which supports nesting views.
@@ -43,8 +40,8 @@ import type {ViewProps} from '../Components/View/ViewPropTypes';
  * AppRegistry.registerComponent('DisplayAnImageBackground', () => DisplayAnImageBackground);
  * ```
  */
-class ImageBackground extends React.Component<ImageBackgroundProps> {
-  setNativeProps(props: Object) {
+class ImageBackground extends React.Component {
+  setNativeProps(props) {
     // Work-around flow
     const viewRef = this._viewRef;
     if (viewRef) {
@@ -52,20 +49,15 @@ class ImageBackground extends React.Component<ImageBackgroundProps> {
     }
   }
 
-  _viewRef: ?React.ElementRef<typeof View> = null;
+  _viewRef = null;
 
   _captureRef = (
-    ref: null | React$ElementRef<
-      React$AbstractComponent<
-        ViewProps,
-        React.ElementRef<HostComponent<ViewProps>>,
-      >,
-    >,
+    ref,
   ) => {
     this._viewRef = ref;
   };
 
-  render(): React.Node {
+  render() {
     const {children, style, imageStyle, imageRef, ...props} = this.props;
     const flattenedStyle = flattenStyle(style);
     return (

@@ -5,61 +5,38 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict
+ *  strict
  */
 
 import NativePlatformConstantsAndroid from './NativePlatformConstantsAndroid';
 
-export type PlatformSelectSpec<A, N, D> = {
-  android?: A,
-  native?: N,
-  default?: D,
-  ...
-};
 
 const Platform = {
   __constants: null,
   OS: 'android',
   // $FlowFixMe[unsafe-getters-setters]
-  get Version(): number {
+  get Version() {
     return this.constants.Version;
   },
   // $FlowFixMe[unsafe-getters-setters]
-  get constants(): {|
-    isTesting: boolean,
-    reactNativeVersion: {|
-      major: number,
-      minor: number,
-      patch: number,
-      prerelease: ?number,
-    |},
-    Version: number,
-    Release: string,
-    Serial: string,
-    Fingerprint: string,
-    Model: string,
-    ServerHost?: string,
-    uiMode: string,
-    Brand: string,
-    Manufacturer: string,
-  |} {
+  get constants() {
     if (this.__constants == null) {
       this.__constants = NativePlatformConstantsAndroid.getConstants();
     }
     return this.__constants;
   },
   // $FlowFixMe[unsafe-getters-setters]
-  get isTesting(): boolean {
+  get isTesting() {
     if (__DEV__) {
       return this.constants.isTesting;
     }
     return false;
   },
   // $FlowFixMe[unsafe-getters-setters]
-  get isTV(): boolean {
+  get isTV() {
     return this.constants.uiMode === 'tv';
   },
-  select: <A, N, D>(spec: PlatformSelectSpec<A, N, D>): A | N | D =>
+  select:(spec) =>
     'android' in spec
       ? // $FlowFixMe[incompatible-return]
         spec.android

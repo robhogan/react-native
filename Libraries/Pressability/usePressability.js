@@ -4,13 +4,11 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
 import Pressability, {
-  type EventHandlers,
-  type PressabilityConfig,
 } from './Pressability';
 import {useEffect, useRef} from 'react';
 
@@ -20,9 +18,9 @@ import {useEffect, useRef} from 'react';
  * initialized, will not un-initialize until the component has been unmounted.
  */
 export default function usePressability(
-  config: ?PressabilityConfig,
-): ?EventHandlers {
-  const pressabilityRef = useRef<?Pressability>(null);
+  config,
+) {
+  const pressabilityRef = useRef(null);
   if (config != null && pressabilityRef.current == null) {
     pressabilityRef.current = new Pressability(config);
   }

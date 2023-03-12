@@ -4,45 +4,21 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
 import Pressability, {
-  type PressabilityConfig,
 } from '../../Pressability/Pressability';
 import {PressabilityDebugView} from '../../Pressability/PressabilityDebug';
-import typeof TouchableWithoutFeedback from './TouchableWithoutFeedback';
 import Animated from 'react-native/Libraries/Animated/Animated';
 import Easing from 'react-native/Libraries/Animated/Easing';
-import type {ViewStyleProp} from 'react-native/Libraries/StyleSheet/StyleSheet';
 import flattenStyle from 'react-native/Libraries/StyleSheet/flattenStyle';
 import Platform from '../../Utilities/Platform';
 import * as React from 'react';
 
-type TVProps = $ReadOnly<{|
-  hasTVPreferredFocus?: ?boolean,
-  nextFocusDown?: ?number,
-  nextFocusForward?: ?number,
-  nextFocusLeft?: ?number,
-  nextFocusRight?: ?number,
-  nextFocusUp?: ?number,
-|}>;
 
-type Props = $ReadOnly<{|
-  ...React.ElementConfig<TouchableWithoutFeedback>,
-  ...TVProps,
 
-  activeOpacity?: ?number,
-  style?: ?ViewStyleProp,
-
-  hostRef?: ?React.Ref<typeof Animated.View>,
-|}>;
-
-type State = $ReadOnly<{|
-  anim: Animated.Value,
-  pressability: Pressability,
-|}>;
 
 /**
  * A wrapper for making views respond properly to touches.
@@ -128,13 +104,13 @@ type State = $ReadOnly<{|
  * ```
  *
  */
-class TouchableOpacity extends React.Component<Props, State> {
-  state: State = {
+class TouchableOpacity extends React.Component {
+  state = {
     anim: new Animated.Value(this._getChildStyleOpacityWithDefault()),
     pressability: new Pressability(this._createPressabilityConfig()),
   };
 
-  _createPressabilityConfig(): PressabilityConfig {
+  _createPressabilityConfig() {
     return {
       cancelable: !this.props.rejectResponderTermination,
       disabled: this.props.disabled ?? this.props.accessibilityState?.disabled,
@@ -184,7 +160,7 @@ class TouchableOpacity extends React.Component<Props, State> {
   /**
    * Animate the touchable to a new opacity.
    */
-  _setOpacityTo(toValue: number, duration: number): void {
+  _setOpacityTo(toValue, duration) {
     Animated.timing(this.state.anim, {
       toValue,
       duration,
@@ -193,20 +169,20 @@ class TouchableOpacity extends React.Component<Props, State> {
     }).start();
   }
 
-  _opacityActive(duration: number): void {
+  _opacityActive(duration) {
     this._setOpacityTo(this.props.activeOpacity ?? 0.2, duration);
   }
 
-  _opacityInactive(duration: number): void {
+  _opacityInactive(duration) {
     this._setOpacityTo(this._getChildStyleOpacityWithDefault(), duration);
   }
 
-  _getChildStyleOpacityWithDefault(): number {
+  _getChildStyleOpacityWithDefault() {
     const opacity = flattenStyle(this.props.style)?.opacity;
     return typeof opacity === 'number' ? opacity : 1;
   }
 
-  render(): React.Node {
+  render() {
     // BACKWARD-COMPATIBILITY: Focus and blur events were never supported before
     // adopting `Pressability`, so preserve that behavior.
     const {onBlur, onFocus, ...eventHandlersWithoutBlurAndFocus} =
@@ -259,7 +235,7 @@ class TouchableOpacity extends React.Component<Props, State> {
     );
   }
 
-  componentDidUpdate(prevProps: Props, prevState: State) {
+  componentDidUpdate(prevProps, prevState) {
     this.state.pressability.configure(this._createPressabilityConfig());
     if (
       this.props.disabled !== prevProps.disabled ||
@@ -271,14 +247,14 @@ class TouchableOpacity extends React.Component<Props, State> {
     }
   }
 
-  componentWillUnmount(): void {
+  componentWillUnmount() {
     this.state.pressability.reset();
   }
 }
 
 const Touchable = (React.forwardRef((props, ref) => (
   <TouchableOpacity {...props} hostRef={ref} />
-)): React.AbstractComponent<Props, React.ElementRef<typeof Animated.View>>);
+)));
 
 Touchable.displayName = 'TouchableOpacity';
 

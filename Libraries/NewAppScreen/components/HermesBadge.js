@@ -4,16 +4,15 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
 import React from 'react';
-import type {Node} from 'react';
 import {StyleSheet, Text, useColorScheme, View} from 'react-native';
 import Colors from './Colors';
 
-const HermesBadge = (): Node => {
+const HermesBadge = () => {
   const isDarkMode = useColorScheme() === 'dark';
   const version =
     global.HermesInternal?.getRuntimeProperties?.()['OSS Release Version'] ??

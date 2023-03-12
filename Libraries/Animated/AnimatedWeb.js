@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
 'use strict';
@@ -16,11 +16,11 @@ module.exports = {
   ...AnimatedImplementation,
   /* $FlowFixMe[incompatible-call] createAnimatedComponent expects to receive
    * types. Plain intrinsic components can't be typed like this */
-  div: (AnimatedImplementation.createAnimatedComponent('div'): $FlowFixMe),
+  div: (AnimatedImplementation.createAnimatedComponent('div')),
   /* $FlowFixMe[incompatible-call] createAnimatedComponent expects to receive
    * types. Plain intrinsic components can't be typed like this */
-  span: (AnimatedImplementation.createAnimatedComponent('span'): $FlowFixMe),
+  span: (AnimatedImplementation.createAnimatedComponent('span')),
   /* $FlowFixMe[incompatible-call] createAnimatedComponent expects to receive
    * types. Plain intrinsic components can't be typed like this */
-  img: (AnimatedImplementation.createAnimatedComponent('img'): $FlowFixMe),
+  img: (AnimatedImplementation.createAnimatedComponent('img')),
 };

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict
+ *  strict
  */
 
 'use strict';
@@ -20,9 +20,9 @@
  * @return {boolean} Whether or not the two matrices differ.
  */
 const matricesDiffer = function (
-  one: ?Array<number>,
-  two: ?Array<number>,
-): boolean {
+  one,
+  two,
+) {
   if (one === two) {
     return false;
   }

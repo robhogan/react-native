@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
 const Platform = require('../Utilities/Platform');
@@ -16,24 +16,6 @@ const processColor = require('../StyleSheet/processColor');
 import NativeActionSheetManager from '../ActionSheetIOS/NativeActionSheetManager';
 import NativeShareModule from './NativeShareModule';
 
-type Content =
-  | {
-      title?: string,
-      message: string,
-      ...
-    }
-  | {
-      title?: string,
-      url: string,
-      ...
-    };
-type Options = {
-  dialogTitle?: string,
-  excludedActivityTypes?: Array<string>,
-  tintColor?: string,
-  subject?: string,
-  ...
-};
 
 class Share {
   /**
@@ -73,9 +55,9 @@ class Share {
    *
    */
   static share(
-    content: Content,
-    options: Options = {},
-  ): Promise<{action: string, activityType: ?string}> {
+    content,
+    options = {},
+  ) {
     invariant(
       typeof content === 'object' && content !== null,
       'Content to share must be a valid object',
@@ -158,13 +140,13 @@ class Share {
   /**
    * The content was successfully shared.
    */
-  static sharedAction: 'sharedAction' = 'sharedAction';
+  static sharedAction = 'sharedAction';
 
   /**
    * The dialog has been dismissed.
    * @platform ios
    */
-  static dismissedAction: 'dismissedAction' = 'dismissedAction';
+  static dismissedAction = 'dismissedAction';
 }
 
 module.exports = Share;

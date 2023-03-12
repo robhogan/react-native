@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
@@ -23,25 +23,10 @@ const setAndForwardRef = require('../Utilities/setAndForwardRef');
 
 let animatedComponentNextId = 1;
 
-export type AnimatedComponentType<
-  -Props: {+[string]: mixed, ...},
-  +Instance = mixed,
-> = React.AbstractComponent<
-  $ObjMap<
-    Props &
-      $ReadOnly<{
-        passthroughAnimatedPropExplicitValues?: React.ElementConfig<
-          typeof View,
-        >,
-      }>,
-    () => any,
-  >,
-  Instance,
->;
 
-function createAnimatedComponent<Props: {+[string]: mixed, ...}, Instance>(
-  Component: React.AbstractComponent<Props, Instance>,
-): AnimatedComponentType<Props, Instance> {
+function createAnimatedComponent(
+  Component,
+) {
   invariant(
     typeof Component !== 'function' ||
       (Component.prototype && Component.prototype.isReactComponent),
@@ -49,16 +34,16 @@ function createAnimatedComponent<Props: {+[string]: mixed, ...}, Instance>(
       'use a class component instead.',
   );
 
-  class AnimatedComponent extends React.Component<Object> {
-    _component: any; // TODO T53738161: flow type this, and the whole file
-    _invokeAnimatedPropsCallbackOnMount: boolean = false;
-    _prevComponent: any;
-    _propsAnimated: AnimatedProps;
-    _eventDetachers: Array<Function> = [];
-    _initialAnimatedProps: Object;
+  class AnimatedComponent extends React.Component {
+    _component; // TODO T53738161: flow type this, and the whole file
+    _invokeAnimatedPropsCallbackOnMount = false;
+    _prevComponent;
+    _propsAnimated;
+    _eventDetachers = [];
+    _initialAnimatedProps;
 
     // Only to be used in this file, and only in Fabric.
-    _animatedComponentId: string = `${animatedComponentNextId++}:animatedComponent`;
+    _animatedComponentId = `${animatedComponentNextId++}:animatedComponent`;
 
     _attachNativeEvents() {
       // Make sure to get the scrollable node for components that implement
@@ -81,7 +66,7 @@ function createAnimatedComponent<Props: {+[string]: mixed, ...}, Instance>(
       this._eventDetachers = [];
     }
 
-    _isFabric = (): boolean => {
+    _isFabric = () => {
       // When called during the first render, `_component` is always null.
       // Therefore, even if a component is rendered in Fabric, we can't detect
       // that until ref is set, which happens sometime after the first render.
@@ -118,7 +103,7 @@ function createAnimatedComponent<Props: {+[string]: mixed, ...}, Instance>(
       );
     };
 
-    _waitForUpdate = (): void => {
+    _waitForUpdate = () => {
       if (this._isFabric()) {
         NativeAnimatedHelper.API.setWaitingForIdentifier(
           this._animatedComponentId,
@@ -126,7 +111,7 @@ function createAnimatedComponent<Props: {+[string]: mixed, ...}, Instance>(
       }
     };
 
-    _markUpdateComplete = (): void => {
+    _markUpdateComplete = () => {
       if (this._isFabric()) {
         NativeAnimatedHelper.API.unsetWaitingForIdentifier(
           this._animatedComponentId,
@@ -169,7 +154,7 @@ function createAnimatedComponent<Props: {+[string]: mixed, ...}, Instance>(
       }
     };
 
-    _attachProps(nextProps: any) {
+    _attachProps(nextProps) {
       const oldPropsAnimated = this._propsAnimated;
 
       this._propsAnimated = new AnimatedProps(
@@ -200,7 +185,7 @@ function createAnimatedComponent<Props: {+[string]: mixed, ...}, Instance>(
       },
     });
 
-    render(): React.Node {
+    render() {
       // When rendering in Fabric and an AnimatedValue is used, we keep track of
       // the initial value of that Value, to avoid additional prop updates when
       // this component re-renders
@@ -248,12 +233,12 @@ function createAnimatedComponent<Props: {+[string]: mixed, ...}, Instance>(
       this._markUpdateComplete();
     }
 
-    UNSAFE_componentWillReceiveProps(newProps: any) {
+    UNSAFE_componentWillReceiveProps(newProps) {
       this._waitForUpdate();
       this._attachProps(newProps);
     }
 
-    componentDidUpdate(prevProps: any) {
+    componentDidUpdate(prevProps) {
       if (this._component !== this._prevComponent) {
         this._propsAnimated.setNativeView(this._component);
       }
@@ -285,4 +270,4 @@ function createAnimatedComponent<Props: {+[string]: mixed, ...}, Instance>(
 
 // $FlowIgnore[incompatible-cast] - Will be compatible after refactors.
 module.exports = (createAnimatedComponentInjection.recordAndRetrieve() ??
-  createAnimatedComponent: typeof createAnimatedComponent);
+  createAnimatedComponent);

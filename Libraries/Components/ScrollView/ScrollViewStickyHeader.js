@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
@@ -18,35 +18,13 @@ import StyleSheet from '../../StyleSheet/StyleSheet';
 import View from '../View/View';
 import Platform from '../../Utilities/Platform';
 
-import type {LayoutEvent} from '../../Types/CoreEventTypes';
 
 const AnimatedView = AnimatedImplementation.createAnimatedComponent(View);
 
-export type Props = $ReadOnly<{
-  children?: React.Element<any>,
-  nextHeaderLayoutY: ?number,
-  onLayout: (event: LayoutEvent) => void,
-  scrollAnimatedValue: AnimatedImplementation.Value,
-  // Will cause sticky headers to stick at the bottom of the ScrollView instead
-  // of the top.
-  inverted: ?boolean,
-  // The height of the parent ScrollView. Currently only set when inverted.
-  scrollViewHeight: ?number,
-  nativeID?: ?string,
-  hiddenOnScroll?: ?boolean,
-}>;
 
-type State = {
-  measured: boolean,
-  layoutY: number,
-  layoutHeight: number,
-  nextHeaderLayoutY: ?number,
-  translateY: ?number,
-  ...
-};
 
-class ScrollViewStickyHeader extends React.Component<Props, State> {
-  state: State = {
+class ScrollViewStickyHeader extends React.Component {
+  state = {
     measured: false,
     layoutY: 0,
     layoutHeight: 0,
@@ -54,18 +32,18 @@ class ScrollViewStickyHeader extends React.Component<Props, State> {
     translateY: null,
   };
 
-  _translateY: ?AnimatedNode = null;
-  _shouldRecreateTranslateY: boolean = true;
-  _haveReceivedInitialZeroTranslateY: boolean = true;
-  _ref: any; // TODO T53738161: flow type this, and the whole file
+  _translateY = null;
+  _shouldRecreateTranslateY = true;
+  _haveReceivedInitialZeroTranslateY = true;
+  _ref; // TODO T53738161: flow type this, and the whole file
 
   // Fabric-only:
-  _timer: ?TimeoutID;
-  _animatedValueListenerId: string;
-  _animatedValueListener: (valueObject: $ReadOnly<{|value: number|}>) => void;
-  _debounceTimeout: number = Platform.OS === 'android' ? 15 : 64;
+  _timer;
+  _animatedValueListenerId;
+  _animatedValueListener;
+  _debounceTimeout = Platform.OS === 'android' ? 15 : 64;
 
-  setNextHeaderY: (y: number) => void = (y: number): void => {
+  setNextHeaderY = (y) => {
     this._shouldRecreateTranslateY = true;
     this.setState({nextHeaderLayoutY: y});
   };
@@ -79,7 +57,7 @@ class ScrollViewStickyHeader extends React.Component<Props, State> {
     }
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps: Props) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (
       nextProps.scrollViewHeight !== this.props.scrollViewHeight ||
       nextProps.scrollAnimatedValue !== this.props.scrollAnimatedValue ||
@@ -90,9 +68,9 @@ class ScrollViewStickyHeader extends React.Component<Props, State> {
   }
 
   updateTranslateListener(
-    translateY: AnimatedNode,
-    isFabric: boolean,
-    offset: AnimatedDiffClamp | null,
+    translateY,
+    isFabric,
+    offset,
   ) {
     if (this._translateY != null && this._animatedValueListenerId != null) {
       this._translateY.removeListener(this._animatedValueListenerId);
@@ -149,7 +127,7 @@ class ScrollViewStickyHeader extends React.Component<Props, State> {
     );
   }
 
-  _onLayout = (event: any) => {
+  _onLayout = (event) => {
     const layoutY = event.nativeEvent.layout.y;
     const layoutHeight = event.nativeEvent.layout.height;
     const measured = true;
@@ -183,7 +161,7 @@ class ScrollViewStickyHeader extends React.Component<Props, State> {
     this._ref = ref;
   };
 
-  render(): React.Node {
+  render() {
     // Fabric Detection
     const isFabric = !!(
       // An internal transform mangles variables with leading "_" as private.
@@ -196,8 +174,8 @@ class ScrollViewStickyHeader extends React.Component<Props, State> {
     if (this._shouldRecreateTranslateY) {
       const {inverted, scrollViewHeight} = this.props;
       const {measured, layoutHeight, layoutY, nextHeaderLayoutY} = this.state;
-      const inputRange: Array<number> = [-1, 0];
-      const outputRange: Array<number> = [0, 0];
+      const inputRange = [-1, 0];
+      const outputRange = [0, 0];
 
       if (measured) {
         if (inverted) {

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
 import Keyboard from './Keyboard';
@@ -15,66 +15,31 @@ import * as React from 'react';
 import StyleSheet from '../../StyleSheet/StyleSheet';
 import View from '../View/View';
 
-import type {ViewStyleProp} from '../../StyleSheet/StyleSheet';
-import {type EventSubscription} from '../../vendor/emitter/EventEmitter';
-import type {
-  ViewProps,
-  ViewLayout,
-  ViewLayoutEvent,
-} from '../View/ViewPropTypes';
-import type {KeyboardEvent, KeyboardMetrics} from './Keyboard';
+import {} from '../../vendor/emitter/EventEmitter';
 import AccessibilityInfo from '../AccessibilityInfo/AccessibilityInfo';
 
-type Props = $ReadOnly<{|
-  ...ViewProps,
 
-  /**
-   * Specify how to react to the presence of the keyboard.
-   */
-  behavior?: ?('height' | 'position' | 'padding'),
-
-  /**
-   * Style of the content container when `behavior` is 'position'.
-   */
-  contentContainerStyle?: ?ViewStyleProp,
-
-  /**
-   * Controls whether this `KeyboardAvoidingView` instance should take effect.
-   * This is useful when more than one is on the screen. Defaults to true.
-   */
-  enabled?: ?boolean,
-
-  /**
-   * Distance between the top of the user screen and the React Native view. This
-   * may be non-zero in some cases. Defaults to 0.
-   */
-  keyboardVerticalOffset?: number,
-|}>;
-
-type State = {|
-  bottom: number,
-|};
 
 /**
  * View that moves out of the way when the keyboard appears by automatically
  * adjusting its height, position, or bottom padding.
  */
-class KeyboardAvoidingView extends React.Component<Props, State> {
-  _frame: ?ViewLayout = null;
-  _keyboardEvent: ?KeyboardEvent = null;
-  _subscriptions: Array<EventSubscription> = [];
-  viewRef: {current: React.ElementRef<typeof View> | null, ...};
-  _initialFrameHeight: number = 0;
+class KeyboardAvoidingView extends React.Component {
+  _frame = null;
+  _keyboardEvent = null;
+  _subscriptions = [];
+  viewRef;
+  _initialFrameHeight = 0;
 
-  constructor(props: Props) {
+  constructor(props) {
     super(props);
     this.state = {bottom: 0};
     this.viewRef = React.createRef();
   }
 
   async _relativeKeyboardHeight(
-    keyboardFrame: KeyboardMetrics,
-  ): Promise<number> {
+    keyboardFrame,
+  ) {
     const frame = this._frame;
     if (!frame || !keyboardFrame) {
       return 0;
@@ -98,12 +63,12 @@ class KeyboardAvoidingView extends React.Component<Props, State> {
     return Math.max(frame.y + frame.height - keyboardY, 0);
   }
 
-  _onKeyboardChange = (event: ?KeyboardEvent) => {
+  _onKeyboardChange = (event) => {
     this._keyboardEvent = event;
     this._updateBottomIfNecessary();
   };
 
-  _onLayout = async (event: ViewLayoutEvent) => {
+  _onLayout = async (event) => {
     const wasFrameNull = this._frame == null;
     this._frame = event.nativeEvent.layout;
     if (!this._initialFrameHeight) {
@@ -146,7 +111,7 @@ class KeyboardAvoidingView extends React.Component<Props, State> {
     this.setState({bottom: height});
   };
 
-  componentDidMount(): void {
+  componentDidMount() {
     if (Platform.OS === 'ios') {
       this._subscriptions = [
         Keyboard.addListener('keyboardWillChangeFrame', this._onKeyboardChange),
@@ -159,13 +124,13 @@ class KeyboardAvoidingView extends React.Component<Props, State> {
     }
   }
 
-  componentWillUnmount(): void {
+  componentWillUnmount() {
     this._subscriptions.forEach(subscription => {
       subscription.remove();
     });
   }
 
-  render(): React.Node {
+  render() {
     const {
       behavior,
       children,

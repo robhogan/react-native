@@ -4,42 +4,33 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
 import * as React from 'react';
 import Text from '../../Text/Text';
 
-import type {TextStyleProp} from '../../StyleSheet/StyleSheet';
-import type {Message} from '../Data/parseLogBoxLog';
 
-type Props = {
-  message: Message,
-  style: TextStyleProp,
-  plaintext?: ?boolean,
-  maxLength?: ?number,
-  ...
-};
 
-const cleanContent = (content: string) =>
+const cleanContent = (content) =>
   content.replace(/^(TransformError |Warning: (Warning: )?|Error: )/g, '');
 
-function LogBoxMessage(props: Props): React.Node {
-  const {content, substitutions}: Message = props.message;
+function LogBoxMessage(props) {
+  const {content, substitutions} = props.message;
 
   if (props.plaintext === true) {
     return <Text>{cleanContent(content)}</Text>;
   }
 
   const maxLength = props.maxLength != null ? props.maxLength : Infinity;
-  const substitutionStyle: TextStyleProp = props.style;
+  const substitutionStyle = props.style;
   const elements = [];
   let length = 0;
   const createUnderLength = (
-    key: string | $TEMPORARY$string<'-1'>,
-    message: string,
-    style: void | TextStyleProp,
+    key,
+    message,
+    style,
   ) => {
     let cleanMessage = cleanContent(message);
 

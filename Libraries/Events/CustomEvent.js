@@ -5,23 +5,17 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
 // Make sure global Event is defined
 import EventPolyfill from './EventPolyfill';
 
-type CustomEvent$Options = $ReadOnly<{|
-  bubbles?: boolean,
-  cancelable?: boolean,
-  composed?: boolean,
-  detail?: {...},
-|}>;
 
 class CustomEvent extends EventPolyfill {
-  detail: ?{...};
+  detail;
 
-  constructor(typeArg: string, options: CustomEvent$Options) {
+  constructor(typeArg, options) {
     const {bubbles, cancelable, composed} = options;
     super(typeArg, {bubbles, cancelable, composed});
 

@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
@@ -14,13 +14,8 @@ import Text from '../../Text/Text';
 import View from '../../Components/View/View';
 import * as LogBoxStyle from './LogBoxStyle';
 
-type Props = $ReadOnly<{|
-  heading: string,
-  children: React.Node,
-  action?: ?React.Node,
-|}>;
 
-function LogBoxInspectorSection(props: Props): React.Node {
+function LogBoxInspectorSection(props) {
   return (
     <View style={styles.section}>
       <View style={styles.heading}>

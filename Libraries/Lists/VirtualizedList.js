@@ -4,22 +4,12 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
-import type {ScrollResponderType} from '../Components/ScrollView/ScrollView';
-import type {ViewStyleProp} from '../StyleSheet/StyleSheet';
-import type {LayoutEvent, ScrollEvent} from '../Types/CoreEventTypes';
-import type {
-  ViewabilityConfig,
-  ViewabilityConfigCallbackPair,
-  ViewToken,
-} from './ViewabilityHelper';
 
 import {
-  type ChildListState,
-  type ListDebugInfo,
   VirtualizedListCellContextProvider,
   VirtualizedListContext,
   VirtualizedListContextProvider,
@@ -44,294 +34,16 @@ const invariant = require('invariant');
 
 const ON_EDGE_REACHED_EPSILON = 0.001;
 
-type Item = any;
 
-export type Separators = {
-  highlight: () => void,
-  unhighlight: () => void,
-  updateProps: (select: 'leading' | 'trailing', newProps: Object) => void,
-  ...
-};
 
-export type RenderItemProps<ItemT> = {
-  item: ItemT,
-  index: number,
-  separators: Separators,
-  ...
-};
 
-export type RenderItemType<ItemT> = (
-  info: RenderItemProps<ItemT>,
-) => React.Node;
 
-type ViewabilityHelperCallbackTuple = {
-  viewabilityHelper: ViewabilityHelper,
-  onViewableItemsChanged: (info: {
-    viewableItems: Array<ViewToken>,
-    changed: Array<ViewToken>,
-    ...
-  }) => void,
-  ...
-};
 
-type RequiredProps = {|
-  /**
-   * The default accessor functions assume this is an Array<{key: string} | {id: string}> but you can override
-   * getItem, getItemCount, and keyExtractor to handle any type of index-based data.
-   */
-  data?: any,
-  /**
-   * A generic accessor for extracting an item from any sort of data blob.
-   */
-  getItem: (data: any, index: number) => ?Item,
-  /**
-   * Determines how many items are in the data blob.
-   */
-  getItemCount: (data: any) => number,
-|};
-type OptionalProps = {|
-  renderItem?: ?RenderItemType<Item>,
-  /**
-   * `debug` will turn on extra logging and visual overlays to aid with debugging both usage and
-   * implementation, but with a significant perf hit.
-   */
-  debug?: ?boolean,
-  /**
-   * DEPRECATED: Virtualization provides significant performance and memory optimizations, but fully
-   * unmounts react instances that are outside of the render window. You should only need to disable
-   * this for debugging purposes. Defaults to false.
-   */
-  disableVirtualization?: ?boolean,
-  /**
-   * A marker property for telling the list to re-render (since it implements `PureComponent`). If
-   * any of your `renderItem`, Header, Footer, etc. functions depend on anything outside of the
-   * `data` prop, stick it here and treat it immutably.
-   */
-  extraData?: any,
-  // e.g. height, y
-  getItemLayout?: (
-    data: any,
-    index: number,
-  ) => {
-    length: number,
-    offset: number,
-    index: number,
-    ...
-  },
-  horizontal?: ?boolean,
-  /**
-   * How many items to render in the initial batch. This should be enough to fill the screen but not
-   * much more. Note these items will never be unmounted as part of the windowed rendering in order
-   * to improve perceived performance of scroll-to-top actions.
-   */
-  initialNumToRender?: ?number,
-  /**
-   * Instead of starting at the top with the first item, start at `initialScrollIndex`. This
-   * disables the "scroll to top" optimization that keeps the first `initialNumToRender` items
-   * always rendered and immediately renders the items starting at this initial index. Requires
-   * `getItemLayout` to be implemented.
-   */
-  initialScrollIndex?: ?number,
-  /**
-   * Reverses the direction of scroll. Uses scale transforms of -1.
-   */
-  inverted?: ?boolean,
-  keyExtractor?: ?(item: Item, index: number) => string,
-  /**
-   * Each cell is rendered using this element. Can be a React Component Class,
-   * or a render function. Defaults to using View.
-   */
-  CellRendererComponent?: ?React.ComponentType<any>,
-  /**
-   * Rendered in between each item, but not at the top or bottom. By default, `highlighted` and
-   * `leadingItem` props are provided. `renderItem` provides `separators.highlight`/`unhighlight`
-   * which will update the `highlighted` prop, but you can also add custom props with
-   * `separators.updateProps`.
-   */
-  ItemSeparatorComponent?: ?React.ComponentType<any>,
-  /**
-   * Takes an item from `data` and renders it into the list. Example usage:
-   *
-   *     <FlatList
-   *       ItemSeparatorComponent={Platform.OS !== 'android' && ({highlighted}) => (
-   *         <View style={[style.separator, highlighted && {marginLeft: 0}]} />
-   *       )}
-   *       data={[{title: 'Title Text', key: 'item1'}]}
-   *       ListItemComponent={({item, separators}) => (
-   *         <TouchableHighlight
-   *           onPress={() => this._onPress(item)}
-   *           onShowUnderlay={separators.highlight}
-   *           onHideUnderlay={separators.unhighlight}>
-   *           <View style={{backgroundColor: 'white'}}>
-   *             <Text>{item.title}</Text>
-   *           </View>
-   *         </TouchableHighlight>
-   *       )}
-   *     />
-   *
-   * Provides additional metadata like `index` if you need it, as well as a more generic
-   * `separators.updateProps` function which let's you set whatever props you want to change the
-   * rendering of either the leading separator or trailing separator in case the more common
-   * `highlight` and `unhighlight` (which set the `highlighted: boolean` prop) are insufficient for
-   * your use-case.
-   */
-  ListItemComponent?: ?(React.ComponentType<any> | React.Element<any>),
-  /**
-   * Rendered when the list is empty. Can be a React Component Class, a render function, or
-   * a rendered element.
-   */
-  ListEmptyComponent?: ?(React.ComponentType<any> | React.Element<any>),
-  /**
-   * Rendered at the bottom of all the items. Can be a React Component Class, a render function, or
-   * a rendered element.
-   */
-  ListFooterComponent?: ?(React.ComponentType<any> | React.Element<any>),
-  /**
-   * Styling for internal View for ListFooterComponent
-   */
-  ListFooterComponentStyle?: ViewStyleProp,
-  /**
-   * Rendered at the top of all the items. Can be a React Component Class, a render function, or
-   * a rendered element.
-   */
-  ListHeaderComponent?: ?(React.ComponentType<any> | React.Element<any>),
-  /**
-   * Styling for internal View for ListHeaderComponent
-   */
-  ListHeaderComponentStyle?: ViewStyleProp,
-  /**
-   * A unique identifier for this list. If there are multiple VirtualizedLists at the same level of
-   * nesting within another VirtualizedList, this key is necessary for virtualization to
-   * work properly.
-   */
-  listKey?: string,
-  /**
-   * The maximum number of items to render in each incremental render batch. The more rendered at
-   * once, the better the fill rate, but responsiveness may suffer because rendering content may
-   * interfere with responding to button taps or other interactions.
-   */
-  maxToRenderPerBatch?: ?number,
-  /**
-   * Called once when the scroll position gets within `onStartReachedThreshold` of the rendered
-   * content.
-   */
-  onStartReached?: ?(info: {distanceFromStart: number, ...}) => void,
-  /**
-   * How far from the start (in units of visible length of the list) the leading edge of the
-   * list must be from the start of the content to trigger the `onStartReached` callback.
-   * Thus, a value of 0.5 will trigger `onStartReached` when the start of the content is
-   * within half the visible length of the list.
-   */
-  onStartReachedThreshold?: ?number,
-  /**
-   * Called once when the scroll position gets within `onEndReachedThreshold` of the rendered
-   * content.
-   */
-  onEndReached?: ?(info: {distanceFromEnd: number, ...}) => void,
-  /**
-   * How far from the end (in units of visible length of the list) the trailing edge of the
-   * list must be from the end of the content to trigger the `onEndReached` callback.
-   * Thus a value of 0.5 will trigger `onEndReached` when the end of the content is
-   * within half the visible length of the list. A value of 0 will not trigger until scrolling
-   * to the very end of the list.
-   */
-  onEndReachedThreshold?: ?number,
-  /**
-   * If provided, a standard RefreshControl will be added for "Pull to Refresh" functionality. Make
-   * sure to also set the `refreshing` prop correctly.
-   */
-  onRefresh?: ?() => void,
-  /**
-   * Used to handle failures when scrolling to an index that has not been measured yet. Recommended
-   * action is to either compute your own offset and `scrollTo` it, or scroll as far as possible and
-   * then try again after more items have been rendered.
-   */
-  onScrollToIndexFailed?: ?(info: {
-    index: number,
-    highestMeasuredFrameIndex: number,
-    averageItemLength: number,
-    ...
-  }) => void,
-  /**
-   * Called when the viewability of rows changes, as defined by the
-   * `viewabilityConfig` prop.
-   */
-  onViewableItemsChanged?: ?(info: {
-    viewableItems: Array<ViewToken>,
-    changed: Array<ViewToken>,
-    ...
-  }) => void,
-  persistentScrollbar?: ?boolean,
-  /**
-   * Set this when offset is needed for the loading indicator to show correctly.
-   */
-  progressViewOffset?: number,
-  /**
-   * A custom refresh control element. When set, it overrides the default
-   * <RefreshControl> component built internally. The onRefresh and refreshing
-   * props are also ignored. Only works for vertical VirtualizedList.
-   */
-  refreshControl?: ?React.Element<any>,
-  /**
-   * Set this true while waiting for new data from a refresh.
-   */
-  refreshing?: ?boolean,
-  /**
-   * Note: may have bugs (missing content) in some circumstances - use at your own risk.
-   *
-   * This may improve scroll performance for large lists.
-   */
-  removeClippedSubviews?: boolean,
-  /**
-   * Render a custom scroll component, e.g. with a differently styled `RefreshControl`.
-   */
-  renderScrollComponent?: (props: Object) => React.Element<any>,
-  /**
-   * Amount of time between low-pri item render batches, e.g. for rendering items quite a ways off
-   * screen. Similar fill rate/responsiveness tradeoff as `maxToRenderPerBatch`.
-   */
-  updateCellsBatchingPeriod?: ?number,
-  /**
-   * See `ViewabilityHelper` for flow type and further documentation.
-   */
-  viewabilityConfig?: ViewabilityConfig,
-  /**
-   * List of ViewabilityConfig/onViewableItemsChanged pairs. A specific onViewableItemsChanged
-   * will be called when its corresponding ViewabilityConfig's conditions are met.
-   */
-  viewabilityConfigCallbackPairs?: Array<ViewabilityConfigCallbackPair>,
-  /**
-   * Determines the maximum number of items rendered outside of the visible area, in units of
-   * visible lengths. So if your list fills the screen, then `windowSize={21}` (the default) will
-   * render the visible screen area plus up to 10 screens above and 10 below the viewport. Reducing
-   * this number will reduce memory consumption and may improve performance, but will increase the
-   * chance that fast scrolling may reveal momentary blank areas of unrendered content.
-   */
-  windowSize?: ?number,
-  /**
-   * The legacy implementation is no longer supported.
-   */
-  legacyImplementation?: empty,
-|};
 
-type Props = {|
-  ...React.ElementConfig<typeof ScrollView>,
-  ...RequiredProps,
-  ...OptionalProps,
-|};
 
 let _usedIndexForKey = false;
-let _keylessItemComponentName: string = '';
+let _keylessItemComponentName = '';
 
-type State = {
-  first: number,
-  last: number,
-  // Used to track items added at the start of the list for maintainVisibleContentPosition.
-  firstItemKey: ?string,
-  // When using maintainVisibleContentPosition we need to adjust the window to make sure
-  // make sure that the visible elements are still rendered.
-  maintainVisibleContentPositionAdjustment: ?number,
-};
 
 /**
  * Default Props Helper Functions
@@ -339,46 +51,46 @@ type State = {
  */
 
 // horizontalOrDefault(this.props.horizontal)
-function horizontalOrDefault(horizontal: ?boolean) {
+function horizontalOrDefault(horizontal) {
   return horizontal ?? false;
 }
 
 // initialNumToRenderOrDefault(this.props.initialNumToRenderOrDefault)
-function initialNumToRenderOrDefault(initialNumToRender: ?number) {
+function initialNumToRenderOrDefault(initialNumToRender) {
   return initialNumToRender ?? 10;
 }
 
 // maxToRenderPerBatchOrDefault(this.props.maxToRenderPerBatch)
-function maxToRenderPerBatchOrDefault(maxToRenderPerBatch: ?number) {
+function maxToRenderPerBatchOrDefault(maxToRenderPerBatch) {
   return maxToRenderPerBatch ?? 10;
 }
 
 // onStartReachedThresholdOrDefault(this.props.onStartReachedThreshold)
-function onStartReachedThresholdOrDefault(onStartReachedThreshold: ?number) {
+function onStartReachedThresholdOrDefault(onStartReachedThreshold) {
   return onStartReachedThreshold ?? 2;
 }
 
 // onEndReachedThresholdOrDefault(this.props.onEndReachedThreshold)
-function onEndReachedThresholdOrDefault(onEndReachedThreshold: ?number) {
+function onEndReachedThresholdOrDefault(onEndReachedThreshold) {
   return onEndReachedThreshold ?? 2;
 }
 
 // getScrollingThreshold(visibleLength, onEndReachedThreshold)
-function getScrollingThreshold(threshold: number, visibleLength: number) {
+function getScrollingThreshold(threshold, visibleLength) {
   return (threshold * visibleLength) / 2;
 }
 
 // scrollEventThrottleOrDefault(this.props.scrollEventThrottle)
-function scrollEventThrottleOrDefault(scrollEventThrottle: ?number) {
+function scrollEventThrottleOrDefault(scrollEventThrottle) {
   return scrollEventThrottle ?? 50;
 }
 
 // windowSizeOrDefault(this.props.windowSize)
-function windowSizeOrDefault(windowSize: ?number) {
+function windowSizeOrDefault(windowSize) {
   return windowSize ?? 21;
 }
 
-function extractKey(props: Props, item: Item, index: number): string {
+function extractKey(props, item, index) {
   if (props.keyExtractor != null) {
     return props.keyExtractor(item, index);
   }
@@ -393,7 +105,7 @@ function extractKey(props: Props, item: Item, index: number): string {
   return key;
 }
 
-function findItemIndexWithKey(props: Props, key: string): ?number {
+function findItemIndexWithKey(props, key) {
   for (let ii = 0; ii < props.getItemCount(props.data); ii++) {
     const item = props.getItem(props.data, ii);
     const curKey = extractKey(props, item, ii);
@@ -404,7 +116,7 @@ function findItemIndexWithKey(props: Props, key: string): ?number {
   return null;
 }
 
-function getItemKey(props: Props, index: number): ?string {
+function getItemKey(props, index) {
   const item = props.getItem(props.data, index);
   if (item == null) {
     return null;
@@ -441,11 +153,11 @@ function getItemKey(props: Props, index: number): ?string {
  * - As an effort to remove defaultProps, use helper functions when referencing certain props
  *
  */
-class VirtualizedList extends React.PureComponent<Props, State> {
-  static contextType: typeof VirtualizedListContext = VirtualizedListContext;
+class VirtualizedList extends React.PureComponent {
+  static contextType = VirtualizedListContext;
 
   // scrollToEnd may be janky without getItemLayout prop
-  scrollToEnd(params?: ?{animated?: ?boolean, ...}) {
+  scrollToEnd(params) {
     const animated = params ? params.animated : true;
     const veryLast = this.props.getItemCount(this.props.data) - 1;
     const frame = this.__getFrameMetricsApprox(veryLast);
@@ -478,13 +190,7 @@ class VirtualizedList extends React.PureComponent<Props, State> {
   }
 
   // scrollToIndex may be janky without getItemLayout prop
-  scrollToIndex(params: {
-    animated?: ?boolean,
-    index: number,
-    viewOffset?: number,
-    viewPosition?: number,
-    ...
-  }) {
+  scrollToIndex(params) {
     const {
       data,
       horizontal,
@@ -551,12 +257,7 @@ class VirtualizedList extends React.PureComponent<Props, State> {
 
   // scrollToItem may be janky without getItemLayout prop. Required linear scan through items -
   // use scrollToIndex instead if possible.
-  scrollToItem(params: {
-    animated?: ?boolean,
-    item: Item,
-    viewPosition?: number,
-    ...
-  }) {
+  scrollToItem(params) {
     const {item} = params;
     const {data, getItem, getItemCount} = this.props;
     const itemCount = getItemCount(data);
@@ -578,7 +279,7 @@ class VirtualizedList extends React.PureComponent<Props, State> {
    * Param `animated` (`true` by default) defines whether the list
    * should do an animation while scrolling.
    */
-  scrollToOffset(params: {animated?: ?boolean, offset: number, ...}) {
+  scrollToOffset(params) {
     const {animated, offset} = params;
 
     if (this._scrollRef == null) {
@@ -624,13 +325,13 @@ class VirtualizedList extends React.PureComponent<Props, State> {
    * Note that `this._scrollRef` might not be a `ScrollView`, so we
    * need to check that it responds to `getScrollResponder` before calling it.
    */
-  getScrollResponder(): ?ScrollResponderType {
+  getScrollResponder() {
     if (this._scrollRef && this._scrollRef.getScrollResponder) {
       return this._scrollRef.getScrollResponder();
     }
   }
 
-  getScrollableNode(): ?number {
+  getScrollableNode() {
     if (this._scrollRef && this._scrollRef.getScrollableNode) {
       return this._scrollRef.getScrollableNode();
     } else {
@@ -638,9 +339,7 @@ class VirtualizedList extends React.PureComponent<Props, State> {
     }
   }
 
-  getScrollRef():
-    | ?React.ElementRef<typeof ScrollView>
-    | ?React.ElementRef<typeof View> {
+  getScrollRef() {
     if (this._scrollRef && this._scrollRef.getScrollRef) {
       return this._scrollRef.getScrollRef();
     } else {
@@ -648,21 +347,21 @@ class VirtualizedList extends React.PureComponent<Props, State> {
     }
   }
 
-  setNativeProps(props: Object) {
+  setNativeProps(props) {
     if (this._scrollRef) {
       this._scrollRef.setNativeProps(props);
     }
   }
 
-  _getCellKey(): string {
+  _getCellKey() {
     return this.context?.cellKey || 'rootList';
   }
 
-  _getListKey(): string {
+  _getListKey() {
     return this.props.listKey || this._getCellKey();
   }
 
-  _getDebugInfo(): ListDebugInfo {
+  _getDebugInfo() {
     return {
       listKey: this._getListKey(),
       cellKey: this._getCellKey(),
@@ -675,7 +374,7 @@ class VirtualizedList extends React.PureComponent<Props, State> {
     return this._scrollMetrics;
   };
 
-  hasMore(): boolean {
+  hasMore() {
     return this._hasMore;
   }
 
@@ -687,18 +386,12 @@ class VirtualizedList extends React.PureComponent<Props, State> {
     }
   };
 
-  _getNestedChildState = (key: string): ?ChildListState => {
+  _getNestedChildState = (key) => {
     const existingChildData = this._nestedChildLists.get(key);
     return existingChildData && existingChildData.state;
   };
 
-  _registerAsNestedChild = (childList: {
-    cellKey: string,
-    key: string,
-    ref: VirtualizedList,
-    parentDebugInfo: ListDebugInfo,
-    ...
-  }): ?ChildListState => {
+  _registerAsNestedChild = (childList) => {
     // Register the mapping between this child key and the cellKey for its cell
     const childListsInCell =
       this._cellKeysToChildListKeys.get(childList.cellKey) || new Set();
@@ -728,20 +421,16 @@ class VirtualizedList extends React.PureComponent<Props, State> {
     }
   };
 
-  _unregisterAsNestedChild = (childList: {
-    key: string,
-    state: ChildListState,
-    ...
-  }): void => {
+  _unregisterAsNestedChild = (childList) => {
     this._nestedChildLists.set(childList.key, {
       ref: null,
       state: childList.state,
     });
   };
 
-  state: State;
+  state;
 
-  constructor(props: Props) {
+  constructor(props) {
     super(props);
     invariant(
       // $FlowFixMe[prop-missing]
@@ -835,7 +524,7 @@ class VirtualizedList extends React.PureComponent<Props, State> {
     this._fillRateHelper.deactivateAndFlush();
   }
 
-  static getDerivedStateFromProps(newProps: Props, prevState: State): State {
+  static getDerivedStateFromProps(newProps, prevState) {
     const {data, getItemCount, maintainVisibleContentPosition} = newProps;
     const {firstItemKey: prevFirstItemKey} = prevState;
     const maxToRenderPerBatch = maxToRenderPerBatchOrDefault(
@@ -871,12 +560,12 @@ class VirtualizedList extends React.PureComponent<Props, State> {
   }
 
   _pushCells(
-    cells: Array<Object>,
-    stickyHeaderIndices: Array<number>,
-    stickyIndicesFromProps: Set<number>,
-    first: number,
-    last: number,
-    inversionStyle: ViewStyleProp,
+    cells,
+    stickyHeaderIndices,
+    stickyIndicesFromProps,
+    first,
+    last,
+    inversionStyle,
   ) {
     const {
       CellRendererComponent,
@@ -930,18 +619,18 @@ class VirtualizedList extends React.PureComponent<Props, State> {
     }
   }
 
-  _onUpdateSeparators = (keys: Array<?string>, newProps: Object) => {
+  _onUpdateSeparators = (keys, newProps) => {
     keys.forEach(key => {
       const ref = key != null && this._cellRefs[key];
       ref && ref.updateSeparatorProps(newProps);
     });
   };
 
-  _isVirtualizationDisabled(): boolean {
+  _isVirtualizationDisabled() {
     return this.props.disableVirtualization || false;
   }
 
-  _isNestedWithSameOrientation(): boolean {
+  _isNestedWithSameOrientation() {
     const nestedContext = this.context;
     return !!(
       nestedContext &&
@@ -949,10 +638,10 @@ class VirtualizedList extends React.PureComponent<Props, State> {
     );
   }
 
-  _getSpacerKey = (isVertical: boolean): string =>
+  _getSpacerKey = (isVertical) =>
     isVertical ? 'height' : 'width';
 
-  render(): React.Node {
+  render() {
     if (__DEV__) {
       const flatStyles = flattenStyle(this.props.contentContainerStyle);
       if (flatStyles != null && flatStyles.flexWrap === 'wrap') {
@@ -1104,7 +793,7 @@ class VirtualizedList extends React.PureComponent<Props, State> {
         );
       }
     } else if (ListEmptyComponent) {
-      const element: React.Element<any> = ((React.isValidElement(
+      const element = ((React.isValidElement(
         ListEmptyComponent,
       ) ? (
         ListEmptyComponent
@@ -1112,7 +801,7 @@ class VirtualizedList extends React.PureComponent<Props, State> {
         // $FlowFixMe[not-a-component]
         // $FlowFixMe[incompatible-type-arg]
         <ListEmptyComponent />
-      )): any);
+      )));
       cells.push(
         React.cloneElement(element, {
           key: '$empty',
@@ -1201,7 +890,7 @@ class VirtualizedList extends React.PureComponent<Props, State> {
         )}
       </VirtualizedListContextProvider>
     );
-    let ret: React.Node = innerRet;
+    let ret = innerRet;
     if (__DEV__) {
       ret = (
         <ScrollView.Context.Consumer>
@@ -1238,7 +927,7 @@ class VirtualizedList extends React.PureComponent<Props, State> {
     }
   }
 
-  componentDidUpdate(prevProps: Props) {
+  componentDidUpdate(prevProps) {
     const {data, extraData} = this.props;
     if (data !== prevProps.data || extraData !== prevProps.extraData) {
       // clear the viewableIndices cache to also trigger
@@ -1264,37 +953,23 @@ class VirtualizedList extends React.PureComponent<Props, State> {
 
   _averageCellLength = 0;
   // Maps a cell key to the set of keys for all outermost child lists within that cell
-  _cellKeysToChildListKeys: Map<string, Set<string>> = new Map();
-  _cellRefs: {[string]: null | CellRenderer} = {};
-  _fillRateHelper: FillRateHelper;
-  _frames: {
-    [string]: {
-      inLayout?: boolean,
-      index: number,
-      length: number,
-      offset: number,
-    },
-  } = {};
+  _cellKeysToChildListKeys = new Map();
+  _cellRefs = {};
+  _fillRateHelper;
+  _frames = {};
   _footerLength = 0;
   // Used for preventing scrollToIndex from being called multiple times for initialScrollIndex
   _hasTriggeredInitialScrollToIndex = false;
   _hasInteracted = false;
   _hasMore = false;
-  _hasWarned: {[string]: boolean} = {};
+  _hasWarned = {};
   _headerLength = 0;
-  _hiPriInProgress: boolean = false; // flag to prevent infinite hiPri cell limit update
+  _hiPriInProgress = false; // flag to prevent infinite hiPri cell limit update
   _highestMeasuredFrameIndex = 0;
-  _indicesToKeys: Map<number, string> = new Map();
-  _nestedChildLists: Map<
-    string,
-    {
-      ref: ?VirtualizedList,
-      state: ?ChildListState,
-      ...
-    },
-  > = new Map();
-  _offsetFromParentVirtualizedList: number = 0;
-  _prevParentOffset: number = 0;
+  _indicesToKeys = new Map();
+  _nestedChildLists = new Map();
+  _offsetFromParentVirtualizedList = 0;
+  _prevParentOffset = 0;
   _scrollMetrics = {
     contentLength: 0,
     dOffset: 0,
@@ -1305,13 +980,13 @@ class VirtualizedList extends React.PureComponent<Props, State> {
     visibleLength: 0,
     zoomScale: 1,
   };
-  _scrollRef: ?React.ElementRef<any> = null;
+  _scrollRef = null;
   _sentStartForContentLength = 0;
   _sentEndForContentLength = 0;
   _totalCellLength = 0;
   _totalCellsMeasured = 0;
-  _updateCellsToRenderBatcher: Batchinator;
-  _viewabilityTuples: Array<ViewabilityHelperCallbackTuple> = [];
+  _updateCellsToRenderBatcher;
+  _viewabilityTuples = [];
 
   /* $FlowFixMe[missing-local-annot] The type annotation(s) required by Flow's
    * LTI update could not be added via codemod */
@@ -1365,7 +1040,7 @@ class VirtualizedList extends React.PureComponent<Props, State> {
     }
   };
 
-  _onCellLayout = (e: LayoutEvent, cellKey: string, index: number): void => {
+  _onCellLayout = (e, cellKey, index) => {
     const layout = e.nativeEvent.layout;
     const next = {
       offset: this._selectOffset(layout),
@@ -1400,14 +1075,14 @@ class VirtualizedList extends React.PureComponent<Props, State> {
     this._updateViewableItems(this.props.data);
   };
 
-  _onCellUnmount = (cellKey: string) => {
+  _onCellUnmount = (cellKey) => {
     const curr = this._frames[cellKey];
     if (curr) {
       this._frames[cellKey] = {...curr, inLayout: false};
     }
   };
 
-  _triggerRemeasureForChildListsInCell(cellKey: string): void {
+  _triggerRemeasureForChildListsInCell(cellKey) {
     const childListKeys = this._cellKeysToChildListKeys.get(cellKey);
     if (childListKeys) {
       for (let childKey of childListKeys) {
@@ -1419,7 +1094,7 @@ class VirtualizedList extends React.PureComponent<Props, State> {
     }
   }
 
-  measureLayoutRelativeToContainingList(): void {
+  measureLayoutRelativeToContainingList() {
     // TODO (T35574538): findNodeHandle sometimes crashes with "Unable to find
     // node on an unmounted component" during scrolling
     try {
@@ -1477,7 +1152,7 @@ class VirtualizedList extends React.PureComponent<Props, State> {
     }
   }
 
-  _onLayout = (e: LayoutEvent) => {
+  _onLayout = (e) => {
     if (this._isNestedWithSameOrientation()) {
       // Need to adjust our scroll metrics to be relative to our containing
       // VirtualizedList before we can make claims about list item viewability
@@ -1492,20 +1167,20 @@ class VirtualizedList extends React.PureComponent<Props, State> {
     this._maybeCallOnEdgeReached();
   };
 
-  _onLayoutEmpty = (e: LayoutEvent) => {
+  _onLayoutEmpty = (e) => {
     this.props.onLayout && this.props.onLayout(e);
   };
 
-  _getFooterCellKey(): string {
+  _getFooterCellKey() {
     return this._getCellKey() + '-footer';
   }
 
-  _onLayoutFooter = (e: LayoutEvent) => {
+  _onLayoutFooter = (e) => {
     this._triggerRemeasureForChildListsInCell(this._getFooterCellKey());
     this._footerLength = this._selectLength(e.nativeEvent.layout);
   };
 
-  _onLayoutHeader = (e: LayoutEvent) => {
+  _onLayoutHeader = (e) => {
     this._headerLength = this._selectLength(e.nativeEvent.layout);
   };
 
@@ -1570,24 +1245,16 @@ class VirtualizedList extends React.PureComponent<Props, State> {
   }
 
   _selectLength(
-    metrics: $ReadOnly<{
-      height: number,
-      width: number,
-      ...
-    }>,
-  ): number {
+    metrics,
+  ) {
     return !horizontalOrDefault(this.props.horizontal)
       ? metrics.height
       : metrics.width;
   }
 
   _selectOffset(
-    metrics: $ReadOnly<{
-      x: number,
-      y: number,
-      ...
-    }>,
-  ): number {
+    metrics,
+  ) {
     return !horizontalOrDefault(this.props.horizontal) ? metrics.y : metrics.x;
   }
 
@@ -1674,7 +1341,7 @@ class VirtualizedList extends React.PureComponent<Props, State> {
     }
   }
 
-  _onContentSizeChange = (width: number, height: number) => {
+  _onContentSizeChange = (width, height) => {
     if (
       width > 0 &&
       height > 0 &&
@@ -1701,11 +1368,7 @@ class VirtualizedList extends React.PureComponent<Props, State> {
   /* Translates metrics from a scroll event in a parent VirtualizedList into
    * coordinates relative to the child list.
    */
-  _convertParentScrollMetrics = (metrics: {
-    visibleLength: number,
-    offset: number,
-    ...
-  }) => {
+  _convertParentScrollMetrics = (metrics) => {
     // Offset of the top of the nested list relative to the top of its parent's viewport
     const offset = metrics.offset - this._offsetFromParentVirtualizedList;
     // Child's visible length is the same as its parent's
@@ -1721,7 +1384,7 @@ class VirtualizedList extends React.PureComponent<Props, State> {
     };
   };
 
-  _onScroll = (e: Object) => {
+  _onScroll = (e) => {
     this._nestedChildLists.forEach(childList => {
       childList.ref && childList.ref._onScroll(e);
     });
@@ -1862,7 +1525,7 @@ class VirtualizedList extends React.PureComponent<Props, State> {
     }
   }
 
-  _onScrollBeginDrag = (e: ScrollEvent): void => {
+  _onScrollBeginDrag = (e) => {
     this._nestedChildLists.forEach(childList => {
       childList.ref && childList.ref._onScrollBeginDrag(e);
     });
@@ -1873,7 +1536,7 @@ class VirtualizedList extends React.PureComponent<Props, State> {
     this.props.onScrollBeginDrag && this.props.onScrollBeginDrag(e);
   };
 
-  _onScrollEndDrag = (e: ScrollEvent): void => {
+  _onScrollEndDrag = (e) => {
     this._nestedChildLists.forEach(childList => {
       childList.ref && childList.ref._onScrollEndDrag(e);
     });
@@ -1885,14 +1548,14 @@ class VirtualizedList extends React.PureComponent<Props, State> {
     this.props.onScrollEndDrag && this.props.onScrollEndDrag(e);
   };
 
-  _onMomentumScrollBegin = (e: ScrollEvent): void => {
+  _onMomentumScrollBegin = (e) => {
     this._nestedChildLists.forEach(childList => {
       childList.ref && childList.ref._onMomentumScrollBegin(e);
     });
     this.props.onMomentumScrollBegin && this.props.onMomentumScrollBegin(e);
   };
 
-  _onMomentumScrollEnd = (e: ScrollEvent): void => {
+  _onMomentumScrollEnd = (e) => {
     this._nestedChildLists.forEach(childList => {
       childList.ref && childList.ref._onMomentumScrollEnd(e);
     });
@@ -1916,10 +1579,7 @@ class VirtualizedList extends React.PureComponent<Props, State> {
       return;
     }
     this.setState(state => {
-      let newState: ?(
-        | {first: number, last: number, ...}
-        | $TEMPORARY$object<{first: number, last: number}>
-      );
+      let newState;
       const {contentLength, offset, visibleLength} = this._scrollMetrics;
       const distanceFromEnd = contentLength - visibleLength - offset;
       if (!isVirtualizationDisabled) {
@@ -2005,7 +1665,7 @@ class VirtualizedList extends React.PureComponent<Props, State> {
     });
   };
 
-  _createViewToken = (index: number, isViewable: boolean) => {
+  _createViewToken = (index, isViewable) => {
     const {data, getItem} = this.props;
     const item = getItem(data, index);
     return {
@@ -2016,11 +1676,7 @@ class VirtualizedList extends React.PureComponent<Props, State> {
     };
   };
 
-  __getFrameMetricsApprox: (index: number) => {
-    length: number,
-    offset: number,
-    ...
-  } = index => {
+  __getFrameMetricsApprox = index => {
     const frame = this._getFrameMetrics(index);
     if (frame && frame.index === index) {
       // check for invalid frames due to row re-ordering
@@ -2039,14 +1695,8 @@ class VirtualizedList extends React.PureComponent<Props, State> {
   };
 
   _getFrameMetrics = (
-    index: number,
-  ): ?{
-    length: number,
-    offset: number,
-    index: number,
-    inLayout?: boolean,
-    ...
-  } => {
+    index,
+  ) => {
     const {data, getItem, getItemCount, getItemLayout} = this.props;
     invariant(
       getItemCount(data) > index,
@@ -2065,7 +1715,7 @@ class VirtualizedList extends React.PureComponent<Props, State> {
     return frame;
   };
 
-  _updateViewableItems(data: any) {
+  _updateViewableItems(data) {
     const {getItemCount} = this.props;
 
     this._viewabilityTuples.forEach(tuple => {
@@ -2082,49 +1732,9 @@ class VirtualizedList extends React.PureComponent<Props, State> {
   }
 }
 
-type CellRendererProps = {
-  CellRendererComponent?: ?React.ComponentType<any>,
-  ItemSeparatorComponent: ?React.ComponentType<
-    any | {highlighted: boolean, leadingItem: ?Item},
-  >,
-  ListItemComponent?: ?(React.ComponentType<any> | React.Element<any>),
-  cellKey: string,
-  debug?: ?boolean,
-  fillRateHelper: FillRateHelper,
-  getItemLayout?: (
-    data: any,
-    index: number,
-  ) => {
-    length: number,
-    offset: number,
-    index: number,
-    ...
-  },
-  horizontal: ?boolean,
-  index: number,
-  inversionStyle: ViewStyleProp,
-  item: Item,
-  // This is extracted by ScrollViewStickyHeader
-  onCellLayout: (event: Object, cellKey: string, index: number) => void,
-  onUnmount: (cellKey: string) => void,
-  onUpdateSeparators: (cellKeys: Array<?string>, props: Object) => void,
-  prevCellKey: ?string,
-  renderItem?: ?RenderItemType<Item>,
-  ...
-};
 
-type CellRendererState = {
-  separatorProps: $ReadOnly<{|
-    highlighted: boolean,
-    leadingItem: ?Item,
-  |}>,
-  ...
-};
 
-class CellRenderer extends React.Component<
-  CellRendererProps,
-  CellRendererState,
-> {
+class CellRenderer extends React.Component {
   state = {
     separatorProps: {
       highlighted: false,
@@ -2133,9 +1743,9 @@ class CellRenderer extends React.Component<
   };
 
   static getDerivedStateFromProps(
-    props: CellRendererProps,
-    prevState: CellRendererState,
-  ): ?CellRendererState {
+    props,
+    prevState,
+  ) {
     return {
       separatorProps: {
         ...prevState.separatorProps,
@@ -2159,7 +1769,7 @@ class CellRenderer extends React.Component<
         highlighted: false,
       });
     },
-    updateProps: (select: 'leading' | 'trailing', newProps: Object) => {
+    updateProps: (select, newProps) => {
       const {cellKey, prevCellKey} = this.props;
       this.props.onUpdateSeparators(
         [select === 'leading' ? prevCellKey : cellKey],
@@ -2168,7 +1778,7 @@ class CellRenderer extends React.Component<
     },
   };
 
-  updateSeparatorProps(newProps: Object) {
+  updateSeparatorProps(newProps) {
     this.setState(state => ({
       separatorProps: {...state.separatorProps, ...newProps},
     }));
@@ -2178,7 +1788,7 @@ class CellRenderer extends React.Component<
     this.props.onUnmount(this.props.cellKey);
   }
 
-  _onLayout = (nativeEvent: LayoutEvent): void => {
+  _onLayout = (nativeEvent) => {
     this.props.onCellLayout &&
       this.props.onCellLayout(
         nativeEvent,
@@ -2188,10 +1798,10 @@ class CellRenderer extends React.Component<
   };
 
   _renderElement(
-    renderItem: any,
-    ListItemComponent: any,
-    item: any,
-    index: any,
+    renderItem,
+    ListItemComponent,
+    item,
+    index,
   ) {
     if (renderItem && ListItemComponent) {
       console.warn(
@@ -2294,21 +1904,14 @@ class CellRenderer extends React.Component<
   }
 }
 
-function describeNestedLists(childList: {
-  +cellKey: string,
-  +key: string,
-  +ref: VirtualizedList,
-  +parentDebugInfo: ListDebugInfo,
-  +horizontal: boolean,
-  ...
-}) {
+function describeNestedLists(childList) {
   let trace =
     'VirtualizedList trace:\n' +
     `  Child (${childList.horizontal ? 'horizontal' : 'vertical'}):\n` +
     `    listKey: ${childList.key}\n` +
     `    cellKey: ${childList.cellKey}`;
 
-  let debugInfo: ?ListDebugInfo = childList.parentDebugInfo;
+  let debugInfo = childList.parentDebugInfo;
   while (debugInfo) {
     trace +=
       `\n  Parent (${debugInfo.horizontal ? 'horizontal' : 'vertical'}):\n` +

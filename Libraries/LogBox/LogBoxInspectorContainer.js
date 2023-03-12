@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
@@ -12,16 +12,10 @@ import * as React from 'react';
 import {View, StyleSheet} from 'react-native';
 import * as LogBoxData from './Data/LogBoxData';
 import LogBoxInspector from './UI/LogBoxInspector';
-import type LogBoxLog from './Data/LogBoxLog';
 
-type Props = $ReadOnly<{|
-  logs: $ReadOnlyArray<LogBoxLog>,
-  selectedLogIndex: number,
-  isDisabled?: ?boolean,
-|}>;
 
-export class _LogBoxInspectorContainer extends React.Component<Props> {
-  render(): React.Node {
+export class _LogBoxInspectorContainer extends React.Component {
+  render() {
     return (
       <View style={StyleSheet.absoluteFill}>
         <LogBoxInspector
@@ -35,7 +29,7 @@ export class _LogBoxInspectorContainer extends React.Component<Props> {
     );
   }
 
-  _handleDismiss = (): void => {
+  _handleDismiss = () => {
     // Here we handle the cases when the log is dismissed and it
     // was either the last log, or when the current index
     // is now outside the bounds of the log array.
@@ -52,15 +46,15 @@ export class _LogBoxInspectorContainer extends React.Component<Props> {
     }
   };
 
-  _handleMinimize = (): void => {
+  _handleMinimize = () => {
     LogBoxData.setSelectedLog(-1);
   };
 
-  _handleSetSelectedLog = (index: number): void => {
+  _handleSetSelectedLog = (index) => {
     LogBoxData.setSelectedLog(index);
   };
 }
 
 export default (LogBoxData.withSubscription(
   _LogBoxInspectorContainer,
-): React.AbstractComponent<{||}>);
+));

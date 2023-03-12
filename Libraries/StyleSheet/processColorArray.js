@@ -5,23 +5,22 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
 'use strict';
 
-import type {ColorValue} from './StyleSheet';
-import processColor, {type ProcessedColorValue} from './processColor';
+import processColor, {} from './processColor';
 
 const TRANSPARENT = 0; // rgba(0, 0, 0, 0)
 
 function processColorArray(
-  colors: ?$ReadOnlyArray<ColorValue>,
-): ?$ReadOnlyArray<ProcessedColorValue> {
+  colors,
+) {
   return colors == null ? null : colors.map(processColorElement);
 }
 
-function processColorElement(color: ColorValue): ProcessedColorValue {
+function processColorElement(color) {
   const value = processColor(color);
   // For invalid colors, fallback to transparent.
   if (value == null) {

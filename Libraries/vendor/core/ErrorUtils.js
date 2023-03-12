@@ -5,10 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict
+ *  strict
  */
 
-import type {ErrorUtilsT} from '@react-native/polyfills/error-guard';
 
 /**
  * The particular require runtime that we are using looks for a global
@@ -22,4 +21,4 @@ import type {ErrorUtilsT} from '@react-native/polyfills/error-guard';
  * that use it aren't just using a global variable, so simply export the global
  * variable here. ErrorUtils is originally defined in a file named error-guard.js.
  */
-module.exports = (global.ErrorUtils: ErrorUtilsT);
+module.exports = (global.ErrorUtils);

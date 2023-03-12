@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict
+ *  strict
  */
 
 'use strict';
@@ -16,48 +16,45 @@ const DUMMY_INSTANCE_KEY = 0;
 // Defines map of annotations for markEvent
 // Use as following:
 // {string: {key1: value1, key2: value2}}
-export type AnnotationsMap = $Shape<{
-  string: ?{[string]: string, ...},
-}>;
 
 const QuickPerformanceLogger = {
   markerStart(
-    markerId: number,
-    instanceKey: number = DUMMY_INSTANCE_KEY,
-    timestamp: number = AUTO_SET_TIMESTAMP,
-  ): void {
+    markerId,
+    instanceKey = DUMMY_INSTANCE_KEY,
+    timestamp = AUTO_SET_TIMESTAMP,
+  ) {
     if (global.nativeQPLMarkerStart) {
       global.nativeQPLMarkerStart(markerId, instanceKey, timestamp);
     }
   },
 
   markerEnd(
-    markerId: number,
-    actionId: number,
-    instanceKey: number = DUMMY_INSTANCE_KEY,
-    timestamp: number = AUTO_SET_TIMESTAMP,
-  ): void {
+    markerId,
+    actionId,
+    instanceKey = DUMMY_INSTANCE_KEY,
+    timestamp = AUTO_SET_TIMESTAMP,
+  ) {
     if (global.nativeQPLMarkerEnd) {
       global.nativeQPLMarkerEnd(markerId, instanceKey, actionId, timestamp);
     }
   },
 
   markerTag(
-    markerId: number,
-    tag: string,
-    instanceKey: number = DUMMY_INSTANCE_KEY,
-  ): void {
+    markerId,
+    tag,
+    instanceKey = DUMMY_INSTANCE_KEY,
+  ) {
     if (global.nativeQPLMarkerTag) {
       global.nativeQPLMarkerTag(markerId, instanceKey, tag);
     }
   },
 
   markerAnnotate(
-    markerId: number,
-    annotationKey: string,
-    annotationValue: string,
-    instanceKey: number = DUMMY_INSTANCE_KEY,
-  ): void {
+    markerId,
+    annotationKey,
+    annotationValue,
+    instanceKey = DUMMY_INSTANCE_KEY,
+  ) {
     if (global.nativeQPLMarkerAnnotate) {
       global.nativeQPLMarkerAnnotate(
         markerId,
@@ -69,45 +66,45 @@ const QuickPerformanceLogger = {
   },
 
   markerCancel(
-    markerId: number,
-    instanceKey?: number = DUMMY_INSTANCE_KEY,
-  ): void {
+    markerId,
+    instanceKey = DUMMY_INSTANCE_KEY,
+  ) {
     // $FlowFixMe[object-this-reference]
     this.markerDrop(markerId, instanceKey);
   },
 
   markerPoint(
-    markerId: number,
-    name: string,
-    instanceKey: number = DUMMY_INSTANCE_KEY,
-    timestamp: number = AUTO_SET_TIMESTAMP,
-    data: ?string = null,
-  ): void {
+    markerId,
+    name,
+    instanceKey = DUMMY_INSTANCE_KEY,
+    timestamp = AUTO_SET_TIMESTAMP,
+    data = null,
+  ) {
     if (global.nativeQPLMarkerPoint) {
       global.nativeQPLMarkerPoint(markerId, name, instanceKey, timestamp, data);
     }
   },
 
   markerDrop(
-    markerId: number,
-    instanceKey?: number = DUMMY_INSTANCE_KEY,
-  ): void {
+    markerId,
+    instanceKey = DUMMY_INSTANCE_KEY,
+  ) {
     if (global.nativeQPLMarkerDrop) {
       global.nativeQPLMarkerDrop(markerId, instanceKey);
     }
   },
 
   markEvent(
-    markerId: number,
-    type: string,
-    annotations: ?AnnotationsMap = null,
-  ): void {
+    markerId,
+    type,
+    annotations = null,
+  ) {
     if (global.nativeQPLMarkEvent) {
       global.nativeQPLMarkEvent(markerId, type, annotations);
     }
   },
 
-  currentTimestamp(): number {
+  currentTimestamp() {
     if (global.nativeQPLTimestamp) {
       return global.nativeQPLTimestamp();
     }

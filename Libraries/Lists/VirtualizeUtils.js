@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
@@ -18,15 +18,11 @@ import invariant from 'invariant';
  * area.
  */
 export function elementsThatOverlapOffsets(
-  offsets: Array<number>,
-  itemCount: number,
-  getFrameMetrics: (index: number) => {
-    length: number,
-    offset: number,
-    ...
-  },
-  zoomScale: number = 1,
-): Array<number> {
+  offsets,
+  itemCount,
+  getFrameMetrics,
+  zoomScale = 1,
+) {
   const result = [];
   for (let offsetIndex = 0; offsetIndex < offsets.length; offsetIndex++) {
     const currentOffset = offsets[offsetIndex];
@@ -66,17 +62,9 @@ export function elementsThatOverlapOffsets(
  * faster.
  */
 export function newRangeCount(
-  prev: {
-    first: number,
-    last: number,
-    ...
-  },
-  next: {
-    first: number,
-    last: number,
-    ...
-  },
-): number {
+  prev,
+  next,
+) {
   return (
     next.last -
     next.first +
@@ -95,33 +83,14 @@ export function newRangeCount(
  * biased in the direction of scroll.
  */
 export function computeWindowedRenderLimits(
-  data: any,
-  getItemCount: (data: any) => number,
-  maxToRenderPerBatch: number,
-  windowSize: number,
-  prev: {
-    first: number,
-    last: number,
-    ...
-  },
-  getFrameMetricsApprox: (index: number) => {
-    length: number,
-    offset: number,
-    ...
-  },
-  scrollMetrics: {
-    dt: number,
-    offset: number,
-    velocity: number,
-    visibleLength: number,
-    zoomScale: number,
-    ...
-  },
-): {
-  first: number,
-  last: number,
-  ...
-} {
+  data,
+  getItemCount,
+  maxToRenderPerBatch,
+  windowSize,
+  prev,
+  getFrameMetricsApprox,
+  scrollMetrics,
+) {
   const itemCount = getItemCount(data);
   if (itemCount === 0) {
     return prev;
@@ -243,7 +212,7 @@ export function computeWindowedRenderLimits(
   return {first, last};
 }
 
-export function keyExtractor(item: any, index: number): string {
+export function keyExtractor(item, index) {
   if (typeof item === 'object' && item?.key != null) {
     return item.key;
   }

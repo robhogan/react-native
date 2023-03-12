@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
@@ -24,20 +24,14 @@ import {
   useState,
 } from 'react';
 
-type ReducedProps<TProps> = {
-  ...TProps,
-  collapsable: boolean,
-  ...
-};
-type CallbackRef<T> = T => mixed;
 
 let animatedComponentNextId = 1;
 
-export default function useAnimatedProps<TProps: {...}, TInstance>(
-  props: TProps,
-): [ReducedProps<TProps>, CallbackRef<TInstance | null>] {
+export default function useAnimatedProps(
+  props,
+) {
   const [, scheduleUpdate] = useReducer(count => count + 1, 0);
-  const onUpdateRef = useRef<?() => void>(null);
+  const onUpdateRef = useRef(null);
 
   // TODO: Only invalidate `node` if animated props or `style` change. In the
   // previous implementation, we permitted `style` to override props with the
@@ -114,14 +108,14 @@ export default function useAnimatedProps<TProps: {...}, TInstance>(
     },
     [props, node],
   );
-  const callbackRef = useRefEffect<TInstance>(refEffect);
+  const callbackRef = useRefEffect(refEffect);
 
-  return [reduceAnimatedProps<TProps>(node), callbackRef];
+  return [reduceAnimatedProps(node), callbackRef];
 }
 
-function reduceAnimatedProps<TProps>(
-  node: AnimatedProps,
-): ReducedProps<TProps> {
+function reduceAnimatedProps(
+  node,
+) {
   // Force `collapsable` to be false so that the native view is not flattened.
   // Flattened views cannot be accurately referenced by the native driver.
   return {
@@ -137,9 +131,9 @@ function reduceAnimatedProps<TProps>(
  * nodes. So in order to optimize this, we avoid detaching until the next attach
  * unless we are unmounting.
  */
-function useAnimatedPropsLifecycle(node: AnimatedProps): void {
-  const prevNodeRef = useRef<?AnimatedProps>(null);
-  const isUnmountingRef = useRef<boolean>(false);
+function useAnimatedPropsLifecycle(node) {
+  const prevNodeRef = useRef(null);
+  const isUnmountingRef = useRef(false);
 
   const [animatedComponentId] = useState(
     () => `${animatedComponentNextId++}:animatedComponent`,
@@ -180,7 +174,7 @@ function useAnimatedPropsLifecycle(node: AnimatedProps): void {
   }, [node]);
 }
 
-function getEventTarget<TInstance>(instance: TInstance): TInstance {
+function getEventTarget(instance) {
   return typeof instance === 'object' &&
     typeof instance?.getScrollableNode === 'function'
     ? // $FlowFixMe[incompatible-use] - Legacy instance assumptions.
@@ -189,7 +183,7 @@ function getEventTarget<TInstance>(instance: TInstance): TInstance {
 }
 
 // $FlowFixMe[unclear-type] - Legacy instance assumptions.
-function isFabricInstance(instance: any): boolean {
+function isFabricInstance(instance) {
   return (
     hasFabricHandle(instance) ||
     // Some components have a setNativeProps function but aren't a host component
@@ -206,7 +200,7 @@ function isFabricInstance(instance: any): boolean {
 }
 
 // $FlowFixMe[unclear-type] - Legacy instance assumptions.
-function hasFabricHandle(instance: any): boolean {
+function hasFabricHandle(instance) {
   // eslint-disable-next-line dot-notation
   return instance?.['_internalInstanceHandle']?.stateNode?.canonical != null;
 }

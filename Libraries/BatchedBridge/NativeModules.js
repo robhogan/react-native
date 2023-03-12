@@ -5,34 +5,21 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict
+ *  strict
  */
 
 'use strict';
 
-import type {ExtendedError} from '../Core/ExtendedError';
 
 const BatchedBridge = require('./BatchedBridge');
 const invariant = require('invariant');
 
-export type ModuleConfig = [
-  string /* name */,
-  ?{...} /* constants */,
-  ?$ReadOnlyArray<string> /* functions */,
-  ?$ReadOnlyArray<number> /* promise method IDs */,
-  ?$ReadOnlyArray<number> /* sync method IDs */,
-];
 
-export type MethodType = 'async' | 'promise' | 'sync';
 
 function genModule(
-  config: ?ModuleConfig,
-  moduleID: number,
-): ?{
-  name: string,
-  module?: {...},
-  ...
-} {
+  config,
+  moduleID,
+) {
   if (!config) {
     return null;
   }
@@ -50,7 +37,7 @@ function genModule(
     return {name: moduleName};
   }
 
-  const module: {[string]: mixed} = {};
+  const module = {};
   methods &&
     methods.forEach((methodName, methodID) => {
       const isPromise =
@@ -85,7 +72,7 @@ function genModule(
 // export this method as a global so we can call it from native
 global.__fbGenNativeModule = genModule;
 
-function loadModule(name: string, moduleID: number): ?{...} {
+function loadModule(name, moduleID) {
   invariant(
     global.nativeRequireModuleConfig,
     "Can't lazily create module without nativeRequireModuleConfig",
@@ -95,14 +82,14 @@ function loadModule(name: string, moduleID: number): ?{...} {
   return info && info.module;
 }
 
-function genMethod(moduleID: number, methodID: number, type: MethodType) {
+function genMethod(moduleID, methodID, type) {
   let fn = null;
   if (type === 'promise') {
-    fn = function promiseMethodWrapper(...args: Array<mixed>) {
+    fn = function promiseMethodWrapper(...args) {
       // In case we reject, capture a useful stack trace here.
       /* $FlowFixMe[class-object-subtyping] added when improving typing for
        * this parameters */
-      const enqueueingFrameError: ExtendedError = new Error();
+      const enqueueingFrameError = new Error();
       return new Promise((resolve, reject) => {
         BatchedBridge.enqueueNativeCall(
           moduleID,
@@ -112,7 +99,7 @@ function genMethod(moduleID: number, methodID: number, type: MethodType) {
           errorData =>
             reject(
               updateErrorWithErrorData(
-                (errorData: $FlowFixMe),
+                (errorData),
                 enqueueingFrameError,
               ),
             ),
@@ -120,7 +107,7 @@ function genMethod(moduleID: number, methodID: number, type: MethodType) {
       });
     };
   } else {
-    fn = function nonPromiseMethodWrapper(...args: Array<mixed>) {
+    fn = function nonPromiseMethodWrapper(...args) {
       const lastArg = args.length > 0 ? args[args.length - 1] : null;
       const secondLastArg = args.length > 1 ? args[args.length - 2] : null;
       const hasSuccessCallback = typeof lastArg === 'function';
@@ -131,9 +118,9 @@ function genMethod(moduleID: number, methodID: number, type: MethodType) {
           'Cannot have a non-function arg after a function arg.',
         );
       // $FlowFixMe[incompatible-type]
-      const onSuccess: ?(mixed) => void = hasSuccessCallback ? lastArg : null;
+      const onSuccess = hasSuccessCallback ? lastArg : null;
       // $FlowFixMe[incompatible-type]
-      const onFail: ?(mixed) => void = hasErrorCallback ? secondLastArg : null;
+      const onFail = hasErrorCallback ? secondLastArg : null;
       const callbackCount = hasSuccessCallback + hasErrorCallback;
       const newArgs = args.slice(0, args.length - callbackCount);
       if (type === 'sync') {
@@ -159,20 +146,20 @@ function genMethod(moduleID: number, methodID: number, type: MethodType) {
   return fn;
 }
 
-function arrayContains<T>(array: $ReadOnlyArray<T>, value: T): boolean {
+function arrayContains(array, value) {
   return array.indexOf(value) !== -1;
 }
 
 function updateErrorWithErrorData(
-  errorData: {message: string, ...},
-  error: ExtendedError,
-): ExtendedError {
+  errorData,
+  error,
+) {
   /* $FlowFixMe[class-object-subtyping] added when improving typing for this
    * parameters */
   return Object.assign(error, errorData || {});
 }
 
-let NativeModules: {[moduleName: string]: $FlowFixMe, ...} = {};
+let NativeModules = {};
 if (global.nativeModuleProxy) {
   NativeModules = global.nativeModuleProxy;
 } else if (!global.nativeExtensions) {
@@ -184,7 +171,7 @@ if (global.nativeModuleProxy) {
 
   const defineLazyObjectProperty = require('../Utilities/defineLazyObjectProperty');
   (bridgeConfig.remoteModuleConfig || []).forEach(
-    (config: ModuleConfig, moduleID: number) => {
+    (config, moduleID) => {
       // Initially this config will only contain the module name when running in JSC. The actual
       // configuration of the module will be lazily loaded.
       const info = genModule(config, moduleID);

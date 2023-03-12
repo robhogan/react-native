@@ -4,70 +4,17 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
 import Pressability, {
-  type PressabilityConfig,
 } from '../../Pressability/Pressability';
 import {PressabilityDebugView} from '../../Pressability/PressabilityDebug';
-import type {
-  AccessibilityActionEvent,
-  AccessibilityActionInfo,
-  AccessibilityRole,
-  AccessibilityState,
-  AccessibilityValue,
-} from '../../Components/View/ViewAccessibility';
-import type {EdgeInsetsProp} from '../../StyleSheet/EdgeInsetsPropType';
-import type {
-  BlurEvent,
-  FocusEvent,
-  LayoutEvent,
-  PressEvent,
-} from '../../Types/CoreEventTypes';
 import View from '../../Components/View/View';
 import * as React from 'react';
 
-type Props = $ReadOnly<{|
-  accessibilityActions?: ?$ReadOnlyArray<AccessibilityActionInfo>,
-  accessibilityElementsHidden?: ?boolean,
-  accessibilityHint?: ?Stringish,
-  accessibilityLanguage?: ?Stringish,
-  accessibilityIgnoresInvertColors?: ?boolean,
-  accessibilityLabel?: ?Stringish,
-  accessibilityLiveRegion?: ?('none' | 'polite' | 'assertive'),
-  accessibilityRole?: ?AccessibilityRole,
-  accessibilityState?: ?AccessibilityState,
-  accessibilityValue?: ?AccessibilityValue,
-  accessibilityViewIsModal?: ?boolean,
-  accessible?: ?boolean,
-  children?: ?React.Node,
-  delayLongPress?: ?number,
-  delayPressIn?: ?number,
-  delayPressOut?: ?number,
-  disabled?: ?boolean,
-  focusable?: ?boolean,
-  hitSlop?: ?EdgeInsetsProp,
-  importantForAccessibility?: ?('auto' | 'yes' | 'no' | 'no-hide-descendants'),
-  nativeID?: ?string,
-  onAccessibilityAction?: ?(event: AccessibilityActionEvent) => mixed,
-  onBlur?: ?(event: BlurEvent) => mixed,
-  onFocus?: ?(event: FocusEvent) => mixed,
-  onLayout?: ?(event: LayoutEvent) => mixed,
-  onLongPress?: ?(event: PressEvent) => mixed,
-  onPress?: ?(event: PressEvent) => mixed,
-  onPressIn?: ?(event: PressEvent) => mixed,
-  onPressOut?: ?(event: PressEvent) => mixed,
-  pressRetentionOffset?: ?EdgeInsetsProp,
-  rejectResponderTermination?: ?boolean,
-  testID?: ?string,
-  touchSoundDisabled?: ?boolean,
-|}>;
 
-type State = $ReadOnly<{|
-  pressability: Pressability,
-|}>;
 
 const PASSTHROUGH_PROPS = [
   'accessibilityActions',
@@ -90,12 +37,12 @@ const PASSTHROUGH_PROPS = [
   'testID',
 ];
 
-class TouchableWithoutFeedback extends React.Component<Props, State> {
-  state: State = {
+class TouchableWithoutFeedback extends React.Component {
+  state = {
     pressability: new Pressability(createPressabilityConfig(this.props)),
   };
 
-  render(): React.Node {
+  render() {
     const element = React.Children.only(this.props.children);
     const children = [element.props.children];
     if (__DEV__) {
@@ -111,7 +58,7 @@ class TouchableWithoutFeedback extends React.Component<Props, State> {
     const {onBlur, onFocus, ...eventHandlersWithoutBlurAndFocus} =
       this.state.pressability.getEventHandlers();
 
-    const elementProps: {[string]: mixed, ...} = {
+    const elementProps = {
       ...eventHandlersWithoutBlurAndFocus,
       accessible: this.props.accessible !== false,
       accessibilityState:
@@ -133,16 +80,16 @@ class TouchableWithoutFeedback extends React.Component<Props, State> {
     return React.cloneElement(element, elementProps, ...children);
   }
 
-  componentDidUpdate(): void {
+  componentDidUpdate() {
     this.state.pressability.configure(createPressabilityConfig(this.props));
   }
 
-  componentWillUnmount(): void {
+  componentWillUnmount() {
     this.state.pressability.reset();
   }
 }
 
-function createPressabilityConfig(props: Props): PressabilityConfig {
+function createPressabilityConfig(props) {
   return {
     cancelable: !props.rejectResponderTermination,
     disabled:

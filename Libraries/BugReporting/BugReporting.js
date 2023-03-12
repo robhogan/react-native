@@ -5,21 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
 import RCTDeviceEventEmitter from '../EventEmitter/RCTDeviceEventEmitter';
 import NativeRedBox from '../NativeModules/specs/NativeRedBox';
-import {type EventSubscription} from '../vendor/emitter/EventEmitter';
+import {} from '../vendor/emitter/EventEmitter';
 import NativeBugReporting from './NativeBugReporting';
 
-type ExtraData = {[key: string]: string, ...};
-type SourceCallback = () => string;
-type DebugData = {
-  extras: ExtraData,
-  files: ExtraData,
-  ...
-};
 
 function defaultExtras() {
   BugReporting.addFileSource('react_hierarchy.txt', () =>
@@ -34,10 +27,10 @@ function defaultExtras() {
  * returned by `addSource` when they are unmounted.
  */
 class BugReporting {
-  static _extraSources: Map<string, SourceCallback> = new Map();
-  static _fileSources: Map<string, SourceCallback> = new Map();
-  static _subscription: ?EventSubscription = null;
-  static _redboxSubscription: ?EventSubscription = null;
+  static _extraSources = new Map();
+  static _fileSources = new Map();
+  static _subscription = null;
+  static _redboxSubscription = null;
 
   static _maybeInit() {
     if (!BugReporting._subscription) {
@@ -69,9 +62,9 @@ class BugReporting {
    * Conflicts trample with a warning.
    */
   static addSource(
-    key: string,
-    callback: SourceCallback,
-  ): {remove: () => void, ...} {
+    key,
+    callback,
+  ) {
     return this._addSource(key, callback, BugReporting._extraSources);
   }
 
@@ -84,17 +77,17 @@ class BugReporting {
    * Conflicts trample with a warning.
    */
   static addFileSource(
-    key: string,
-    callback: SourceCallback,
-  ): {remove: () => void, ...} {
+    key,
+    callback,
+  ) {
     return this._addSource(key, callback, BugReporting._fileSources);
   }
 
   static _addSource(
-    key: string,
-    callback: SourceCallback,
-    source: Map<string, SourceCallback>,
-  ): {remove: () => void, ...} {
+    key,
+    callback,
+    source,
+  ) {
     BugReporting._maybeInit();
     if (source.has(key)) {
       console.warn(
@@ -115,12 +108,12 @@ class BugReporting {
    * If available, this will call `NativeModules.BugReporting.setExtraData(extraData)`
    * after collecting `extraData`.
    */
-  static collectExtraData(): DebugData {
-    const extraData: ExtraData = {};
+  static collectExtraData() {
+    const extraData = {};
     for (const [key, callback] of BugReporting._extraSources) {
       extraData[key] = callback();
     }
-    const fileData: ExtraData = {};
+    const fileData = {};
     for (const [key, callback] of BugReporting._fileSources) {
       fileData[key] = callback();
     }

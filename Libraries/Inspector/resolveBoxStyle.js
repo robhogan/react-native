@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  */
 
 'use strict';
@@ -23,14 +23,9 @@ const I18nManager = require('../ReactNative/I18nManager');
  * If no parts exist, this returns null.
  */
 function resolveBoxStyle(
-  prefix: string,
-  style: Object,
-): ?$ReadOnly<{|
-  bottom: number,
-  left: number,
-  right: number,
-  top: number,
-|}> {
+  prefix,
+  style,
+) {
   let hasParts = false;
   const result = {
     bottom: 0,

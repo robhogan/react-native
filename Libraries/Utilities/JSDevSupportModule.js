@@ -5,14 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
 import NativeJSDevSupport from './NativeJSDevSupport';
 const ReactNative = require('../Renderer/shims/ReactNative');
 
 const JSDevSupportModule = {
-  getJSHierarchy: function (tag: number) {
+  getJSHierarchy: function (tag) {
     if (NativeJSDevSupport) {
       const constants = NativeJSDevSupport.getConstants();
       try {

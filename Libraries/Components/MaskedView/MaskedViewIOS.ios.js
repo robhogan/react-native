@@ -5,26 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  */
 
 import * as React from 'react';
 import StyleSheet from '../../StyleSheet/StyleSheet';
 import View from '../View/View';
 
-import type {ViewProps} from '../View/ViewPropTypes';
 import RCTMaskedViewNativeComponent from './RCTMaskedViewNativeComponent';
 
-type Props = $ReadOnly<{|
-  ...ViewProps,
-
-  children: React.Node,
-  /**
-   * Should be a React element to be rendered and applied as the
-   * mask for the child element.
-   */
-  maskElement: React.Element<any>,
-|}>;
 
 /**
  * Renders the child view with a mask specified in the `maskElement` prop.
@@ -62,10 +51,10 @@ type Props = $ReadOnly<{|
  * transparent pixels block that content.
  *
  */
-class MaskedViewIOS extends React.Component<Props> {
+class MaskedViewIOS extends React.Component {
   _hasWarnedInvalidRenderMask = false;
 
-  render(): React.Node {
+  render() {
     const {maskElement, children, ...otherViewProps} = this.props;
 
     if (!React.isValidElement(maskElement)) {

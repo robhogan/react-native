@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
@@ -12,24 +12,24 @@ import {Property} from './Property';
 import {toCppNamespace, toCppType} from './Converters';
 
 export class Command {
-  domain: string;
-  name: string;
-  description: ?string;
-  experimental: ?boolean;
-  parameters: Array<Property>;
-  returns: Array<Property>;
+  domain;
+  name;
+  description;
+  experimental;
+  parameters;
+  returns;
 
   static create(
-    domain: string,
-    obj: any,
-    ignoreExperimental: boolean,
-  ): ?Command {
+    domain,
+    obj,
+    ignoreExperimental,
+  ) {
     return ignoreExperimental && obj.experimental
       ? null
       : new Command(domain, obj, ignoreExperimental);
   }
 
-  constructor(domain: string, obj: any, ignoreExperimental: boolean) {
+  constructor(domain, obj, ignoreExperimental) {
     this.domain = domain;
     this.name = obj.name;
     this.description = obj.description;
@@ -46,25 +46,25 @@ export class Command {
     );
   }
 
-  getDebuggerName(): string {
+  getDebuggerName() {
     return `${this.domain}.${this.name}`;
   }
 
-  getCppNamespace(): string {
+  getCppNamespace() {
     return toCppNamespace(this.domain);
   }
 
-  getRequestCppType(): string {
+  getRequestCppType() {
     return toCppType(this.name + 'Request');
   }
 
-  getResponseCppType(): ?string {
+  getResponseCppType() {
     if (this.returns && this.returns.length > 0) {
       return toCppType(this.name + 'Response');
     }
   }
 
-  getForwardDecls(): Array<string> {
+  getForwardDecls() {
     const decls = [`struct ${this.getRequestCppType()};`];
     const respCppType = this.getResponseCppType();
     if (respCppType) {
@@ -73,7 +73,7 @@ export class Command {
     return decls;
   }
 
-  getForwardDeclSortKey(): string {
+  getForwardDeclSortKey() {
     return this.getRequestCppType();
   }
 }

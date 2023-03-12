@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  */
 
 'use strict';
@@ -23,23 +23,10 @@ const flattenStyle = require('../StyleSheet/flattenStyle');
 const mapWithSeparator = require('../Utilities/mapWithSeparator');
 const openFileInEditor = require('../Core/Devtools/openFileInEditor');
 
-import type {ViewStyleProp} from '../StyleSheet/StyleSheet';
 
-type Props = $ReadOnly<{|
-  hierarchy: Array<{|name: string|}>,
-  style?: ?ViewStyleProp,
-  source?: ?{
-    fileName?: string,
-    lineNumber?: number,
-    ...
-  },
-  frame?: ?Object,
-  selection?: ?number,
-  setSelection?: number => mixed,
-|}>;
 
-class ElementProperties extends React.Component<Props> {
-  render(): React.Node {
+class ElementProperties extends React.Component {
+  render() {
     const style = flattenStyle(this.props.style);
     const selection = this.props.selection;
     let openFileButton;

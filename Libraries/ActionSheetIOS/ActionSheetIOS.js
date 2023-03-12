@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
@@ -12,8 +12,6 @@ import RCTActionSheetManager from './NativeActionSheetManager';
 
 const invariant = require('invariant');
 const processColor = require('../StyleSheet/processColor');
-import type {ColorValue} from '../StyleSheet/StyleSheet';
-import type {ProcessedColorValue} from '../StyleSheet/processColor';
 
 /**
  * Display action sheets and share sheets on iOS.
@@ -39,19 +37,8 @@ const ActionSheetIOS = {
    * See https://reactnative.dev/docs/actionsheetios#showactionsheetwithoptions
    */
   showActionSheetWithOptions(
-    options: {|
-      +title?: ?string,
-      +message?: ?string,
-      +options: Array<string>,
-      +destructiveButtonIndex?: ?number | ?Array<number>,
-      +cancelButtonIndex?: ?number,
-      +anchor?: ?number,
-      +tintColor?: ColorValue | ProcessedColorValue,
-      +cancelButtonTintColor?: ColorValue | ProcessedColorValue,
-      +userInterfaceStyle?: string,
-      +disabledButtonIndices?: Array<number>,
-    |},
-    callback: (buttonIndex: number) => void,
+    options,
+    callback,
   ) {
     invariant(
       typeof options === 'object' && options !== null,
@@ -120,9 +107,9 @@ const ActionSheetIOS = {
    * See https://reactnative.dev/docs/actionsheetios#showshareactionsheetwithoptions
    */
   showShareActionSheetWithOptions(
-    options: Object,
-    failureCallback: Function,
-    successCallback: Function,
+    options,
+    failureCallback,
+    successCallback,
   ) {
     invariant(
       typeof options === 'object' && options !== null,

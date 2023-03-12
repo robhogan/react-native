@@ -6,7 +6,7 @@
  *
  * @format
  * @emails oncall+react_native
- * @flow
+ * 
  */
 
 import * as React from 'react';
@@ -15,16 +15,16 @@ import ShallowRenderer from 'react-shallow-renderer';
 
 const renderer = new ShallowRenderer();
 
-export const shallow = (Component: React.Element<any>): any => {
-  const Wrapper = (): React.Element<any> => Component;
+export const shallow = (Component) => {
+  const Wrapper = () => Component;
 
   return renderer.render(<Wrapper />);
 };
 
-export const shallowRender = (Component: React.Element<any>): any => {
+export const shallowRender = (Component) => {
   return renderer.render(Component);
 };
 
-export const create = (Component: React.Element<any>): any => {
+export const create = (Component) => {
   return TestRenderer.create(Component);
 };

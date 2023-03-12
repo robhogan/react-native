@@ -4,18 +4,15 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict
+ *  strict
  * @format
  */
 
 import symbolicateStackTrace from '../../Core/Devtools/symbolicateStackTrace';
 
-import type {StackFrame} from '../../Core/NativeExceptionsManager';
-import type {SymbolicatedStackTrace} from '../../Core/Devtools/symbolicateStackTrace';
 
-export type Stack = Array<StackFrame>;
 
-const cache: Map<Stack, Promise<SymbolicatedStackTrace>> = new Map();
+const cache = new Map();
 
 /**
  * Sanitize because sometimes, `symbolicateStackTrace` gives us invalid values.
@@ -23,7 +20,7 @@ const cache: Map<Stack, Promise<SymbolicatedStackTrace>> = new Map();
 const sanitize = ({
   stack: maybeStack,
   codeFrame,
-}: SymbolicatedStackTrace): SymbolicatedStackTrace => {
+}) => {
   if (!Array.isArray(maybeStack)) {
     throw new Error('Expected stack to be an array.');
   }
@@ -47,11 +44,11 @@ const sanitize = ({
   return {stack, codeFrame};
 };
 
-export function deleteStack(stack: Stack): void {
+export function deleteStack(stack) {
   cache.delete(stack);
 }
 
-export function symbolicate(stack: Stack): Promise<SymbolicatedStackTrace> {
+export function symbolicate(stack) {
   let promise = cache.get(stack);
   if (promise == null) {
     promise = symbolicateStackTrace(stack).then(sanitize);

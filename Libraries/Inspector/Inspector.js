@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  */
 
 'use strict';
@@ -23,24 +23,8 @@ const ReactNativeStyleAttributes = require('../Components/View/ReactNativeStyleA
 
 const invariant = require('invariant');
 
-import type {
-  HostComponent,
-  TouchedViewDataAtPoint,
-} from '../Renderer/shims/ReactNativeTypes';
 
-type HostRef = React.ElementRef<HostComponent<mixed>>;
 
-export type ReactRenderer = {
-  rendererConfig: {
-    getInspectorDataForViewAtPoint: (
-      inspectedView: ?HostRef,
-      locationX: number,
-      locationY: number,
-      callback: Function,
-    ) => void,
-    ...
-  },
-};
 
 const hook = window.__REACT_DEVTOOLS_GLOBAL_HOOK__;
 const renderers = findRenderers();
@@ -50,7 +34,7 @@ const renderers = findRenderers();
 hook.resolveRNStyle = require('../StyleSheet/flattenStyle');
 hook.nativeStyleEditorValidAttributes = Object.keys(ReactNativeStyleAttributes);
 
-function findRenderers(): $ReadOnlyArray<ReactRenderer> {
+function findRenderers() {
   const allRenderers = Array.from(hook.renderers.values());
   invariant(
     allRenderers.length >= 1,
@@ -60,10 +44,10 @@ function findRenderers(): $ReadOnlyArray<ReactRenderer> {
 }
 
 function getInspectorDataForViewAtPoint(
-  inspectedView: ?HostRef,
-  locationX: number,
-  locationY: number,
-  callback: (viewData: TouchedViewDataAtPoint) => void,
+  inspectedView,
+  locationX,
+  locationY,
+  callback,
 ) {
   // Check all renderers for inspector data.
   for (let i = 0; i < renderers.length; i++) {
@@ -84,30 +68,12 @@ function getInspectorDataForViewAtPoint(
   }
 }
 
-class Inspector extends React.Component<
-  {
-    inspectedView: ?HostRef,
-    onRequestRerenderApp: (callback: (instance: ?HostRef) => void) => void,
-    ...
-  },
-  {
-    devtoolsAgent: ?Object,
-    hierarchy: any,
-    panelPos: string,
-    inspecting: boolean,
-    selection: ?number,
-    perfing: boolean,
-    inspected: any,
-    inspectedView: ?HostRef,
-    networking: boolean,
-    ...
-  },
-> {
-  _hideTimeoutID: TimeoutID | null = null;
-  _subs: ?Array<() => void>;
-  _setTouchedViewData: ?(TouchedViewDataAtPoint) => void;
+class Inspector extends React.Component {
+  _hideTimeoutID = null;
+  _subs;
+  _setTouchedViewData;
 
-  constructor(props: Object) {
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -139,11 +105,11 @@ class Inspector extends React.Component<
     this._setTouchedViewData = null;
   }
 
-  UNSAFE_componentWillReceiveProps(newProps: Object) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     this.setState({inspectedView: newProps.inspectedView});
   }
 
-  _attachToDevtools = (agent: Object) => {
+  _attachToDevtools = (agent) => {
     agent.addListener('hideNativeHighlight', this._onAgentHideNativeHighlight);
     agent.addListener('showNativeHighlight', this._onAgentShowNativeHighlight);
     agent.addListener('shutdown', this._onAgentShutdown);
@@ -165,7 +131,7 @@ class Inspector extends React.Component<
     }, 100);
   };
 
-  _onAgentShowNativeHighlight = (node: any) => {
+  _onAgentShowNativeHighlight = (node) => {
     clearTimeout(this._hideTimeoutID);
 
     // Shape of `node` is different in Fabric.
@@ -198,7 +164,7 @@ class Inspector extends React.Component<
     }
   };
 
-  setSelection(i: number) {
+  setSelection(i) {
     const hierarchyItem = this.state.hierarchy[i];
     // we pass in ReactNative.findNodeHandle as the method is injected
     const {measure, props, source} = hierarchyItem.getInspectorData(
@@ -217,7 +183,7 @@ class Inspector extends React.Component<
     });
   }
 
-  onTouchPoint(locationX: number, locationY: number) {
+  onTouchPoint(locationX, locationY) {
     this._setTouchedViewData = viewData => {
       const {
         hierarchy,
@@ -263,7 +229,7 @@ class Inspector extends React.Component<
     );
   }
 
-  setPerfing(val: boolean) {
+  setPerfing(val) {
     this.setState({
       perfing: val,
       inspecting: false,
@@ -272,21 +238,21 @@ class Inspector extends React.Component<
     });
   }
 
-  setInspecting(val: boolean) {
+  setInspecting(val) {
     this.setState({
       inspecting: val,
       inspected: null,
     });
   }
 
-  setTouchTargeting(val: boolean) {
+  setTouchTargeting(val) {
     PressabilityDebug.setEnabled(val);
     this.props.onRequestRerenderApp(inspectedView => {
       this.setState({inspectedView});
     });
   }
 
-  setNetworking(val: boolean) {
+  setNetworking(val) {
     this.setState({
       networking: val,
       perfing: false,
@@ -295,7 +261,7 @@ class Inspector extends React.Component<
     });
   }
 
-  render(): React.Node {
+  render() {
     const panelContainerStyle =
       this.state.panelPos === 'bottom'
         ? {bottom: 0}

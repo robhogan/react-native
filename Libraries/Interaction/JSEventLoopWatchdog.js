@@ -5,22 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  */
 
 'use strict';
 
 const infoLog = require('../Utilities/infoLog');
 
-type Handler = {
-  onIterate?: () => void,
-  onStall: (params: {
-    lastInterval: number,
-    busyTime: number,
-    ...
-  }) => ?string,
-  ...
-};
 
 /**
  * A utility for tracking stalls in the JS event loop that prevent timers and
@@ -35,7 +26,7 @@ type Handler = {
  * queried with `getStats`.
  */
 const JSEventLoopWatchdog = {
-  getStats: function (): Object {
+  getStats: function () {
     return {stallCount, totalStallTime, longestStall, acceptableBusyTime};
   },
   reset: function () {
@@ -45,10 +36,10 @@ const JSEventLoopWatchdog = {
     longestStall = 0;
     lastInterval = global.performance.now();
   },
-  addHandler: function (handler: Handler) {
+  addHandler: function (handler) {
     handlers.push(handler);
   },
-  install: function ({thresholdMS}: {thresholdMS: number, ...}) {
+  install: function ({thresholdMS}) {
     acceptableBusyTime = thresholdMS;
     if (installed) {
       return;
@@ -87,6 +78,6 @@ let totalStallTime = 0;
 let stallCount = 0;
 let longestStall = 0;
 let lastInterval = 0;
-const handlers: Array<Handler> = [];
+const handlers = [];
 
 module.exports = JSEventLoopWatchdog;

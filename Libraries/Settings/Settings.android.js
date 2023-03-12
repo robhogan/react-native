@@ -5,27 +5,27 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  */
 
 'use strict';
 
 const Settings = {
-  get(key: string): mixed {
+  get(key) {
     console.warn('Settings is not yet supported on Android');
     return null;
   },
 
-  set(settings: Object) {
+  set(settings) {
     console.warn('Settings is not yet supported on Android');
   },
 
-  watchKeys(keys: string | Array<string>, callback: Function): number {
+  watchKeys(keys, callback) {
     console.warn('Settings is not yet supported on Android');
     return -1;
   },
 
-  clearWatch(watchId: number) {
+  clearWatch(watchId) {
     console.warn('Settings is not yet supported on Android');
   },
 };

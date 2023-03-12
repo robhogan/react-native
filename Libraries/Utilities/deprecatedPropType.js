@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
 import UIManager from '../ReactNative/UIManager';
@@ -14,9 +14,9 @@ import UIManager from '../ReactNative/UIManager';
  * Adds a deprecation warning when the prop is used.
  */
 function deprecatedPropType(
-  propType: ReactPropsCheckType,
-  explanation: string,
-): ReactPropsCheckType {
+  propType,
+  explanation,
+) {
   return function validate(props, propName, componentName, ...rest) {
     // Don't warn for native components.
     if (

@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
@@ -15,15 +15,8 @@ const binaryToBase64 = require('../Utilities/binaryToBase64');
 const Blob = require('../Blob/Blob');
 const FormData = require('./FormData');
 
-export type RequestBody =
-  | string
-  | Blob
-  | FormData
-  | {uri: string, ...}
-  | ArrayBuffer
-  | $ArrayBufferView;
 
-function convertRequestBody(body: RequestBody): Object {
+function convertRequestBody(body) {
   if (typeof body === 'string') {
     return {string: body};
   }

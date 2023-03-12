@@ -5,37 +5,25 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  */
 
 'use strict';
 
 module.exports = require('../Components/UnimplementedViews/UnimplementedView');
 
-type BackPressEventName = 'backPress' | 'hardwareBackPress';
 
-function emptyFunction(): void {}
+function emptyFunction() {}
 
-type TBackHandler = {|
-  +exitApp: () => void,
-  +addEventListener: (
-    eventName: BackPressEventName,
-    handler: () => ?boolean,
-  ) => {remove: () => void, ...},
-  +removeEventListener: (
-    eventName: BackPressEventName,
-    handler: () => ?boolean,
-  ) => void,
-|};
 
-let BackHandler: TBackHandler = {
+let BackHandler = {
   exitApp: emptyFunction,
-  addEventListener(_eventName: BackPressEventName, _handler: Function) {
+  addEventListener(_eventName, _handler) {
     return {
       remove: emptyFunction,
     };
   },
-  removeEventListener(_eventName: BackPressEventName, _handler: Function) {},
+  removeEventListener(_eventName, _handler) {},
 };
 
 module.exports = BackHandler;

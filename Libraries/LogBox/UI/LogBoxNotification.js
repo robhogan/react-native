@@ -4,11 +4,10 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
-import type {Message as MessageType} from '../Data/parseLogBoxLog';
 import * as React from 'react';
 import Image from '../../Image/Image';
 import StyleSheet from '../../StyleSheet/StyleSheet';
@@ -20,15 +19,8 @@ import LogBoxLog from '../Data/LogBoxLog';
 import LogBoxMessage from './LogBoxMessage';
 import * as LogBoxData from '../Data/LogBoxData';
 
-type Props = $ReadOnly<{|
-  log: LogBoxLog,
-  totalLogCount: number,
-  level: 'warn' | 'error',
-  onPressOpen: () => void,
-  onPressDismiss: () => void,
-|}>;
 
-function LogBoxLogNotification(props: Props): React.Node {
+function LogBoxLogNotification(props) {
   const {totalLogCount, level, log} = props;
 
   // Eagerly symbolicate so the stack is available when pressing to inspect.
@@ -56,7 +48,7 @@ function LogBoxLogNotification(props: Props): React.Node {
 }
 
 function CountBadge(
-  props: $TEMPORARY$object<{count: number, level: 'error' | 'warn'}>,
+  props,
 ) {
   return (
     <View style={countStyles.outside}>
@@ -72,7 +64,7 @@ function CountBadge(
   );
 }
 
-function Message(props: $TEMPORARY$object<{message: MessageType}>) {
+function Message(props) {
   return (
     <View style={messageStyles.container}>
       <Text numberOfLines={1} style={messageStyles.text}>
@@ -88,7 +80,7 @@ function Message(props: $TEMPORARY$object<{message: MessageType}>) {
   );
 }
 
-function DismissButton(props: $TEMPORARY$object<{onPress: () => void}>) {
+function DismissButton(props) {
   return (
     <View style={dismissStyles.container}>
       <LogBoxButton

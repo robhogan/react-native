@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  */
 
 'use strict';
@@ -14,14 +14,14 @@
 let GUIID = 1;
 
 // A global set of the currently cleared immediates.
-const clearedImmediates: Set<number> = new Set();
+const clearedImmediates = new Set();
 
 /**
  * Shim the setImmediate API on top of queueMicrotask.
  * @param {function} func Callback to be invoked before the end of the
  * current JavaScript execution loop.
  */
-function setImmediate(callback: Function, ...args: any): number {
+function setImmediate(callback, ...args) {
   if (arguments.length < 1) {
     throw new TypeError(
       'setImmediate must be called with at least one argument (a function to call)',
@@ -55,7 +55,7 @@ function setImmediate(callback: Function, ...args: any): number {
 /**
  * @param {number} immediateID The ID of the immediate to be clearred.
  */
-function clearImmediate(immediateID: number) {
+function clearImmediate(immediateID) {
   clearedImmediates.add(immediateID);
 }
 

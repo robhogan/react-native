@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
 'use strict';
@@ -24,8 +24,8 @@ const blank = {
   bottom: 0,
 };
 
-class BoxInspector extends React.Component<$FlowFixMeProps> {
-  render(): React.Node {
+class BoxInspector extends React.Component {
+  render() {
     const frame = this.props.frame;
     const style = this.props.style;
     const margin = (style && resolveBoxStyle('margin', style)) || blank;
@@ -48,7 +48,7 @@ class BoxInspector extends React.Component<$FlowFixMeProps> {
   }
 }
 
-class BoxContainer extends React.Component<$FlowFixMeProps> {
+class BoxContainer extends React.Component {
   render() {
     const box = this.props.box;
     return (

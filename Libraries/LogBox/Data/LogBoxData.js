@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict
+ *  strict
  * @format
  */
 
@@ -13,65 +13,24 @@
 import * as React from 'react';
 import LogBoxLog from './LogBoxLog';
 import {parseLogBoxException} from './parseLogBoxLog';
-import type {LogLevel} from './LogBoxLog';
-import type {
-  Message,
-  Category,
-  ComponentStack,
-  ExtendedExceptionData,
-} from './parseLogBoxLog';
 import parseErrorStack from '../../Core/Devtools/parseErrorStack';
-import type {ExtendedError} from '../../Core/ExtendedError';
 import NativeLogBox from '../../NativeModules/specs/NativeLogBox';
-export type LogBoxLogs = Set<LogBoxLog>;
-export type LogData = $ReadOnly<{|
-  level: LogLevel,
-  message: Message,
-  category: Category,
-  componentStack: ComponentStack,
-|}>;
 
-export type Observer = (
-  $ReadOnly<{|
-    logs: LogBoxLogs,
-    isDisabled: boolean,
-    selectedLogIndex: number,
-  |}>,
-) => void;
 
-export type IgnorePattern = string | RegExp;
 
-export type Subscription = $ReadOnly<{|
-  unsubscribe: () => void,
-|}>;
 
-export type WarningInfo = {|
-  finalFormat: string,
-  forceDialogImmediately: boolean,
-  suppressDialog_LEGACY: boolean,
-  suppressCompletely: boolean,
-  monitorEvent: string | null,
-  monitorListVersion: number,
-  monitorSampleRate: number,
-|};
 
-export type WarningFilter = (format: string) => WarningInfo;
 
-type AppInfo = $ReadOnly<{|
-  appVersion: string,
-  engine: string,
-  onPress?: ?() => void,
-|}>;
 
-const observers: Set<{observer: Observer, ...}> = new Set();
-const ignorePatterns: Set<IgnorePattern> = new Set();
-let appInfo: ?() => AppInfo = null;
-let logs: LogBoxLogs = new Set();
+const observers = new Set();
+const ignorePatterns = new Set();
+let appInfo = null;
+let logs = new Set();
 let updateTimeout = null;
 let _isDisabled = false;
 let _selectedIndex = -1;
 
-let warningFilter: WarningFilter = function (format) {
+let warningFilter = function (format) {
   return {
     finalFormat: format,
     forceDialogImmediately: false,
@@ -95,9 +54,9 @@ function getNextState() {
 }
 
 export function reportLogBoxError(
-  error: ExtendedError,
-  componentStack?: string,
-): void {
+  error,
+  componentStack,
+) {
   const ExceptionsManager = require('../../Core/ExceptionsManager');
 
   error.message = `${LOGBOX_ERROR_MESSAGE}\n\n${error.message}`;
@@ -107,11 +66,11 @@ export function reportLogBoxError(
   ExceptionsManager.handleException(error, /* isFatal */ true);
 }
 
-export function isLogBoxErrorMessage(message: string): boolean {
+export function isLogBoxErrorMessage(message) {
   return typeof message === 'string' && message.includes(LOGBOX_ERROR_MESSAGE);
 }
 
-export function isMessageIgnored(message: string): boolean {
+export function isMessageIgnored(message) {
   for (const pattern of ignorePatterns) {
     if (
       (pattern instanceof RegExp && pattern.test(message)) ||
@@ -123,7 +82,7 @@ export function isMessageIgnored(message: string): boolean {
   return false;
 }
 
-function handleUpdate(): void {
+function handleUpdate() {
   if (updateTimeout == null) {
     updateTimeout = setImmediate(() => {
       updateTimeout = null;
@@ -133,7 +92,7 @@ function handleUpdate(): void {
   }
 }
 
-function appendNewLog(newLog: LogBoxLog) {
+function appendNewLog(newLog) {
   // Don't want store these logs because they trigger a
   // state update when we add them to the store.
   if (isMessageIgnored(newLog.message.content)) {
@@ -156,7 +115,7 @@ function appendNewLog(newLog: LogBoxLog) {
     // sybolication for up to a second before adding the log.
     const OPTIMISTIC_WAIT_TIME = 1000;
 
-    let addPendingLog: ?() => void = () => {
+    let addPendingLog = () => {
       logs.add(newLog);
       if (_selectedIndex < 0) {
         setSelectedLog(logs.size - 1);
@@ -190,7 +149,7 @@ function appendNewLog(newLog: LogBoxLog) {
   }
 }
 
-export function addLog(log: LogData): void {
+export function addLog(log) {
   const errorForStackTrace = new Error();
 
   // Parsing logs are expensive so we schedule this
@@ -215,7 +174,7 @@ export function addLog(log: LogData): void {
   });
 }
 
-export function addException(error: ExtendedExceptionData): void {
+export function addException(error) {
   // Parsing logs are expensive so we schedule this
   // otherwise spammy logs would pause rendering.
   setImmediate(() => {
@@ -227,30 +186,30 @@ export function addException(error: ExtendedExceptionData): void {
   });
 }
 
-export function symbolicateLogNow(log: LogBoxLog) {
+export function symbolicateLogNow(log) {
   log.symbolicate(() => {
     handleUpdate();
   });
 }
 
-export function retrySymbolicateLogNow(log: LogBoxLog) {
+export function retrySymbolicateLogNow(log) {
   log.retrySymbolicate(() => {
     handleUpdate();
   });
 }
 
-export function symbolicateLogLazy(log: LogBoxLog) {
+export function symbolicateLogLazy(log) {
   log.symbolicate();
 }
 
-export function clear(): void {
+export function clear() {
   if (logs.size > 0) {
     logs = new Set();
     setSelectedLog(-1);
   }
 }
 
-export function setSelectedLog(proposedNewIndex: number): void {
+export function setSelectedLog(proposedNewIndex) {
   const oldIndex = _selectedIndex;
   let newIndex = proposedNewIndex;
 
@@ -277,7 +236,7 @@ export function setSelectedLog(proposedNewIndex: number): void {
   }
 }
 
-export function clearWarnings(): void {
+export function clearWarnings() {
   const newLogs = Array.from(logs).filter(log => log.level !== 'warn');
   if (newLogs.length !== logs.size) {
     logs = new Set(newLogs);
@@ -286,7 +245,7 @@ export function clearWarnings(): void {
   }
 }
 
-export function clearErrors(): void {
+export function clearErrors() {
   const newLogs = Array.from(logs).filter(
     log => log.level !== 'error' && log.level !== 'fatal',
   );
@@ -296,40 +255,40 @@ export function clearErrors(): void {
   }
 }
 
-export function dismiss(log: LogBoxLog): void {
+export function dismiss(log) {
   if (logs.has(log)) {
     logs.delete(log);
     handleUpdate();
   }
 }
 
-export function setWarningFilter(filter: WarningFilter): void {
+export function setWarningFilter(filter) {
   warningFilter = filter;
 }
 
-export function setAppInfo(info: () => AppInfo): void {
+export function setAppInfo(info) {
   appInfo = info;
 }
 
-export function getAppInfo(): ?AppInfo {
+export function getAppInfo() {
   return appInfo != null ? appInfo() : null;
 }
 
-export function checkWarningFilter(format: string): WarningInfo {
+export function checkWarningFilter(format) {
   return warningFilter(format);
 }
 
-export function getIgnorePatterns(): $ReadOnlyArray<IgnorePattern> {
+export function getIgnorePatterns() {
   return Array.from(ignorePatterns);
 }
 
 export function addIgnorePatterns(
-  patterns: $ReadOnlyArray<IgnorePattern>,
-): void {
+  patterns,
+) {
   const existingSize = ignorePatterns.size;
   // The same pattern may be added multiple times, but adding a new pattern
   // can be expensive so let's find only the ones that are new.
-  patterns.forEach((pattern: IgnorePattern) => {
+  patterns.forEach((pattern) => {
     if (pattern instanceof RegExp) {
       for (const existingPattern of ignorePatterns) {
         if (
@@ -356,7 +315,7 @@ export function addIgnorePatterns(
   handleUpdate();
 }
 
-export function setDisabled(value: boolean): void {
+export function setDisabled(value) {
   if (value === _isDisabled) {
     return;
   }
@@ -364,54 +323,40 @@ export function setDisabled(value: boolean): void {
   handleUpdate();
 }
 
-export function isDisabled(): boolean {
+export function isDisabled() {
   return _isDisabled;
 }
 
-export function observe(observer: Observer): Subscription {
+export function observe(observer) {
   const subscription = {observer};
   observers.add(subscription);
 
   observer(getNextState());
 
   return {
-    unsubscribe(): void {
+    unsubscribe() {
       observers.delete(subscription);
     },
   };
 }
 
-type Props = $ReadOnly<{||}>;
-type State = $ReadOnly<{|
-  logs: LogBoxLogs,
-  isDisabled: boolean,
-  hasError: boolean,
-  selectedLogIndex: number,
-|}>;
 
-type SubscribedComponent = React.AbstractComponent<
-  $ReadOnly<{|
-    logs: $ReadOnlyArray<LogBoxLog>,
-    isDisabled: boolean,
-    selectedLogIndex: number,
-  |}>,
->;
 
 export function withSubscription(
-  WrappedComponent: SubscribedComponent,
-): React.AbstractComponent<{||}> {
-  class LogBoxStateSubscription extends React.Component<Props, State> {
+  WrappedComponent,
+) {
+  class LogBoxStateSubscription extends React.Component {
     static getDerivedStateFromError() {
       return {hasError: true};
     }
 
-    componentDidCatch(err: Error, errorInfo: {componentStack: string, ...}) {
+    componentDidCatch(err, errorInfo) {
       /* $FlowFixMe[class-object-subtyping] added when improving typing for
        * this parameters */
       reportLogBoxError(err, errorInfo.componentStack);
     }
 
-    _subscription: ?Subscription;
+    _subscription;
 
     state = {
       logs: new Set(),
@@ -420,7 +365,7 @@ export function withSubscription(
       selectedLogIndex: -1,
     };
 
-    render(): React.Node {
+    render() {
       if (this.state.hasError) {
         // This happens when the component failed to render, in which case we delegate to the native redbox.
         // We can't show anyback fallback UI here, because the error may be with <View> or <Text>.
@@ -436,19 +381,19 @@ export function withSubscription(
       );
     }
 
-    componentDidMount(): void {
+    componentDidMount() {
       this._subscription = observe(data => {
         this.setState(data);
       });
     }
 
-    componentWillUnmount(): void {
+    componentWillUnmount() {
       if (this._subscription != null) {
         this._subscription.unsubscribe();
       }
     }
 
-    _handleDismiss = (): void => {
+    _handleDismiss = () => {
       // Here we handle the cases when the log is dismissed and it
       // was either the last log, or when the current index
       // is now outside the bounds of the log array.
@@ -465,11 +410,11 @@ export function withSubscription(
       }
     };
 
-    _handleMinimize = (): void => {
+    _handleMinimize = () => {
       setSelectedLog(-1);
     };
 
-    _handleSetSelectedLog = (index: number): void => {
+    _handleSetSelectedLog = (index) => {
       setSelectedLog(index);
     };
   }

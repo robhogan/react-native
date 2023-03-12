@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict
+ *  strict
  * @jsdoc
  */
 
@@ -16,19 +16,6 @@ import invariant from 'invariant';
 // Use SQLite if available, otherwise file storage.
 const RCTAsyncStorage = NativeAsyncSQLiteDBStorage || NativeAsyncLocalStorage;
 
-type GetRequest = {
-  keys: Array<string>,
-  callback: ?(errors: ?Array<Error>, result: ?Array<Array<string>>) => void,
-  keyIndex: number,
-  resolve: (
-    result?:
-      | void
-      | null
-      | Promise<?Array<Array<string>>>
-      | Array<Array<string>>,
-  ) => void,
-  reject: (error?: mixed) => void,
-};
 
 /**
  * `AsyncStorage` is a simple, unencrypted, asynchronous, persistent, key-value
@@ -38,9 +25,9 @@ type GetRequest = {
  * See https://reactnative.dev/docs/asyncstorage
  */
 const AsyncStorage = {
-  _getRequests: ([]: Array<GetRequest>),
-  _getKeys: ([]: Array<string>),
-  _immediate: (null: ?number),
+  _getRequests: ([]),
+  _getKeys: ([]),
+  _immediate: (null),
 
   /**
    * Fetches an item for a `key` and invokes a callback upon completion.
@@ -48,9 +35,9 @@ const AsyncStorage = {
    * See https://reactnative.dev/docs/asyncstorage#getitem
    */
   getItem: function (
-    key: string,
-    callback?: ?(error: ?Error, result: ?string) => void,
-  ): Promise<?string> {
+    key,
+    callback,
+  ) {
     invariant(RCTAsyncStorage, 'RCTAsyncStorage not available');
     return new Promise((resolve, reject) => {
       RCTAsyncStorage.multiGet([key], function (errors, result) {
@@ -73,10 +60,10 @@ const AsyncStorage = {
    * See https://reactnative.dev/docs/asyncstorage#setitem
    */
   setItem: function (
-    key: string,
-    value: string,
-    callback?: ?(error: ?Error) => void,
-  ): Promise<void> {
+    key,
+    value,
+    callback,
+  ) {
     invariant(RCTAsyncStorage, 'RCTAsyncStorage not available');
     return new Promise((resolve, reject) => {
       RCTAsyncStorage.multiSet([[key, value]], function (errors) {
@@ -97,9 +84,9 @@ const AsyncStorage = {
    * See https://reactnative.dev/docs/asyncstorage#removeitem
    */
   removeItem: function (
-    key: string,
-    callback?: ?(error: ?Error) => void,
-  ): Promise<void> {
+    key,
+    callback,
+  ) {
     invariant(RCTAsyncStorage, 'RCTAsyncStorage not available');
     return new Promise((resolve, reject) => {
       RCTAsyncStorage.multiRemove([key], function (errors) {
@@ -123,10 +110,10 @@ const AsyncStorage = {
    * See https://reactnative.dev/docs/asyncstorage#mergeitem
    */
   mergeItem: function (
-    key: string,
-    value: string,
-    callback?: ?(error: ?Error) => void,
-  ): Promise<void> {
+    key,
+    value,
+    callback,
+  ) {
     invariant(RCTAsyncStorage, 'RCTAsyncStorage not available');
     return new Promise((resolve, reject) => {
       RCTAsyncStorage.multiMerge([[key, value]], function (errors) {
@@ -148,7 +135,7 @@ const AsyncStorage = {
    *
    * See https://reactnative.dev/docs/asyncstorage#clear
    */
-  clear: function (callback?: ?(error: ?Error) => void): Promise<void> {
+  clear: function (callback) {
     invariant(RCTAsyncStorage, 'RCTAsyncStorage not available');
     return new Promise((resolve, reject) => {
       RCTAsyncStorage.clear(function (error) {
@@ -168,8 +155,8 @@ const AsyncStorage = {
    * See https://reactnative.dev/docs/asyncstorage#getallkeys
    */
   getAllKeys: function (
-    callback?: ?(error: ?Error, keys: ?Array<string>) => void,
-  ): Promise<?Array<string>> {
+    callback,
+  ) {
     invariant(RCTAsyncStorage, 'RCTAsyncStorage not available');
     return new Promise((resolve, reject) => {
       RCTAsyncStorage.getAllKeys(function (error, keys) {
@@ -200,7 +187,7 @@ const AsyncStorage = {
    * */
   /* $FlowFixMe[missing-this-annot] The 'this' type annotation(s) required by
    * Flow's LTI update could not be added via codemod */
-  flushGetRequests: function (): void {
+  flushGetRequests: function () {
     const getRequests = this._getRequests;
     const getKeys = this._getKeys;
 
@@ -215,7 +202,7 @@ const AsyncStorage = {
       //
       // Is there a way to avoid using the map but fix the bug in this breaking test?
       // https://github.com/facebook/react-native/commit/8dd8ad76579d7feef34c014d387bf02065692264
-      const map: {[string]: string} = {};
+      const map = {};
       result &&
         result.forEach(([key, value]) => {
           map[key] = value;
@@ -242,9 +229,9 @@ const AsyncStorage = {
   /* $FlowFixMe[missing-this-annot] The 'this' type annotation(s) required by
    * Flow's LTI update could not be added via codemod */
   multiGet: function (
-    keys: Array<string>,
-    callback?: ?(errors: ?Array<Error>, result: ?Array<Array<string>>) => void,
-  ): Promise<?Array<Array<string>>> {
+    keys,
+    callback,
+  ) {
     if (!this._immediate) {
       this._immediate = setImmediate(() => {
         this._immediate = null;
@@ -252,7 +239,7 @@ const AsyncStorage = {
       });
     }
 
-    return new Promise<?Array<Array<string>>>((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       this._getRequests.push({
         keys,
         callback,
@@ -277,9 +264,9 @@ const AsyncStorage = {
    * See https://reactnative.dev/docs/asyncstorage#multiset
    */
   multiSet: function (
-    keyValuePairs: Array<Array<string>>,
-    callback?: ?(errors: ?Array<Error>) => void,
-  ): Promise<void> {
+    keyValuePairs,
+    callback,
+  ) {
     invariant(RCTAsyncStorage, 'RCTAsyncStorage not available');
     return new Promise((resolve, reject) => {
       RCTAsyncStorage.multiSet(keyValuePairs, function (errors) {
@@ -300,9 +287,9 @@ const AsyncStorage = {
    * See https://reactnative.dev/docs/asyncstorage#multiremove
    */
   multiRemove: function (
-    keys: Array<string>,
-    callback?: ?(errors: ?Array<Error>) => void,
-  ): Promise<void> {
+    keys,
+    callback,
+  ) {
     invariant(RCTAsyncStorage, 'RCTAsyncStorage not available');
     return new Promise((resolve, reject) => {
       RCTAsyncStorage.multiRemove(keys, function (errors) {
@@ -326,9 +313,9 @@ const AsyncStorage = {
    * See https://reactnative.dev/docs/asyncstorage#multimerge
    */
   multiMerge: function (
-    keyValuePairs: Array<Array<string>>,
-    callback?: ?(errors: ?Array<Error>) => void,
-  ): Promise<void> {
+    keyValuePairs,
+    callback,
+  ) {
     invariant(RCTAsyncStorage, 'RCTAsyncStorage not available');
     return new Promise((resolve, reject) => {
       RCTAsyncStorage.multiMerge(keyValuePairs, function (errors) {
@@ -349,18 +336,15 @@ const AsyncStorage = {
 // exist in the module spec so we should be able to just remove this check.
 if (RCTAsyncStorage && !RCTAsyncStorage.multiMerge) {
   // $FlowFixMe[unclear-type]
-  delete (AsyncStorage: any).mergeItem;
+  delete (AsyncStorage).mergeItem;
   // $FlowFixMe[unclear-type]
-  delete (AsyncStorage: any).multiMerge;
+  delete (AsyncStorage).multiMerge;
 }
 
 function convertErrors(
   // NOTE: The native module spec only has the Array case, but the Android
   // implementation passes a single object.
-  errs: ?(
-    | {message: string, key?: string}
-    | Array<{message: string, key?: string}>
-  ),
+  errs,
 ) {
   if (!errs) {
     return null;
@@ -368,8 +352,6 @@ function convertErrors(
   return (Array.isArray(errs) ? errs : [errs]).map(e => convertError(e));
 }
 
-declare function convertError(void | null): null;
-declare function convertError({message: string, key?: string}): Error;
 /* $FlowFixMe[missing-local-annot] The type annotation(s) required by Flow's
  * LTI update could not be added via codemod */
 function convertError(error) {
@@ -378,7 +360,7 @@ function convertError(error) {
   }
   const out = new Error(error.message);
   // $FlowFixMe[unclear-type]
-  (out: any).key = error.key;
+  (out).key = error.key;
   return out;
 }
 

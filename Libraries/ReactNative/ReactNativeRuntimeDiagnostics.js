@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
@@ -14,21 +14,9 @@
  * Perform a set of runtime diagnostics, usually useful for test purpose.
  * This is only meaningful for __DEV__ mode.
  */
-export type RuntimeDiagnostics = {|
-  /**
-   * Check if the runtime diagnostics is enabled at all.
-   */
-  isEnabled: () => boolean,
 
-  /**
-   * If enabled, simulate early JavaScript errors during initialization.
-   */
-  simulateEarlyJavaScriptErrors: () => void,
-|};
 
-export type RuntimeDiagnosticFlag = 'early_js_errors' | 'all';
-
-const flags: Array<RuntimeDiagnosticFlag> = [];
+const flags = [];
 let isEnabled = false;
 let shouldEnableAll = false;
 
@@ -51,7 +39,7 @@ if (__DEV__) {
   }
 }
 
-const ReactNativeRuntimeDiagnostics: RuntimeDiagnostics = {
+const ReactNativeRuntimeDiagnostics = {
   isEnabled: () => isEnabled,
   simulateEarlyJavaScriptErrors: () => {
     if (__DEV__) {

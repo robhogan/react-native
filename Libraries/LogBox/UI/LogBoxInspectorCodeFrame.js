@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
@@ -15,17 +15,13 @@ import StyleSheet from '../../StyleSheet/StyleSheet';
 import Text from '../../Text/Text';
 import View from '../../Components/View/View';
 import * as LogBoxStyle from './LogBoxStyle';
-import type {CodeFrame} from '../Data/parseLogBoxLog';
 import LogBoxButton from './LogBoxButton';
 import openFileInEditor from '../../Core/Devtools/openFileInEditor';
 import AnsiHighlight from './AnsiHighlight';
 import LogBoxInspectorSection from './LogBoxInspectorSection';
 import * as LogBoxData from '../Data/LogBoxData';
-type Props = $ReadOnly<{|
-  codeFrame: ?CodeFrame,
-|}>;
 
-function LogBoxInspectorCodeFrame(props: Props): React.Node {
+function LogBoxInspectorCodeFrame(props) {
   const codeFrame = props.codeFrame;
   if (codeFrame == null) {
     return null;

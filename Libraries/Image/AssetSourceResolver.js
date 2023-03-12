@@ -4,21 +4,13 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
 'use strict';
 
-export type ResolvedAssetSource = {|
-  +__packager_asset: boolean,
-  +width: ?number,
-  +height: ?number,
-  +uri: string,
-  +scale: number,
-|};
 
-import type {PackagerAsset} from '@react-native/assets/registry';
 
 const PixelRatio = require('../Utilities/PixelRatio');
 const {pickScale} = require('./AssetUtils');
@@ -35,7 +27,7 @@ const {
 /**
  * Returns a path like 'assets/AwesomeModule/icon@2x.png'
  */
-function getScaledAssetPath(asset: PackagerAsset): string {
+function getScaledAssetPath(asset) {
   const scale = pickScale(asset.scales, PixelRatio.get());
   const scaleSuffix = scale === 1 ? '' : '@' + scale + 'x';
   const assetDir = getBasePath(asset);
@@ -45,7 +37,7 @@ function getScaledAssetPath(asset: PackagerAsset): string {
 /**
  * Returns a path like 'drawable-mdpi/icon.png'
  */
-function getAssetPathInDrawableFolder(asset: PackagerAsset): string {
+function getAssetPathInDrawableFolder(asset) {
   const scale = pickScale(asset.scales, PixelRatio.get());
   const drawbleFolder = getAndroidResourceFolderName(asset, scale);
   const fileName = getAndroidResourceIdentifier(asset);
@@ -53,27 +45,27 @@ function getAssetPathInDrawableFolder(asset: PackagerAsset): string {
 }
 
 class AssetSourceResolver {
-  serverUrl: ?string;
+  serverUrl;
   // where the jsbundle is being run from
-  jsbundleUrl: ?string;
+  jsbundleUrl;
   // the asset to resolve
-  asset: PackagerAsset;
+  asset;
 
-  constructor(serverUrl: ?string, jsbundleUrl: ?string, asset: PackagerAsset) {
+  constructor(serverUrl, jsbundleUrl, asset) {
     this.serverUrl = serverUrl;
     this.jsbundleUrl = jsbundleUrl;
     this.asset = asset;
   }
 
-  isLoadedFromServer(): boolean {
+  isLoadedFromServer() {
     return !!this.serverUrl;
   }
 
-  isLoadedFromFileSystem(): boolean {
+  isLoadedFromFileSystem() {
     return !!(this.jsbundleUrl && this.jsbundleUrl.startsWith('file://'));
   }
 
-  defaultAsset(): ResolvedAssetSource {
+  defaultAsset() {
     if (this.isLoadedFromServer()) {
       return this.assetServerURL();
     }
@@ -91,7 +83,7 @@ class AssetSourceResolver {
    * Returns an absolute URL which can be used to fetch the asset
    * from the devserver
    */
-  assetServerURL(): ResolvedAssetSource {
+  assetServerURL() {
     invariant(!!this.serverUrl, 'need server to load from');
     return this.fromSource(
       this.serverUrl +
@@ -107,7 +99,7 @@ class AssetSourceResolver {
    * Resolves to just the scaled asset filename
    * E.g. 'assets/AwesomeModule/icon@2x.png'
    */
-  scaledAssetPath(): ResolvedAssetSource {
+  scaledAssetPath() {
     return this.fromSource(getScaledAssetPath(this.asset));
   }
 
@@ -115,7 +107,7 @@ class AssetSourceResolver {
    * Resolves to where the bundle is running from, with a scaled asset filename
    * E.g. 'file:///sdcard/bundle/assets/AwesomeModule/icon@2x.png'
    */
-  scaledAssetURLNearBundle(): ResolvedAssetSource {
+  scaledAssetURLNearBundle() {
     const path = this.jsbundleUrl || 'file://';
     return this.fromSource(
       // Assets can have relative paths outside of the project root.
@@ -131,7 +123,7 @@ class AssetSourceResolver {
    * The Android resource system picks the correct scale.
    * E.g. 'assets_awesomemodule_icon'
    */
-  resourceIdentifierWithoutScale(): ResolvedAssetSource {
+  resourceIdentifierWithoutScale() {
     invariant(
       Platform.OS === 'android',
       'resource identifiers work on Android',
@@ -144,12 +136,12 @@ class AssetSourceResolver {
    * relative to its location
    * E.g. 'file:///sdcard/AwesomeModule/drawable-mdpi/icon.png'
    */
-  drawableFolderInBundle(): ResolvedAssetSource {
+  drawableFolderInBundle() {
     const path = this.jsbundleUrl || 'file://';
     return this.fromSource(path + getAssetPathInDrawableFolder(this.asset));
   }
 
-  fromSource(source: string): ResolvedAssetSource {
+  fromSource(source) {
     return {
       __packager_asset: true,
       width: this.asset.width,
@@ -159,7 +151,7 @@ class AssetSourceResolver {
     };
   }
 
-  static pickScale: (scales: Array<number>, deviceScale?: number) => number =
+  static pickScale =
     pickScale;
 }
 

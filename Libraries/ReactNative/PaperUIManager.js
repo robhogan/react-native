@@ -4,11 +4,10 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
-import type {RootTag} from 'react-native/Libraries/Types/RootTagTypes';
 
 import NativeUIManager from './NativeUIManager';
 
@@ -17,13 +16,13 @@ const defineLazyObjectProperty = require('../Utilities/defineLazyObjectProperty'
 const Platform = require('../Utilities/Platform');
 const UIManagerProperties = require('./UIManagerProperties');
 
-const viewManagerConfigs: {[string]: any | null} = {};
+const viewManagerConfigs = {};
 
 const triedLoadingConfig = new Set();
 
 let NativeUIManagerConstants = {};
 let isNativeUIManagerConstantsSet = false;
-function getConstants(): Object {
+function getConstants() {
   if (!isNativeUIManagerConstantsSet) {
     NativeUIManagerConstants = NativeUIManager.getConstants();
     isNativeUIManagerConstantsSet = true;
@@ -31,7 +30,7 @@ function getConstants(): Object {
   return NativeUIManagerConstants;
 }
 
-function getViewManagerConfig(viewManagerName: string): any {
+function getViewManagerConfig(viewManagerName) {
   if (
     viewManagerConfigs[viewManagerName] === undefined &&
     global.nativeCallSyncHook && // If we're in the Chrome Debugger, let's not even try calling the sync method
@@ -83,11 +82,11 @@ function getViewManagerConfig(viewManagerName: string): any {
 const UIManagerJS = {
   ...NativeUIManager,
   createView(
-    reactTag: ?number,
-    viewName: string,
-    rootTag: RootTag,
-    props: Object,
-  ): void {
+    reactTag,
+    viewName,
+    rootTag,
+    props,
+  ) {
     if (Platform.OS === 'ios' && viewManagerConfigs[viewName] === undefined) {
       // This is necessary to force the initialization of native viewManager
       // classes in iOS when using static ViewConfigs
@@ -96,13 +95,13 @@ const UIManagerJS = {
 
     NativeUIManager.createView(reactTag, viewName, rootTag, props);
   },
-  getConstants(): Object {
+  getConstants() {
     return getConstants();
   },
-  getViewManagerConfig(viewManagerName: string): any {
+  getViewManagerConfig(viewManagerName) {
     return getViewManagerConfig(viewManagerName);
   },
-  hasViewManagerConfig(viewManagerName: string): boolean {
+  hasViewManagerConfig(viewManagerName) {
     return getViewManagerConfig(viewManagerName) != null;
   },
 };
@@ -114,14 +113,14 @@ const UIManagerJS = {
 // $FlowFixMe[prop-missing]
 NativeUIManager.getViewManagerConfig = UIManagerJS.getViewManagerConfig;
 
-function lazifyViewManagerConfig(viewName: string) {
+function lazifyViewManagerConfig(viewName) {
   const viewConfig = getConstants()[viewName];
   viewManagerConfigs[viewName] = viewConfig;
   if (viewConfig.Manager) {
     defineLazyObjectProperty(viewConfig, 'Constants', {
       get: () => {
         const viewManager = NativeModules[viewConfig.Manager];
-        const constants: {[string]: mixed} = {};
+        const constants = {};
         viewManager &&
           Object.keys(viewManager).forEach(key => {
             const value = viewManager[key];
@@ -135,7 +134,7 @@ function lazifyViewManagerConfig(viewName: string) {
     defineLazyObjectProperty(viewConfig, 'Commands', {
       get: () => {
         const viewManager = NativeModules[viewConfig.Manager];
-        const commands: {[string]: number} = {};
+        const commands = {};
         let index = 0;
         viewManager &&
           Object.keys(viewManager).forEach(key => {

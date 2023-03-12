@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
@@ -17,38 +17,10 @@ const Animation = require('./Animation');
 
 const {shouldUseNativeDriver} = require('../NativeAnimatedHelper');
 
-import type {PlatformConfig} from '../AnimatedPlatformConfig';
-import type {AnimationConfig, EndCallback} from './Animation';
-import type {RgbaValue} from '../nodes/AnimatedColor';
 
 import AnimatedColor from '../nodes/AnimatedColor';
 
-export type TimingAnimationConfig = $ReadOnly<{
-  ...AnimationConfig,
-  toValue:
-    | number
-    | AnimatedValue
-    | {
-        x: number,
-        y: number,
-        ...
-      }
-    | AnimatedValueXY
-    | RgbaValue
-    | AnimatedColor
-    | AnimatedInterpolation<number>,
-  easing?: (value: number) => number,
-  duration?: number,
-  delay?: number,
-}>;
 
-export type TimingAnimationConfigSingle = $ReadOnly<{
-  ...AnimationConfig,
-  toValue: number,
-  easing?: (value: number) => number,
-  duration?: number,
-  delay?: number,
-}>;
 
 let _easeInOut;
 function easeInOut() {
@@ -60,19 +32,19 @@ function easeInOut() {
 }
 
 class TimingAnimation extends Animation {
-  _startTime: number;
-  _fromValue: number;
-  _toValue: number;
-  _duration: number;
-  _delay: number;
-  _easing: (value: number) => number;
-  _onUpdate: (value: number) => void;
-  _animationFrame: any;
-  _timeout: any;
-  _useNativeDriver: boolean;
-  _platformConfig: ?PlatformConfig;
+  _startTime;
+  _fromValue;
+  _toValue;
+  _duration;
+  _delay;
+  _easing;
+  _onUpdate;
+  _animationFrame;
+  _timeout;
+  _useNativeDriver;
+  _platformConfig;
 
-  constructor(config: TimingAnimationConfigSingle) {
+  constructor(config) {
     super();
     this._toValue = config.toValue;
     this._easing = config.easing ?? easeInOut();
@@ -84,7 +56,7 @@ class TimingAnimation extends Animation {
     this.__isInteraction = config.isInteraction ?? !this._useNativeDriver;
   }
 
-  __getNativeAnimationConfig(): any {
+  __getNativeAnimationConfig() {
     const frameDuration = 1000.0 / 60.0;
     const frames = [];
     const numFrames = Math.round(this._duration / frameDuration);
@@ -102,12 +74,12 @@ class TimingAnimation extends Animation {
   }
 
   start(
-    fromValue: number,
-    onUpdate: (value: number) => void,
-    onEnd: ?EndCallback,
-    previousAnimation: ?Animation,
-    animatedValue: AnimatedValue,
-  ): void {
+    fromValue,
+    onUpdate,
+    onEnd,
+    previousAnimation,
+    animatedValue,
+  ) {
     this.__active = true;
     this._fromValue = fromValue;
     this._onUpdate = onUpdate;
@@ -139,7 +111,7 @@ class TimingAnimation extends Animation {
     }
   }
 
-  onUpdate(): void {
+  onUpdate() {
     const now = Date.now();
     if (now >= this._startTime + this._duration) {
       if (this._duration === 0) {
@@ -164,7 +136,7 @@ class TimingAnimation extends Animation {
     }
   }
 
-  stop(): void {
+  stop() {
     super.stop();
     this.__active = false;
     clearTimeout(this._timeout);

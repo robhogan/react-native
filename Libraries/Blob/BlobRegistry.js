@@ -4,13 +4,13 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict
+ *  strict
  * @format
  */
 
-const registry: {[key: string]: number, ...} = {};
+const registry = {};
 
-const register = (id: string) => {
+const register = (id) => {
   if (registry[id]) {
     registry[id]++;
   } else {
@@ -18,7 +18,7 @@ const register = (id: string) => {
   }
 };
 
-const unregister = (id: string) => {
+const unregister = (id) => {
   if (registry[id]) {
     registry[id]--;
     if (registry[id] <= 0) {
@@ -27,7 +27,7 @@ const unregister = (id: string) => {
   }
 };
 
-const has = (id: string): number | boolean => {
+const has = (id) => {
   return registry[id] && registry[id] > 0;
 };
 

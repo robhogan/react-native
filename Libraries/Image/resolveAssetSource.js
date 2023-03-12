@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  */
 
 // Resolves an asset into a `source` for `Image`.
@@ -16,12 +16,11 @@ const AssetRegistry = require('@react-native/assets/registry');
 const AssetSourceResolver = require('./AssetSourceResolver');
 const {pickScale} = require('./AssetUtils');
 
-import type {ResolvedAssetSource} from './AssetSourceResolver';
 
 let _customSourceTransformer, _serverURL, _scriptURL;
 
-let _sourceCodeScriptURL: ?string;
-function getSourceCodeScriptURL(): ?string {
+let _sourceCodeScriptURL;
+function getSourceCodeScriptURL() {
   if (_sourceCodeScriptURL) {
     return _sourceCodeScriptURL;
   }
@@ -35,7 +34,7 @@ function getSourceCodeScriptURL(): ?string {
   return _sourceCodeScriptURL;
 }
 
-function getDevServerURL(): ?string {
+function getDevServerURL() {
   if (_serverURL === undefined) {
     const sourceCodeScriptURL = getSourceCodeScriptURL();
     const match =
@@ -51,7 +50,7 @@ function getDevServerURL(): ?string {
   return _serverURL;
 }
 
-function _coerceLocalScriptURL(scriptURL: ?string): ?string {
+function _coerceLocalScriptURL(scriptURL) {
   if (scriptURL) {
     if (scriptURL.startsWith('assets://')) {
       // android: running from within assets, no offline path to use
@@ -67,7 +66,7 @@ function _coerceLocalScriptURL(scriptURL: ?string): ?string {
   return scriptURL;
 }
 
-function getScriptURL(): ?string {
+function getScriptURL() {
   if (_scriptURL === undefined) {
     _scriptURL = _coerceLocalScriptURL(getSourceCodeScriptURL());
   }
@@ -75,8 +74,8 @@ function getScriptURL(): ?string {
 }
 
 function setCustomSourceTransformer(
-  transformer: (resolver: AssetSourceResolver) => ResolvedAssetSource,
-): void {
+  transformer,
+) {
   _customSourceTransformer = transformer;
 }
 
@@ -84,7 +83,7 @@ function setCustomSourceTransformer(
  * `source` is either a number (opaque type returned by require('./foo.png'))
  * or an `ImageSource` like { uri: '<http location || file path>' }
  */
-function resolveAssetSource(source: any): ?ResolvedAssetSource {
+function resolveAssetSource(source) {
   if (typeof source === 'object') {
     return source;
   }

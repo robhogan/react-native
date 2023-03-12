@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
@@ -14,17 +14,15 @@ const AnimatedInterpolation = require('./AnimatedInterpolation');
 const AnimatedNode = require('./AnimatedNode');
 const AnimatedWithChildren = require('./AnimatedWithChildren');
 
-import type {InterpolationConfigType} from './AnimatedInterpolation';
-import type {PlatformConfig} from '../AnimatedPlatformConfig';
 
 class AnimatedDiffClamp extends AnimatedWithChildren {
-  _a: AnimatedNode;
-  _min: number;
-  _max: number;
-  _value: number;
-  _lastValue: number;
+  _a;
+  _min;
+  _max;
+  _value;
+  _lastValue;
 
-  constructor(a: AnimatedNode, min: number, max: number) {
+  constructor(a, min, max) {
     super();
 
     this._a = a;
@@ -33,18 +31,18 @@ class AnimatedDiffClamp extends AnimatedWithChildren {
     this._value = this._lastValue = this._a.__getValue();
   }
 
-  __makeNative(platformConfig: ?PlatformConfig) {
+  __makeNative(platformConfig) {
     this._a.__makeNative(platformConfig);
     super.__makeNative(platformConfig);
   }
 
-  interpolate<OutputT: number | string>(
-    config: InterpolationConfigType<OutputT>,
-  ): AnimatedInterpolation<OutputT> {
+  interpolate(
+    config,
+  ) {
     return new AnimatedInterpolation(this, config);
   }
 
-  __getValue(): number {
+  __getValue() {
     const value = this._a.__getValue();
     const diff = value - this._lastValue;
     this._lastValue = value;
@@ -52,16 +50,16 @@ class AnimatedDiffClamp extends AnimatedWithChildren {
     return this._value;
   }
 
-  __attach(): void {
+  __attach() {
     this._a.__addChild(this);
   }
 
-  __detach(): void {
+  __detach() {
     this._a.__removeChild(this);
     super.__detach();
   }
 
-  __getNativeConfig(): any {
+  __getNativeConfig() {
     return {
       type: 'diffclamp',
       input: this._a.__getNativeTag(),

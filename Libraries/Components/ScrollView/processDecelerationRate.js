@@ -5,14 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
 import Platform from '../../Utilities/Platform';
 
 function processDecelerationRate(
-  decelerationRate: number | 'normal' | 'fast',
-): number {
+  decelerationRate,
+) {
   if (decelerationRate === 'normal') {
     return Platform.select({
       ios: 0.998,

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
 'use strict';
@@ -19,14 +19,14 @@ const View = require('../Components/View/View');
 const flattenStyle = require('../StyleSheet/flattenStyle');
 const resolveBoxStyle = require('./resolveBoxStyle');
 
-class ElementBox extends React.Component<$FlowFixMeProps> {
-  render(): React.Node {
+class ElementBox extends React.Component {
+  render() {
     const style = flattenStyle(this.props.style) || {};
     let margin = resolveBoxStyle('margin', style);
     let padding = resolveBoxStyle('padding', style);
 
     const frameStyle = {...this.props.frame};
-    const contentStyle: {width: number, height: number} = {
+    const contentStyle = {
       width: this.props.frame.width,
       height: this.props.frame.height,
     };
@@ -87,13 +87,6 @@ const styles = StyleSheet.create({
   },
 });
 
-type Style = {
-  top: number,
-  right: number,
-  bottom: number,
-  left: number,
-  ...
-};
 
 /**
  * Resolves relative sizes (percentages and auto) in a style object.
@@ -101,7 +94,7 @@ type Style = {
  * @param style the style to resolve
  * @return a modified copy
  */
-function resolveRelativeSizes(style: $ReadOnly<Style>): Style {
+function resolveRelativeSizes(style) {
   let resolvedStyle = {...style};
   resolveSizeInPlace(resolvedStyle, 'top', 'height');
   resolveSizeInPlace(resolvedStyle, 'right', 'width');
@@ -118,9 +111,9 @@ function resolveRelativeSizes(style: $ReadOnly<Style>): Style {
  * @param dimension the window dimension that this direction belongs to (e.g. 'height')
  */
 function resolveSizeInPlace(
-  style: Style,
-  direction: string,
-  dimension: string,
+  style,
+  direction,
+  dimension,
 ) {
   if (style[direction] !== null && typeof style[direction] === 'string') {
     if (style[direction].indexOf('%') !== -1) {

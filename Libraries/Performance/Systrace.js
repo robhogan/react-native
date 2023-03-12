@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict
+ *  strict
  * @format
  */
 
@@ -26,7 +26,7 @@ let _canInstallReactHook = false;
 const REACT_MARKER = '\u269B';
 const userTimingPolyfill = __DEV__
   ? {
-      mark(markName: string) {
+      mark(markName) {
         if (_enabled) {
           _markStackIndex++;
           _markStack[_markStackIndex] = markName;
@@ -44,7 +44,7 @@ const userTimingPolyfill = __DEV__
           Systrace.beginEvent(systraceLabel);
         }
       },
-      measure(measureName: string, startMark: ?string, endMark: ?string) {
+      measure(measureName, startMark, endMark) {
         if (_enabled) {
           invariant(
             typeof measureName === 'string' &&
@@ -66,7 +66,7 @@ const userTimingPolyfill = __DEV__
           Systrace.endEvent();
         }
       },
-      clearMarks(markName: string) {
+      clearMarks(markName) {
         if (_enabled) {
           if (_markStackIndex === -1) {
             return;
@@ -88,12 +88,7 @@ const userTimingPolyfill = __DEV__
   : null;
 
 function installPerformanceHooks(
-  polyfill: null | $TEMPORARY$object<{
-    clearMarks(markName: string): void,
-    clearMeasures(): void,
-    mark(markName: string): void,
-    measure(measureName: string, startMark: ?string, endMark: ?string): void,
-  }>,
+  polyfill,
 ) {
   if (polyfill) {
     if (global.performance === undefined) {
@@ -118,7 +113,7 @@ const Systrace = {
     _canInstallReactHook = true;
   },
 
-  setEnabled(enabled: boolean) {
+  setEnabled(enabled) {
     if (_enabled !== enabled) {
       if (__DEV__) {
         if (enabled) {
@@ -138,7 +133,7 @@ const Systrace = {
     }
   },
 
-  isEnabled(): boolean {
+  isEnabled() {
     return _enabled;
   },
 
@@ -146,8 +141,8 @@ const Systrace = {
    * beginEvent/endEvent for starting and then ending a profile within the same call stack frame
    **/
   beginEvent(
-    profileName?: string | (() => string),
-    args?: {[string]: string, ...},
+    profileName,
+    args,
   ) {
     if (_enabled) {
       const profileNameString =
@@ -171,7 +166,7 @@ const Systrace = {
    * occur on another thread or out of the current stack frame, eg await
    * the returned cookie variable should be used as input into the endAsyncEvent call to end the profile
    **/
-  beginAsyncEvent(profileName?: string | (() => string)): number {
+  beginAsyncEvent(profileName) {
     const cookie = _asyncCookie;
     if (_enabled) {
       _asyncCookie++;
@@ -186,7 +181,7 @@ const Systrace = {
     return cookie;
   },
 
-  endAsyncEvent(profileName?: string | (() => string), cookie?: number) {
+  endAsyncEvent(profileName, cookie) {
     if (_enabled) {
       const profileNameString =
         typeof profileName === 'function' ? profileName() : profileName;
@@ -201,7 +196,7 @@ const Systrace = {
   /**
    * counterEvent registers the value to the profileName on the systrace timeline
    **/
-  counterEvent(profileName?: string | (() => string), value?: number) {
+  counterEvent(profileName, value) {
     if (_enabled) {
       const profileNameString =
         typeof profileName === 'function' ? profileName() : profileName;

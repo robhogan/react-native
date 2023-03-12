@@ -5,28 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict
+ *  strict
  */
 
 'use strict';
 
 const AUTO_INSTANCE_KEY = -1;
 
-export type FlowId = {
-  markerId: number,
-  instanceKey: number,
-};
 
-export type PointData = $Shape<{
-  string: ?{[string]: string, ...},
-  int: ?{[string]: number, ...},
-  double: ?{[string]: number, ...},
-  bool: ?{[string]: boolean, ...},
-  string_array: ?{[string]: $ReadOnlyArray<string>, ...},
-  int_array: ?{[string]: $ReadOnlyArray<number>, ...},
-  double_array: ?{[string]: $ReadOnlyArray<number>, ...},
-  bool_array: ?{[string]: $ReadOnlyArray<boolean>, ...},
-}>;
 
 /**
  * API for tracking reliability of your user interactions
@@ -49,7 +35,7 @@ const UserFlow = {
    *
    * By default, instanceKey will generate unique instance every time you call userFlowGetId with markerId only.
    */
-  newFlowId(markerId: number, instanceKey: number = AUTO_INSTANCE_KEY): FlowId {
+  newFlowId(markerId, instanceKey = AUTO_INSTANCE_KEY) {
     var resolvedInstanceKey = instanceKey;
     if (instanceKey === AUTO_INSTANCE_KEY) {
       if (global.nativeUserFlowNextInstanceKey) {
@@ -77,9 +63,9 @@ const UserFlow = {
    *
    */
   start(
-    flowId: FlowId,
-    options: {triggerSource: string, cancelOnBackground: boolean},
-  ): void {
+    flowId,
+    options,
+  ) {
     if (global.nativeUserFlowStart) {
       global.nativeUserFlowStart(
         flowId.markerId,
@@ -91,10 +77,10 @@ const UserFlow = {
   },
 
   addAnnotation(
-    flowId: FlowId,
-    annotationName: string,
-    annotationValue: string | boolean,
-  ): void {
+    flowId,
+    annotationName,
+    annotationValue,
+  ) {
     if (global.nativeUserFlowAddAnnotation) {
       global.nativeUserFlowAddAnnotation(
         flowId.markerId,
@@ -105,7 +91,7 @@ const UserFlow = {
     }
   },
 
-  addPoint(flowId: FlowId, pointName: string, data: ?PointData = null): void {
+  addPoint(flowId, pointName, data = null) {
     if (global.nativeUserFlowAddPoint) {
       global.nativeUserFlowAddPoint(
         flowId.markerId,
@@ -116,7 +102,7 @@ const UserFlow = {
     }
   },
 
-  endSuccess(flowId: FlowId): void {
+  endSuccess(flowId) {
     if (global.nativeUserFlowEndSuccess) {
       global.nativeUserFlowEndSuccess(flowId.markerId, flowId.instanceKey);
     }
@@ -130,10 +116,10 @@ const UserFlow = {
    * DebugInfo is free-form string, where you can attach detailed error message. It is attached as data to the point (see ErrorName).
    */
   endFailure(
-    flowId: FlowId,
-    errorName: string,
-    debugInfo: ?string = null,
-  ): void {
+    flowId,
+    errorName,
+    debugInfo = null,
+  ) {
     if (global.nativeUserFlowEndFail) {
       global.nativeUserFlowEndFail(
         flowId.markerId,
@@ -144,7 +130,7 @@ const UserFlow = {
     }
   },
 
-  endCancel(flowId: FlowId, cancelReason: string): void {
+  endCancel(flowId, cancelReason) {
     if (global.nativeUserFlowEndCancel) {
       global.nativeUserFlowEndCancel(
         flowId.markerId,

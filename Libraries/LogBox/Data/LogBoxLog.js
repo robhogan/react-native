@@ -4,56 +4,33 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict
+ *  strict
  * @format
  */
 
 import * as LogBoxSymbolication from './LogBoxSymbolication';
 
-import type {
-  Category,
-  Message,
-  ComponentStack,
-  CodeFrame,
-} from './parseLogBoxLog';
-import type {Stack} from './LogBoxSymbolication';
 
-type SymbolicationStatus = 'NONE' | 'PENDING' | 'COMPLETE' | 'FAILED';
 
-export type LogLevel = 'warn' | 'error' | 'fatal' | 'syntax';
 
-export type LogBoxLogData = $ReadOnly<{|
-  level: LogLevel,
-  type?: ?string,
-  message: Message,
-  stack: Stack,
-  category: string,
-  componentStack: ComponentStack,
-  codeFrame?: ?CodeFrame,
-  isComponentError: boolean,
-|}>;
 
 class LogBoxLog {
-  message: Message;
-  type: ?string;
-  category: Category;
-  componentStack: ComponentStack;
-  stack: Stack;
-  count: number;
-  level: LogLevel;
-  codeFrame: ?CodeFrame;
-  isComponentError: boolean;
-  symbolicated:
-    | $ReadOnly<{|error: null, stack: null, status: 'NONE'|}>
-    | $ReadOnly<{|error: null, stack: null, status: 'PENDING'|}>
-    | $ReadOnly<{|error: null, stack: Stack, status: 'COMPLETE'|}>
-    | $ReadOnly<{|error: Error, stack: null, status: 'FAILED'|}> = {
+  message;
+  type;
+  category;
+  componentStack;
+  stack;
+  count;
+  level;
+  codeFrame;
+  isComponentError;
+  symbolicated = {
     error: null,
     stack: null,
     status: 'NONE',
   };
 
-  constructor(data: LogBoxLogData) {
+  constructor(data) {
     this.level = data.level;
     this.type = data.type;
     this.message = data.message;
@@ -65,30 +42,30 @@ class LogBoxLog {
     this.count = 1;
   }
 
-  incrementCount(): void {
+  incrementCount() {
     this.count += 1;
   }
 
-  getAvailableStack(): Stack {
+  getAvailableStack() {
     return this.symbolicated.status === 'COMPLETE'
       ? this.symbolicated.stack
       : this.stack;
   }
 
-  retrySymbolicate(callback?: (status: SymbolicationStatus) => void): void {
+  retrySymbolicate(callback) {
     if (this.symbolicated.status !== 'COMPLETE') {
       LogBoxSymbolication.deleteStack(this.stack);
       this.handleSymbolicate(callback);
     }
   }
 
-  symbolicate(callback?: (status: SymbolicationStatus) => void): void {
+  symbolicate(callback) {
     if (this.symbolicated.status === 'NONE') {
       this.handleSymbolicate(callback);
     }
   }
 
-  handleSymbolicate(callback?: (status: SymbolicationStatus) => void): void {
+  handleSymbolicate(callback) {
     if (this.symbolicated.status !== 'PENDING') {
       this.updateStatus(null, null, null, callback);
       LogBoxSymbolication.symbolicate(this.stack).then(
@@ -103,11 +80,11 @@ class LogBoxLog {
   }
 
   updateStatus(
-    error: ?Error,
-    stack: ?Stack,
-    codeFrame: ?CodeFrame,
-    callback?: (status: SymbolicationStatus) => void,
-  ): void {
+    error,
+    stack,
+    codeFrame,
+    callback,
+  ) {
     const lastStatus = this.symbolicated.status;
     if (error != null) {
       this.symbolicated = {

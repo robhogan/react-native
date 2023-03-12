@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
@@ -20,21 +20,12 @@ const ShallowRenderer = require('react-shallow-renderer');
 // $FlowFixMe[invalid-constructor]
 const shallowRenderer = new ShallowRenderer();
 
-import type {ReactTestRenderer as ReactTestRendererType} from 'react-test-renderer';
 
-export type ReactTestInstance = $PropertyType<ReactTestRendererType, 'root'>;
 
-export type Predicate = (node: ReactTestInstance) => boolean;
 
-type $ReturnType<Fn> = $Call<<Ret, A>((...A) => Ret) => Ret, Fn>;
 /* $FlowFixMe[value-as-type] (>=0.125.1 site=react_native_fb) This comment
  * suppresses an error found when Flow v0.125.1 was deployed. To see the error,
  * delete this comment and run Flow. */
-export type ReactTestRendererJSON =
-  /* $FlowFixMe[prop-missing] (>=0.125.1 site=react_native_fb) This comment
-   * suppresses an error found when Flow v0.125.1 was deployed. To see the error,
-   * delete this comment and run Flow. */
-  $ReturnType<ReactTestRenderer.create.toJSON>;
 
 const {
   Switch,
@@ -44,7 +35,7 @@ const {
   VirtualizedList,
 } = require('react-native');
 
-function byClickable(): Predicate {
+function byClickable() {
   return withMessage(
     node =>
       // note: <Text /> lazy-mounts press handlers after the first press,
@@ -66,21 +57,21 @@ function byClickable(): Predicate {
   );
 }
 
-function byTestID(testID: string): Predicate {
+function byTestID(testID) {
   return withMessage(
     node => node.props && node.props.testID === testID,
     `testID prop equals ${testID}`,
   );
 }
 
-function byTextMatching(regex: RegExp): Predicate {
+function byTextMatching(regex) {
   return withMessage(
     node => node.props != null && regex.exec(node.props.children) !== null,
     `text content matches ${regex.toString()}`,
   );
 }
 
-function enter(instance: ReactTestInstance, text: string) {
+function enter(instance, text) {
   const input = instance.findByType(TextInput);
   input.props.onChange && input.props.onChange({nativeEvent: {text}});
   input.props.onChangeText && input.props.onChangeText(text);
@@ -88,9 +79,9 @@ function enter(instance: ReactTestInstance, text: string) {
 
 // Returns null if there is no error, otherwise returns an error message string.
 function maximumDepthError(
-  tree: ReactTestRendererType,
-  maxDepthLimit: number,
-): ?string {
+  tree,
+  maxDepthLimit,
+) {
   const maxDepth = maximumDepthOfJSON(tree.toJSON());
   if (maxDepth > maxDepthLimit) {
     return (
@@ -106,14 +97,14 @@ function maximumDepthError(
 }
 
 function expectNoConsoleWarn() {
-  (jest: $FlowFixMe).spyOn(console, 'warn').mockImplementation((...args) => {
+  (jest).spyOn(console, 'warn').mockImplementation((...args) => {
     expect(args).toBeFalsy();
   });
 }
 
 function expectNoConsoleError() {
   let hasNotFailed = true;
-  (jest: $FlowFixMe).spyOn(console, 'error').mockImplementation((...args) => {
+  (jest).spyOn(console, 'error').mockImplementation((...args) => {
     if (hasNotFailed) {
       hasNotFailed = false; // set false to prevent infinite recursion
       expect(args).toBeFalsy();
@@ -122,9 +113,9 @@ function expectNoConsoleError() {
 }
 
 function expectRendersMatchingSnapshot(
-  name: string,
-  ComponentProvider: () => React.Element<any>,
-  unmockComponent: () => mixed,
+  name,
+  ComponentProvider,
+  unmockComponent,
 ) {
   let instance;
 
@@ -160,7 +151,7 @@ function expectRendersMatchingSnapshot(
 }
 
 // Takes a node from toJSON()
-function maximumDepthOfJSON(node: ?ReactTestRendererJSON): number {
+function maximumDepthOfJSON(node) {
   if (node == null) {
     return 0;
   } else if (typeof node === 'string' || node.children == null) {
@@ -174,16 +165,14 @@ function maximumDepthOfJSON(node: ?ReactTestRendererJSON): number {
   }
 }
 
-function renderAndEnforceStrictMode(element: React.Node): any {
+function renderAndEnforceStrictMode(element) {
   expectNoConsoleError();
   return renderWithStrictMode(element);
 }
 
-function renderWithStrictMode(element: React.Node): ReactTestRendererType {
-  const WorkAroundBugWithStrictModeInTestRenderer = (prps: {
-    children: React.Node,
-  }) => prps.children;
-  const StrictMode = (React: $FlowFixMe).StrictMode;
+function renderWithStrictMode(element) {
+  const WorkAroundBugWithStrictModeInTestRenderer = (prps) => prps.children;
+  const StrictMode = (React).StrictMode;
   return ReactTestRenderer.create(
     <WorkAroundBugWithStrictModeInTestRenderer>
       <StrictMode>{element}</StrictMode>
@@ -191,7 +180,7 @@ function renderWithStrictMode(element: React.Node): ReactTestRendererType {
   );
 }
 
-function tap(instance: ReactTestInstance) {
+function tap(instance) {
   const touchable = instance.find(byClickable());
   if (touchable.type === Text && touchable.props && touchable.props.onPress) {
     touchable.props.onPress();
@@ -216,15 +205,15 @@ function tap(instance: ReactTestInstance) {
   }
 }
 
-function scrollToBottom(instance: ReactTestInstance) {
+function scrollToBottom(instance) {
   const list = instance.findByType(VirtualizedList);
   list.props && list.props.onEndReached();
 }
 
 // To make error messages a little bit better, we attach a custom toString
 // implementation to a predicate
-function withMessage(fn: Predicate, message: string): Predicate {
-  (fn: any).toString = () => message;
+function withMessage(fn, message) {
+  (fn).toString = () => message;
   return fn;
 }
 

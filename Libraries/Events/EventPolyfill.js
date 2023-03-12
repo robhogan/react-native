@@ -5,18 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
 // https://dom.spec.whatwg.org/#dictdef-eventinit
-type Event$Init = {
-  bubbles?: boolean,
-  cancelable?: boolean,
-  composed?: boolean,
-  /** Non-standard. See `composed` instead. */
-  scoped?: boolean,
-  ...
-};
 
 /**
  * This is a copy of the Event interface defined in Flow:
@@ -28,138 +20,39 @@ type Event$Init = {
  * we must provide an implementation of Event for CustomEvent (and future
  * alignment of React Native's event system with the W3 spec).
  */
-interface IEvent {
-  constructor(type: string, eventInitDict?: Event$Init): void;
-  /**
-   * Returns the type of event, e.g. "click", "hashchange", or "submit".
-   */
-  +type: string;
-  /**
-   * Returns the object to which event is dispatched (its target).
-   */
-  +target: EventTarget; // TODO: nullable
-  /** @deprecated */
-  +srcElement: Element; // TODO: nullable
-  /**
-   * Returns the object whose event listener's callback is currently being invoked.
-   */
-  +currentTarget: EventTarget; // TODO: nullable
-  /**
-   * Returns the invocation target objects of event's path (objects on which
-   * listeners will be invoked), except for any nodes in shadow trees of which
-   * the shadow root's mode is "closed" that are not reachable from event's
-   * currentTarget.
-   */
-  composedPath(): Array<EventTarget>;
 
-  +NONE: number;
-  +AT_TARGET: number;
-  +BUBBLING_PHASE: number;
-  +CAPTURING_PHASE: number;
-  /**
-   * Returns the event's phase, which is one of NONE, CAPTURING_PHASE, AT_TARGET,
-   * and BUBBLING_PHASE.
-   */
-  +eventPhase: number;
-
-  /**
-   * When dispatched in a tree, invoking this method prevents event from reaching
-   * any objects other than the current object.
-   */
-  stopPropagation(): void;
-  /**
-   * Invoking this method prevents event from reaching any registered event
-   * listeners after the current one finishes running and, when dispatched in a
-   * tree, also prevents event from reaching any other objects.
-   */
-  stopImmediatePropagation(): void;
-
-  /**
-   * Returns true or false depending on how event was initialized. True if
-   * event goes through its target's ancestors in reverse tree order, and
-   * false otherwise.
-   */
-  +bubbles: boolean;
-  /**
-   * Returns true or false depending on how event was initialized. Its
-   * return value does not always carry meaning, but true can indicate
-   * that part of the operation during which event was dispatched, can
-   * be canceled by invoking the preventDefault() method.
-   */
-  +cancelable: boolean;
-  // returnValue: boolean; // legacy, and some subclasses still define it as a string!
-  /**
-   * If invoked when the cancelable attribute value is true, and while
-   * executing a listener for the event with passive set to false, signals to
-   * the operation that caused event to be dispatched that it needs to be
-   * canceled.
-   */
-  preventDefault(): void;
-  /**
-   * Returns true if preventDefault() was invoked successfully to indicate
-   * cancelation, and false otherwise.
-   */
-  +defaultPrevented: boolean;
-  /**
-   * Returns true or false depending on how event was initialized. True if
-   * event invokes listeners past a ShadowRoot node that is the root of its
-   * target, and false otherwise.
-   */
-  +composed: boolean;
-
-  /**
-   * Returns true if event was dispatched by the user agent, and false otherwise.
-   */
-  +isTrusted: boolean;
-  /**
-   * Returns the event's timestamp as the number of milliseconds measured relative
-   * to the time origin.
-   */
-  +timeStamp: number;
-
-  /** Non-standard. See Event.prototype.composedPath */
-  +deepPath?: () => EventTarget[];
-  /** Non-standard. See Event.prototype.composed */
-  +scoped: boolean;
-
-  /**
-   * @deprecated
-   */
-  initEvent(type: string, bubbles: boolean, cancelable: boolean): void;
-}
-
-class EventPolyfill implements IEvent {
-  type: string;
-  bubbles: boolean;
-  cancelable: boolean;
-  composed: boolean;
+class EventPolyfill {
+  type;
+  bubbles;
+  cancelable;
+  composed;
   // Non-standard. See `composed` instead.
-  scoped: boolean;
-  isTrusted: boolean;
-  defaultPrevented: boolean;
-  timeStamp: number;
+  scoped;
+  isTrusted;
+  defaultPrevented;
+  timeStamp;
 
   // https://developer.mozilla.org/en-US/docs/Web/API/Event/eventPhase
-  NONE: number;
-  AT_TARGET: number;
-  BUBBLING_PHASE: number;
-  CAPTURING_PHASE: number;
+  NONE;
+  AT_TARGET;
+  BUBBLING_PHASE;
+  CAPTURING_PHASE;
 
-  eventPhase: number;
+  eventPhase;
 
-  currentTarget: EventTarget; // TODO: nullable
-  target: EventTarget; // TODO: nullable
+  currentTarget; // TODO: nullable
+  target; // TODO: nullable
   /** @deprecated */
-  srcElement: Element; // TODO: nullable
+  srcElement; // TODO: nullable
 
   // React Native-specific: proxy data to a SyntheticEvent when
   // certain methods are called.
   // SyntheticEvent will also have a reference to this instance -
   // it is circular - and both classes use this reference to keep
   // data with the other in sync.
-  _syntheticEvent: mixed;
+  _syntheticEvent;
 
-  constructor(type: string, eventInitDict?: Event$Init): void {
+  constructor(type, eventInitDict) {
     this.type = type;
     this.bubbles = !!(eventInitDict?.bubbles || false);
     this.cancelable = !!(eventInitDict?.cancelable || false);
@@ -191,11 +84,11 @@ class EventPolyfill implements IEvent {
     this.srcElement = null;
   }
 
-  composedPath(): Array<EventTarget> {
+  composedPath() {
     throw new Error('TODO: not yet implemented');
   }
 
-  preventDefault(): void {
+  preventDefault() {
     this.defaultPrevented = true;
 
     if (this._syntheticEvent != null) {
@@ -204,34 +97,33 @@ class EventPolyfill implements IEvent {
     }
   }
 
-  initEvent(type: string, bubbles: boolean, cancelable: boolean): void {
+  initEvent(type, bubbles, cancelable) {
     throw new Error(
       'TODO: not yet implemented. This method is also deprecated.',
     );
   }
 
-  stopImmediatePropagation(): void {
+  stopImmediatePropagation() {
     throw new Error('TODO: not yet implemented');
   }
 
-  stopPropagation(): void {
+  stopPropagation() {
     if (this._syntheticEvent != null) {
       // $FlowFixMe
       this._syntheticEvent.stopPropagation();
     }
   }
 
-  setSyntheticEvent(value: mixed): void {
+  setSyntheticEvent(value) {
     this._syntheticEvent = value;
   }
 }
 
 // Assertion magic for polyfill follows.
-declare var checkEvent: Event;
 
 /*::
 // This can be a strict mode error at runtime so put it in a Flow comment.
-(checkEvent: IEvent);
+(checkEvent);
 */
 
 global.Event = EventPolyfill;

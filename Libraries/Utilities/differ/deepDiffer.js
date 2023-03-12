@@ -5,20 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  */
 
 'use strict';
 
 let logListeners;
 
-type LogListeners = {|
-  +onDifferentFunctionsIgnored: (nameOne: ?string, nameTwo: ?string) => void,
-|};
 
-type Options = {|+unsafelyIgnoreFunctions?: boolean|};
 
-function unstable_setLogListeners(listeners: ?LogListeners) {
+function unstable_setLogListeners(listeners) {
   logListeners = listeners;
 }
 
@@ -26,11 +22,11 @@ function unstable_setLogListeners(listeners: ?LogListeners) {
  * @returns {bool} true if different, false if equal
  */
 const deepDiffer = function (
-  one: any,
-  two: any,
-  maxDepthOrOptions: Options | number = -1,
-  maybeOptions?: Options,
-): boolean {
+  one,
+  two,
+  maxDepthOrOptions = -1,
+  maybeOptions,
+) {
   const options =
     typeof maxDepthOrOptions === 'number' ? maybeOptions : maxDepthOrOptions;
   const maxDepth =

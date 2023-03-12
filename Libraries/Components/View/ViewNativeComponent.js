@@ -4,22 +4,18 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
 import * as NativeComponentRegistry from '../../NativeComponent/NativeComponentRegistry';
-import type {
-  HostComponent,
-  PartialViewConfig,
-} from '../../Renderer/shims/ReactNativeTypes';
 import codegenNativeCommands from '../../Utilities/codegenNativeCommands';
-import {type ViewProps as Props} from './ViewPropTypes';
+import {} from './ViewPropTypes';
 import Platform from '../../Utilities/Platform';
 
 import * as React from 'react';
 
-export const __INTERNAL_VIEW_CONFIG: PartialViewConfig =
+export const __INTERNAL_VIEW_CONFIG =
   Platform.OS === 'android'
     ? {
         uiViewClassName: 'RCTView',
@@ -80,25 +76,13 @@ export const __INTERNAL_VIEW_CONFIG: PartialViewConfig =
         uiViewClassName: 'RCTView',
       };
 
-const ViewNativeComponent: HostComponent<Props> =
-  NativeComponentRegistry.get<Props>('RCTView', () => __INTERNAL_VIEW_CONFIG);
+const ViewNativeComponent =
+  NativeComponentRegistry.get('RCTView', () => __INTERNAL_VIEW_CONFIG);
 
-interface NativeCommands {
-  +hotspotUpdate: (
-    viewRef: React.ElementRef<HostComponent<mixed>>,
-    x: number,
-    y: number,
-  ) => void;
-  +setPressed: (
-    viewRef: React.ElementRef<HostComponent<mixed>>,
-    pressed: boolean,
-  ) => void;
-}
 
-export const Commands: NativeCommands = codegenNativeCommands<NativeCommands>({
+export const Commands = codegenNativeCommands({
   supportedCommands: ['hotspotUpdate', 'setPressed'],
 });
 
 export default ViewNativeComponent;
 
-export type ViewNativeComponentType = HostComponent<Props>;

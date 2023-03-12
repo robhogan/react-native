@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
 'use strict';
@@ -14,163 +14,48 @@ const InspectorAgent = require('./InspectorAgent');
 const JSInspector = require('./JSInspector');
 const XMLHttpRequest = require('../Network/XMLHttpRequest');
 
-import type EventSender from './InspectorAgent';
 
-type RequestId = string;
 
-type LoaderId = string;
-type FrameId = string;
-type Timestamp = number;
 
-type Headers = {[string]: string};
 
 // We don't currently care about this
-type ResourceTiming = null;
 
-type ResourceType =
-  | 'Document'
-  | 'Stylesheet'
-  | 'Image'
-  | 'Media'
-  | 'Font'
-  | 'Script'
-  | 'TextTrack'
-  | 'XHR'
-  | 'Fetch'
-  | 'EventSource'
-  | 'WebSocket'
-  | 'Manifest'
-  | 'Other';
 
-type SecurityState =
-  | 'unknown'
-  | 'neutral'
-  | 'insecure'
-  | 'warning'
-  | 'secure'
-  | 'info';
-type BlockedReason =
-  | 'csp'
-  | 'mixed-content'
-  | 'origin'
-  | 'inspector'
-  | 'subresource-filter'
-  | 'other';
 
-type StackTrace = null;
 
-type Initiator = {
-  type: 'script' | 'other',
-  stackTrace?: StackTrace,
-  url?: string,
-  lineNumber?: number,
-  ...
-};
 
-type ResourcePriority = 'VeryLow' | 'Low' | 'Medium' | 'High' | 'VeryHigh';
 
-type Request = {
-  url: string,
-  method: string,
-  headers: Headers,
-  postData?: string,
-  mixedContentType?: 'blockable' | 'optionally-blockable' | 'none',
-  initialPriority: ResourcePriority,
-  ...
-};
 
-type Response = {
-  url: string,
-  status: number,
-  statusText: string,
-  headers: Headers,
-  headersText?: string,
-  mimeType: string,
-  requestHeaders?: Headers,
-  requestHeadersText?: string,
-  connectionReused: boolean,
-  connectionId: number,
-  fromDiskCache?: boolean,
-  encodedDataLength: number,
-  timing?: ResourceTiming,
-  securityState: SecurityState,
-  ...
-};
 
-type RequestWillBeSentEvent = {
-  requestId: RequestId,
-  frameId: FrameId,
-  loaderId: LoaderId,
-  documentURL: string,
-  request: Request,
-  timestamp: Timestamp,
-  initiator: Initiator,
-  redirectResponse?: Response,
-  // This is supposed to be optional but the inspector crashes without it,
-  // see https://bugs.chromium.org/p/chromium/issues/detail?id=653138
-  type: ResourceType,
-  ...
-};
 
-type ResponseReceivedEvent = {
-  requestId: RequestId,
-  frameId: FrameId,
-  loaderId: LoaderId,
-  timestamp: Timestamp,
-  type: ResourceType,
-  response: Response,
-  ...
-};
 
-type DataReceived = {
-  requestId: RequestId,
-  timestamp: Timestamp,
-  dataLength: number,
-  encodedDataLength: number,
-  ...
-};
 
-type LoadingFinishedEvent = {
-  requestId: RequestId,
-  timestamp: Timestamp,
-  encodedDataLength: number,
-  ...
-};
 
-type LoadingFailedEvent = {
-  requestId: RequestId,
-  timestamp: Timestamp,
-  type: ResourceType,
-  errorText: string,
-  canceled?: boolean,
-  blockedReason?: BlockedReason,
-  ...
-};
 
 class Interceptor {
-  _agent: NetworkAgent;
-  _requests: Map<string, string>;
+  _agent;
+  _requests;
 
-  constructor(agent: NetworkAgent) {
+  constructor(agent) {
     this._agent = agent;
     this._requests = new Map();
   }
 
-  getData(requestId: string): ?string {
+  getData(requestId) {
     return this._requests.get(requestId);
   }
 
-  requestSent(id: number, url: string, method: string, headers: Headers) {
+  requestSent(id, url, method, headers) {
     const requestId = String(id);
     this._requests.set(requestId, '');
 
-    const request: Request = {
+    const request = {
       url,
       method,
       headers,
       initialPriority: 'Medium',
     };
-    const event: RequestWillBeSentEvent = {
+    const event = {
       requestId,
       documentURL: '',
       frameId: '1',
@@ -188,9 +73,9 @@ class Interceptor {
     this._agent.sendEvent('requestWillBeSent', event);
   }
 
-  responseReceived(id: number, url: string, status: number, headers: Headers) {
+  responseReceived(id, url, status, headers) {
     const requestId = String(id);
-    const response: Response = {
+    const response = {
       url,
       status,
       statusText: String(status),
@@ -204,7 +89,7 @@ class Interceptor {
       securityState: 'unknown',
     };
 
-    const event: ResponseReceivedEvent = {
+    const event = {
       requestId,
       frameId: '1',
       loaderId: '1',
@@ -215,11 +100,11 @@ class Interceptor {
     this._agent.sendEvent('responseReceived', event);
   }
 
-  dataReceived(id: number, data: string) {
+  dataReceived(id, data) {
     const requestId = String(id);
     const existingData = this._requests.get(requestId) || '';
     this._requests.set(requestId, existingData.concat(data));
-    const event: DataReceived = {
+    const event = {
       requestId,
       timestamp: JSInspector.getTimestamp(),
       dataLength: data.length,
@@ -228,8 +113,8 @@ class Interceptor {
     this._agent.sendEvent('dataReceived', event);
   }
 
-  loadingFinished(id: number, encodedDataLength: number) {
-    const event: LoadingFinishedEvent = {
+  loadingFinished(id, encodedDataLength) {
+    const event = {
       requestId: String(id),
       timestamp: JSInspector.getTimestamp(),
       encodedDataLength: encodedDataLength,
@@ -237,8 +122,8 @@ class Interceptor {
     this._agent.sendEvent('loadingFinished', event);
   }
 
-  loadingFailed(id: number, error: string) {
-    const event: LoadingFailedEvent = {
+  loadingFailed(id, error) {
+    const event = {
       requestId: String(id),
       timestamp: JSInspector.getTimestamp(),
       type: 'Other',
@@ -247,25 +132,20 @@ class Interceptor {
     this._agent.sendEvent('loadingFailed', event);
   }
 
-  _getMimeType(headers: Headers): string {
+  _getMimeType(headers) {
     const contentType = headers['Content-Type'] || '';
     return contentType.split(';')[0];
   }
 }
 
-type EnableArgs = {
-  maxResourceBufferSize?: number,
-  maxTotalBufferSize?: number,
-  ...
-};
 
 class NetworkAgent extends InspectorAgent {
-  static DOMAIN: $TEMPORARY$string<'Network'> = 'Network';
+  static DOMAIN = 'Network';
 
-  _sendEvent: EventSender;
-  _interceptor: ?Interceptor;
+  _sendEvent;
+  _interceptor;
 
-  enable({maxResourceBufferSize, maxTotalBufferSize}: EnableArgs) {
+  enable({maxResourceBufferSize, maxTotalBufferSize}) {
     this._interceptor = new Interceptor(this);
     XMLHttpRequest.setInterceptor(this._interceptor);
   }
@@ -275,15 +155,11 @@ class NetworkAgent extends InspectorAgent {
     this._interceptor = null;
   }
 
-  getResponseBody({requestId}: {requestId: RequestId, ...}): {
-    body: ?string,
-    base64Encoded: boolean,
-    ...
-  } {
+  getResponseBody({requestId}) {
     return {body: this.interceptor().getData(requestId), base64Encoded: false};
   }
 
-  interceptor(): Interceptor {
+  interceptor() {
     if (this._interceptor) {
       return this._interceptor;
     } else {

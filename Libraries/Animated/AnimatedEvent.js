@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
@@ -19,29 +19,19 @@ const invariant = require('invariant');
 
 const {shouldUseNativeDriver} = require('./NativeAnimatedHelper');
 
-import type {PlatformConfig} from './AnimatedPlatformConfig';
 
-export type Mapping =
-  | {[key: string]: Mapping, ...}
-  | AnimatedValue
-  | AnimatedValueXY;
-export type EventConfig = {
-  listener?: ?Function,
-  useNativeDriver: boolean,
-  platformConfig?: PlatformConfig,
-};
 
 function attachNativeEvent(
-  viewRef: any,
-  eventName: string,
-  argMapping: $ReadOnlyArray<?Mapping>,
-  platformConfig: ?PlatformConfig,
-): {detach: () => void} {
+  viewRef,
+  eventName,
+  argMapping,
+  platformConfig,
+) {
   // Find animated values in `argMapping` and create an array representing their
   // key path inside the `nativeEvent` object. Ex.: ['contentOffset', 'x'].
   const eventMappings = [];
 
-  const traverse = (value: mixed, path: Array<string>) => {
+  const traverse = (value, path) => {
     if (value instanceof AnimatedValue) {
       value.__makeNative(platformConfig);
 
@@ -94,8 +84,8 @@ function attachNativeEvent(
   };
 }
 
-function validateMapping(argMapping: $ReadOnlyArray<?Mapping>, args: any) {
-  const validate = (recMapping: ?Mapping, recEvt: any, key: string) => {
+function validateMapping(argMapping, args) {
+  const validate = (recMapping, recEvt, key) => {
     if (recMapping instanceof AnimatedValue) {
       invariant(
         typeof recEvt === 'number',
@@ -147,13 +137,13 @@ function validateMapping(argMapping: $ReadOnlyArray<?Mapping>, args: any) {
 }
 
 class AnimatedEvent {
-  _argMapping: $ReadOnlyArray<?Mapping>;
-  _listeners: Array<Function> = [];
-  _attachedEvent: ?{detach: () => void, ...};
-  __isNative: boolean;
-  __platformConfig: ?PlatformConfig;
+  _argMapping;
+  _listeners = [];
+  _attachedEvent;
+  __isNative;
+  __platformConfig;
 
-  constructor(argMapping: $ReadOnlyArray<?Mapping>, config: EventConfig) {
+  constructor(argMapping, config) {
     this._argMapping = argMapping;
 
     if (config == null) {
@@ -169,15 +159,15 @@ class AnimatedEvent {
     this.__platformConfig = config.platformConfig;
   }
 
-  __addListener(callback: Function): void {
+  __addListener(callback) {
     this._listeners.push(callback);
   }
 
-  __removeListener(callback: Function): void {
+  __removeListener(callback) {
     this._listeners = this._listeners.filter(listener => listener !== callback);
   }
 
-  __attach(viewRef: any, eventName: string) {
+  __attach(viewRef, eventName) {
     invariant(
       this.__isNative,
       'Only native driven events need to be attached.',
@@ -191,7 +181,7 @@ class AnimatedEvent {
     );
   }
 
-  __detach(viewTag: any, eventName: string) {
+  __detach(viewTag, eventName) {
     invariant(
       this.__isNative,
       'Only native driven events need to be detached.',
@@ -200,11 +190,11 @@ class AnimatedEvent {
     this._attachedEvent && this._attachedEvent.detach();
   }
 
-  __getHandler(): any | ((...args: any) => void) {
+  __getHandler() {
     if (this.__isNative) {
       if (__DEV__) {
         let validatedMapping = false;
-        return (...args: any) => {
+        return (...args) => {
           if (!validatedMapping) {
             validateMapping(this._argMapping, args);
             validatedMapping = true;
@@ -217,15 +207,15 @@ class AnimatedEvent {
     }
 
     let validatedMapping = false;
-    return (...args: any) => {
+    return (...args) => {
       if (__DEV__ && !validatedMapping) {
         validateMapping(this._argMapping, args);
         validatedMapping = true;
       }
 
       const traverse = (
-        recMapping: ?(Mapping | AnimatedValue),
-        recEvt: any,
+        recMapping,
+        recEvt,
       ) => {
         if (recMapping instanceof AnimatedValue) {
           if (typeof recEvt === 'number') {
@@ -253,7 +243,7 @@ class AnimatedEvent {
     };
   }
 
-  _callListeners = (...args: any) => {
+  _callListeners = (...args) => {
     this._listeners.forEach(listener => listener(...args));
   };
 }

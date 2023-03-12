@@ -5,13 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict
+ *  strict
  */
 
 'use strict';
 
 const SamplingProfiler = {
-  poke: function (token: number): void {
+  poke: function (token) {
     let error = null;
     let result = null;
     try {

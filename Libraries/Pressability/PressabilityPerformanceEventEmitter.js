@@ -4,36 +4,30 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
-import {type PressabilityTouchSignal as TouchSignal} from './PressabilityTypes.js';
+import {} from './PressabilityTypes.js';
 
-export type PressabilityPerformanceEvent = $ReadOnly<{|
-  signal: TouchSignal,
-  nativeTimestamp: number,
-|}>;
-export type PressabilityPerformanceEventListener =
-  PressabilityPerformanceEvent => void;
 
 class PressabilityPerformanceEventEmitter {
-  _listeners: Array<PressabilityPerformanceEventListener> = [];
+  _listeners = [];
 
   constructor() {}
 
-  addListener(listener: PressabilityPerformanceEventListener): void {
+  addListener(listener) {
     this._listeners.push(listener);
   }
 
-  removeListener(listener: PressabilityPerformanceEventListener): void {
+  removeListener(listener) {
     const index = this._listeners.indexOf(listener);
     if (index > -1) {
       this._listeners.splice(index, 1);
     }
   }
 
-  emitEvent(constructEvent: () => PressabilityPerformanceEvent): void {
+  emitEvent(constructEvent) {
     if (this._listeners.length === 0) {
       return;
     }
@@ -43,7 +37,7 @@ class PressabilityPerformanceEventEmitter {
   }
 }
 
-const PressabilityPerformanceEventEmitterSingleton: PressabilityPerformanceEventEmitter =
+const PressabilityPerformanceEventEmitterSingleton =
   new PressabilityPerformanceEventEmitter();
 
 export default PressabilityPerformanceEventEmitterSingleton;

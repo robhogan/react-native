@@ -5,30 +5,23 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict
+ *  strict
  */
 
 'use strict';
 
-import type {EventSender} from './InspectorAgent';
 
-interface Agent {
-  constructor(eventSender: EventSender): void;
-}
 
 // Flow doesn't support static declarations in interface
-type AgentClass = Class<Agent> & {DOMAIN: string, ...};
 
-declare function __registerInspectorAgent(type: AgentClass): void;
-declare function __inspectorTimestamp(): number;
 
 const JSInspector = {
-  registerAgent(type: AgentClass) {
+  registerAgent(type) {
     if (global.__registerInspectorAgent) {
       global.__registerInspectorAgent(type);
     }
   },
-  getTimestamp(): number {
+  getTimestamp() {
     return global.__inspectorTimestamp();
   },
 };

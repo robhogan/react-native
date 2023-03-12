@@ -4,33 +4,28 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict
+ *  strict
  * @format
  */
 
 import EventEmitter from '../EventEmitter';
 
-const emitter = new EventEmitter<{
-  void: [],
-  string: [string],
-  strings: [string, string],
-  error: [Error],
-}>();
+const emitter = new EventEmitter();
 
 const subscription = emitter.addListener('void', unknown => {
-  (unknown: void);
+  (unknown);
 });
 subscription.remove();
 
 emitter.addListener('string', foo => {
-  (foo: string);
+  (foo);
 });
 emitter.addListener('strings', (foo, bar) => {
-  (foo: string);
-  (bar: string);
+  (foo);
+  (bar);
 });
 emitter.addListener('error', error => {
-  (error: Error);
+  (error);
 });
 
 emitter.emit('void');

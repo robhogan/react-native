@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
 /* eslint-env jest */
@@ -13,11 +13,10 @@
 'use strict';
 
 const React = require('react');
-import typeof Modal from '../Libraries/Modal/Modal';
 
-function mockModal(BaseComponent: $FlowFixMe) {
+function mockModal(BaseComponent) {
   class ModalMock extends BaseComponent {
-    render(): React.Element<Modal> {
+    render() {
       return (
         <BaseComponent {...this.props}>
           {this.props.visible !== true ? null : this.props.children}
@@ -28,4 +27,4 @@ function mockModal(BaseComponent: $FlowFixMe) {
   return ModalMock;
 }
 
-module.exports = (mockModal: $FlowFixMe);
+module.exports = (mockModal);

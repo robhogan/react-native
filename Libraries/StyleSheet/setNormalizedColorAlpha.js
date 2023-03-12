@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  */
 
 /* eslint no-bitwise: 0 */
@@ -16,7 +16,7 @@
  * number should be a color processed by `normalizeColor`
  * alpha should be number between 0 and 1
  */
-function setNormalizedColorAlpha(input: number, alpha: number): number {
+function setNormalizedColorAlpha(input, alpha) {
   if (alpha < 0) {
     alpha = 0;
   } else if (alpha > 1) {

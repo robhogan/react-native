@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict
+ *  strict
  */
 
 'use strict';
@@ -25,4 +25,4 @@ module.exports = (AssetRegistry.registerAsset({
   hash: 'nonsense',
   name: 'icon',
   type: 'png',
-}): number);
+}));

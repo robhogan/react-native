@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict
+ *  strict
  */
 
 'use strict';
@@ -23,7 +23,7 @@ const MAX_STRING_LENGTH = 50;
  * it best to get the content but ultimately relies on implementation details
  * of React and will fail in future versions.
  */
-function dumpReactTree(): string {
+function dumpReactTree() {
   try {
     return getReactTree();
   } catch (e) {

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
 /* eslint-env jest */
@@ -16,11 +16,11 @@ const React = require('react');
 const View = require('../Libraries/Components/View/View');
 
 const requireNativeComponent = require('../Libraries/ReactNative/requireNativeComponent');
-const RCTScrollView: $FlowFixMe = requireNativeComponent('RCTScrollView');
+const RCTScrollView = requireNativeComponent('RCTScrollView');
 
-function mockScrollView(BaseComponent: $FlowFixMe) {
+function mockScrollView(BaseComponent) {
   class ScrollViewMock extends BaseComponent {
-    render(): React.Element<typeof RCTScrollView> {
+    render() {
       return (
         <RCTScrollView {...this.props}>
           {this.props.refreshControl}
@@ -32,4 +32,4 @@ function mockScrollView(BaseComponent: $FlowFixMe) {
   return ScrollViewMock;
 }
 
-module.exports = (mockScrollView: $FlowFixMe);
+module.exports = (mockScrollView);

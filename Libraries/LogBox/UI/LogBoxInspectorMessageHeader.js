@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
@@ -14,20 +14,11 @@ import Text from '../../Text/Text';
 import View from '../../Components/View/View';
 import * as LogBoxStyle from './LogBoxStyle';
 import LogBoxMessage from './LogBoxMessage';
-import type {LogLevel} from '../Data/LogBoxLog';
-import type {Message} from '../Data/parseLogBoxLog';
 
-type Props = $ReadOnly<{|
-  collapsed: boolean,
-  message: Message,
-  level: LogLevel,
-  title: string,
-  onPress: () => void,
-|}>;
 
 const SHOW_MORE_MESSAGE_LENGTH = 300;
 
-function LogBoxInspectorMessageHeader(props: Props): React.Node {
+function LogBoxInspectorMessageHeader(props) {
   function renderShowMore() {
     if (
       props.message.content.length < SHOW_MORE_MESSAGE_LENGTH ||

@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
@@ -16,16 +16,16 @@ import {Command} from './Command';
 import {Event} from './Event';
 
 export class ImplementationWriter {
-  stream: Writable;
-  types: Array<Type>;
-  commands: Array<Command>;
-  events: Array<Event>;
+  stream;
+  types;
+  commands;
+  events;
 
   constructor(
-    stream: Writable,
-    types: Array<Type>,
-    commands: Array<Command>,
-    events: Array<Event>,
+    stream,
+    types,
+    commands,
+    events,
   ) {
     this.stream = stream;
     this.types = types;
@@ -113,7 +113,7 @@ export class ImplementationWriter {
   }
 }
 
-function emitRequestParser(stream: Writable, commands: Array<Command>) {
+function emitRequestParser(stream, commands) {
   stream.write(`
     using RequestBuilder = std::unique_ptr<Request> (*)(const dynamic &);
 
@@ -160,7 +160,7 @@ function emitRequestParser(stream: Writable, commands: Array<Command>) {
   stream.write('\n');
 }
 
-export function emitTypeDef(stream: Writable, type: PropsType) {
+export function emitTypeDef(stream, type) {
   const cppNs = type.getCppNamespace();
   const cppType = type.getCppType();
   const props = type.properties || [];
@@ -189,7 +189,7 @@ export function emitTypeDef(stream: Writable, type: PropsType) {
   stream.write('return obj;\n}\n\n');
 }
 
-function emitErrorResponseDef(stream: Writable) {
+function emitErrorResponseDef(stream) {
   stream.write(`ErrorResponse::ErrorResponse(const dynamic &obj) {
     assign(id, obj, "id");
 
@@ -212,7 +212,7 @@ function emitErrorResponseDef(stream: Writable) {
   }\n\n`);
 }
 
-function emitOkResponseDef(stream: Writable) {
+function emitOkResponseDef(stream) {
   stream.write(`OkResponse::OkResponse(const dynamic &obj) {
     assign(id, obj, "id");
   }
@@ -227,7 +227,7 @@ function emitOkResponseDef(stream: Writable) {
   }\n\n`);
 }
 
-function emitUnknownRequestDef(stream: Writable) {
+function emitUnknownRequestDef(stream) {
   stream.write(`UnknownRequest::UnknownRequest() {}
 
 UnknownRequest::UnknownRequest(const dynamic &obj) {
@@ -249,7 +249,7 @@ void UnknownRequest::accept(RequestHandler &handler) const {
 }\n\n`);
 }
 
-export function emitRequestDef(stream: Writable, command: Command) {
+export function emitRequestDef(stream, command) {
   const cppNs = command.getCppNamespace();
   const cppType = command.getRequestCppType();
   const dbgName = command.getDebuggerName();
@@ -322,7 +322,7 @@ export function emitRequestDef(stream: Writable, command: Command) {
   }\n\n`);
 }
 
-export function emitResponseDef(stream: Writable, command: Command) {
+export function emitResponseDef(stream, command) {
   const cppNs = command.getCppNamespace();
   const cppType = command.getResponseCppType();
   if (!cppType) {
@@ -367,7 +367,7 @@ export function emitResponseDef(stream: Writable, command: Command) {
   }\n\n`);
 }
 
-export function emitNotificationDef(stream: Writable, event: Event) {
+export function emitNotificationDef(stream, event) {
   const cppNs = event.getCppNamespace();
   const cppType = event.getCppType();
   const dbgName = event.getDebuggerName();

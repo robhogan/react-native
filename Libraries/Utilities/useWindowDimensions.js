@@ -5,26 +5,20 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
 import Dimensions from './Dimensions';
 import {
-  type DisplayMetrics,
-  type DisplayMetricsAndroid,
 } from './NativeDeviceInfo';
 import {useEffect, useState} from 'react';
 
-export default function useWindowDimensions():
-  | DisplayMetrics
-  | DisplayMetricsAndroid {
+export default function useWindowDimensions() {
   const [dimensions, setDimensions] = useState(() => Dimensions.get('window'));
   useEffect(() => {
     function handleChange({
       window,
-    }:
-      | $FlowFixMe
-      | $TEMPORARY$object<{window: DisplayMetrics | DisplayMetricsAndroid}>) {
+    }) {
       if (
         dimensions.width !== window.width ||
         dimensions.height !== window.height ||

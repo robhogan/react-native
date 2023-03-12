@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict
+ *  strict
  */
 
 import invariant from 'invariant';
@@ -14,12 +14,7 @@ import invariant from 'invariant';
  * Tries to stringify with JSON.stringify and toString, but catches exceptions
  * (e.g. from circular objects) and always returns a string and never throws.
  */
-export function createStringifySafeWithLimits(limits: {|
-  maxDepth?: number,
-  maxStringLimit?: number,
-  maxArrayLimit?: number,
-  maxObjectKeysLimit?: number,
-|}): mixed => string {
+export function createStringifySafeWithLimits(limits) {
   const {
     maxDepth = Number.POSITIVE_INFINITY,
     maxStringLimit = Number.POSITIVE_INFINITY,
@@ -29,7 +24,7 @@ export function createStringifySafeWithLimits(limits: {|
   const stack = [];
   /* $FlowFixMe[missing-this-annot] The 'this' type annotation(s) required by
    * Flow's LTI update could not be added via codemod */
-  function replacer(key: string, value: mixed): mixed {
+  function replacer(key, value) {
     while (stack.length && this !== stack[0]) {
       stack.shift();
     }
@@ -45,10 +40,7 @@ export function createStringifySafeWithLimits(limits: {|
       return value;
     }
 
-    let retval:
-      | string
-      | {+[string]: mixed}
-      | $TEMPORARY$object<{'...(truncated keys)...': number}> = value;
+    let retval = value;
     if (Array.isArray(value)) {
       if (stack.length >= maxDepth) {
         retval = `[ ... array with ${value.length} values ... ]`;
@@ -67,7 +59,7 @@ export function createStringifySafeWithLimits(limits: {|
         retval = `{ ... object with ${keys.length} keys ... }`;
       } else if (keys.length > maxObjectKeysLimit) {
         // Return a sample of the keys.
-        retval = ({}: {[string]: mixed});
+        retval = ({});
         for (let k of keys.slice(0, maxObjectKeysLimit)) {
           retval[k] = value[k];
         }
@@ -79,7 +71,7 @@ export function createStringifySafeWithLimits(limits: {|
     return retval;
   }
 
-  return function stringifySafe(arg: mixed): string {
+  return function stringifySafe(arg) {
     if (arg === undefined) {
       return 'undefined';
     } else if (arg === null) {
@@ -114,7 +106,7 @@ export function createStringifySafeWithLimits(limits: {|
   };
 }
 
-const stringifySafe: mixed => string = createStringifySafeWithLimits({
+const stringifySafe = createStringifySafeWithLimits({
   maxDepth: 10,
   maxStringLimit: 100,
   maxArrayLimit: 50,

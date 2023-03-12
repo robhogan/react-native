@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
@@ -18,16 +18,16 @@ import {Event} from './Event';
 import {toCppNamespace} from './Converters';
 
 export class HeaderWriter {
-  stream: Writable;
-  types: Array<Type>;
-  commands: Array<Command>;
-  events: Array<Event>;
+  stream;
+  types;
+  commands;
+  events;
 
   constructor(
-    stream: Writable,
-    types: Array<Type>,
-    commands: Array<Command>,
-    events: Array<Event>,
+    stream,
+    types,
+    commands,
+    events,
   ) {
     this.stream = stream;
     this.types = types;
@@ -69,8 +69,8 @@ export class HeaderWriter {
   writeForwardDecls() {
     this.stream.write('struct UnknownRequest;\n\n');
 
-    const namespaceMap: Map<string, Array<Type | Command | Event>> = new Map();
-    const addToMap = function (type: Type | Command | Event) {
+    const namespaceMap = new Map();
+    const addToMap = function (type) {
       const domain = type.domain;
       let types = namespaceMap.get(domain);
       if (!types) {
@@ -166,7 +166,7 @@ export class HeaderWriter {
   }
 }
 
-function emitRequestHandlerDecl(stream: Writable, commands: Array<Command>) {
+function emitRequestHandlerDecl(stream, commands) {
   stream.write(`struct RequestHandler {
     virtual ~RequestHandler() = default;
 
@@ -184,8 +184,8 @@ function emitRequestHandlerDecl(stream: Writable, commands: Array<Command>) {
 }
 
 function emitNoopRequestHandlerDecl(
-  stream: Writable,
-  commands: Array<Command>,
+  stream,
+  commands,
 ) {
   stream.write(`struct NoopRequestHandler : public RequestHandler {
     void handle(const UnknownRequest &req) override {}
@@ -201,7 +201,7 @@ function emitNoopRequestHandlerDecl(
   stream.write('};\n');
 }
 
-function emitProps(stream: Writable, props: ?Array<Property>) {
+function emitProps(stream, props) {
   if (!props || props.length === 0) {
     return;
   }
@@ -217,7 +217,7 @@ function emitProps(stream: Writable, props: ?Array<Property>) {
   }
 }
 
-export function emitTypeDecl(stream: Writable, type: PropsType) {
+export function emitTypeDecl(stream, type) {
   const cppNs = type.getCppNamespace();
   const cppType = type.getCppType();
 
@@ -234,7 +234,7 @@ export function emitTypeDecl(stream: Writable, type: PropsType) {
   stream.write('};\n\n');
 }
 
-function emitUnknownRequestDecl(stream: Writable) {
+function emitUnknownRequestDecl(stream) {
   stream.write(`struct UnknownRequest : public Request {
     UnknownRequest();
     explicit UnknownRequest(const folly::dynamic &obj);
@@ -248,7 +248,7 @@ function emitUnknownRequestDecl(stream: Writable) {
   `);
 }
 
-export function emitRequestDecl(stream: Writable, command: Command) {
+export function emitRequestDecl(stream, command) {
   const cppNs = command.getCppNamespace();
   const cppType = command.getRequestCppType();
 
@@ -265,7 +265,7 @@ export function emitRequestDecl(stream: Writable, command: Command) {
   stream.write('};\n\n');
 }
 
-function emitErrorResponseDecl(stream: Writable) {
+function emitErrorResponseDecl(stream) {
   stream.write(`struct ErrorResponse : public Response {
     ErrorResponse() = default;
     explicit ErrorResponse(const folly::dynamic &obj);
@@ -279,7 +279,7 @@ function emitErrorResponseDecl(stream: Writable) {
   `);
 }
 
-function emitOkResponseDecl(stream: Writable) {
+function emitOkResponseDecl(stream) {
   stream.write(`struct OkResponse : public Response {
     OkResponse() = default;
     explicit OkResponse(const folly::dynamic &obj);
@@ -289,7 +289,7 @@ function emitOkResponseDecl(stream: Writable) {
   `);
 }
 
-export function emitResponseDecl(stream: Writable, command: Command) {
+export function emitResponseDecl(stream, command) {
   const cppNs = command.getCppNamespace();
   const cppType = command.getResponseCppType();
   if (!cppType) {
@@ -307,7 +307,7 @@ export function emitResponseDecl(stream: Writable, command: Command) {
   stream.write('};\n\n');
 }
 
-export function emitNotificationDecl(stream: Writable, event: Event) {
+export function emitNotificationDecl(stream, event) {
   const cppNs = event.getCppNamespace();
   const cppType = event.getCppType();
 

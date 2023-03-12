@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
@@ -15,18 +15,6 @@ const ReactNativeStyleAttributes = require('../Components/View/ReactNativeStyleA
 
 const flatten = require('./flattenStyle');
 
-import type {
-  ____ColorValue_Internal,
-  ____Styles_Internal,
-  ____DangerouslyImpreciseStyle_Internal,
-  ____DangerouslyImpreciseStyleProp_Internal,
-  ____ViewStyle_Internal,
-  ____ViewStyleProp_Internal,
-  ____TextStyle_Internal,
-  ____TextStyleProp_Internal,
-  ____ImageStyle_Internal,
-  ____ImageStyleProp_Internal,
-} from './StyleSheetTypes';
 
 /**
  * This type should be used as the type for anything that is a color. It is
@@ -35,7 +23,6 @@ import type {
  *
  * type props = {backgroundColor: ColorValue};
  */
-export type ColorValue = ____ColorValue_Internal;
 
 /**
  * This type should be used as the type for a prop that is passed through
@@ -45,7 +32,6 @@ export type ColorValue = ____ColorValue_Internal;
  * type Props = {style: ViewStyleProp}
  * const MyComponent = (props: Props) => <View style={props.style} />
  */
-export type ViewStyleProp = ____ViewStyleProp_Internal;
 
 /**
  * This type should be used as the type for a prop that is passed through
@@ -55,7 +41,6 @@ export type ViewStyleProp = ____ViewStyleProp_Internal;
  * type Props = {style: TextStyleProp}
  * const MyComponent = (props: Props) => <Text style={props.style} />
  */
-export type TextStyleProp = ____TextStyleProp_Internal;
 
 /**
  * This type should be used as the type for a prop that is passed through
@@ -65,7 +50,6 @@ export type TextStyleProp = ____TextStyleProp_Internal;
  * type Props = {style: ImageStyleProp}
  * const MyComponent = (props: Props) => <Image style={props.style} />
  */
-export type ImageStyleProp = ____ImageStyleProp_Internal;
 
 /**
  * WARNING: You probably shouldn't be using this type. This type
@@ -74,8 +58,6 @@ export type ImageStyleProp = ____ImageStyleProp_Internal;
  * through to an underlying component. Using this is almost always a mistake
  * and using one of the other more restrictive types is likely the right choice.
  */
-export type DangerouslyImpreciseStyleProp =
-  ____DangerouslyImpreciseStyleProp_Internal;
 
 /**
  * Utility type for getting the values for specific style keys.
@@ -93,9 +75,6 @@ export type DangerouslyImpreciseStyleProp =
  *
  * This will correctly give you the type 'absolute' | 'relative'
  */
-export type TypeForStyleKey<
-  +key: $Keys<____DangerouslyImpreciseStyle_Internal>,
-> = $ElementType<____DangerouslyImpreciseStyle_Internal, key>;
 
 /**
  * This type is an object of the different possible style
@@ -112,7 +91,6 @@ export type TypeForStyleKey<
  * object of styles to pass to a View that can't be precomputed with
  * StyleSheet.create.
  */
-export type ViewStyle = ____ViewStyle_Internal;
 
 /**
  * This type is an object of the different possible style
@@ -129,7 +107,6 @@ export type ViewStyle = ____ViewStyle_Internal;
  * object of styles to pass to a Text that can't be precomputed with
  * StyleSheet.create.
  */
-export type TextStyle = ____TextStyle_Internal;
 
 /**
  * This type is an object of the different possible style
@@ -146,7 +123,6 @@ export type TextStyle = ____TextStyle_Internal;
  * object of styles to pass to an Image that can't be precomputed with
  * StyleSheet.create.
  */
-export type ImageStyle = ____ImageStyle_Internal;
 
 /**
  * WARNING: You probably shouldn't be using this type. This type is an object
@@ -160,9 +136,8 @@ export type ImageStyle = ____ImageStyle_Internal;
  * This should only be used by very core utilities that operate on an object
  * containing any possible style value.
  */
-export type DangerouslyImpreciseStyle = ____DangerouslyImpreciseStyle_Internal;
 
-let hairlineWidth: number = PixelRatio.roundToNearestPixel(0.4);
+let hairlineWidth = PixelRatio.roundToNearestPixel(0.4);
 if (hairlineWidth === 0) {
   hairlineWidth = 1 / PixelRatio.get();
 }
@@ -249,7 +224,7 @@ module.exports = {
    * so `absoluteFill` can be used for convenience and to reduce duplication of these repeated
    * styles.
    */
-  absoluteFill: (absoluteFill: any), // TODO: This should be updated after we fix downstream Flow sites.
+  absoluteFill: (absoluteFill), // TODO: This should be updated after we fix downstream Flow sites.
 
   /**
    * Sometimes you may want `absoluteFill` but with a couple tweaks - `absoluteFillObject` can be
@@ -271,12 +246,12 @@ module.exports = {
    * array, saving allocations and maintaining reference equality for
    * PureComponent checks.
    */
-  compose<T: DangerouslyImpreciseStyleProp>(
-    style1: ?T,
-    style2: ?T,
-  ): ?T | $ReadOnlyArray<T> {
+  compose(
+    style1,
+    style2,
+  ) {
     if (style1 != null && style2 != null) {
-      return ([style1, style2]: $ReadOnlyArray<T>);
+      return ([style1, style2]);
     } else {
       return style1 != null ? style1 : style2;
     }
@@ -333,8 +308,8 @@ module.exports = {
    * unless you really know what you are doing and have exhausted other options.
    */
   setStyleAttributePreprocessor(
-    property: string,
-    process: (nextProp: mixed) => mixed,
+    property,
+    process,
   ) {
     let value;
 
@@ -362,7 +337,7 @@ module.exports = {
   /**
    * Creates a StyleSheet style reference from the given object.
    */
-  create<+S: ____Styles_Internal>(obj: S): $ReadOnly<S> {
+  create(obj) {
     // TODO: This should return S as the return type. But first,
     // we need to codemod all the callsites that are typing this
     // return value as a number (even though it was opaque).

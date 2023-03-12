@@ -4,57 +4,22 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
 import Pressability, {
-  type PressabilityConfig,
 } from '../../Pressability/Pressability';
 import {PressabilityDebugView} from '../../Pressability/PressabilityDebug';
-import StyleSheet, {type ViewStyleProp} from '../../StyleSheet/StyleSheet';
-import type {ColorValue} from '../../StyleSheet/StyleSheet';
-import typeof TouchableWithoutFeedback from './TouchableWithoutFeedback';
+import StyleSheet, {} from '../../StyleSheet/StyleSheet';
 import Platform from '../../Utilities/Platform';
 import View from '../../Components/View/View';
 import * as React from 'react';
 
-type AndroidProps = $ReadOnly<{|
-  nextFocusDown?: ?number,
-  nextFocusForward?: ?number,
-  nextFocusLeft?: ?number,
-  nextFocusRight?: ?number,
-  nextFocusUp?: ?number,
-|}>;
 
-type IOSProps = $ReadOnly<{|
-  hasTVPreferredFocus?: ?boolean,
-|}>;
 
-type Props = $ReadOnly<{|
-  ...React.ElementConfig<TouchableWithoutFeedback>,
-  ...AndroidProps,
-  ...IOSProps,
 
-  activeOpacity?: ?number,
-  underlayColor?: ?ColorValue,
-  style?: ?ViewStyleProp,
-  onShowUnderlay?: ?() => void,
-  onHideUnderlay?: ?() => void,
-  testOnly_pressed?: ?boolean,
 
-  hostRef: React.Ref<typeof View>,
-|}>;
-
-type ExtraStyles = $ReadOnly<{|
-  child: ViewStyleProp,
-  underlay: ViewStyleProp,
-|}>;
-
-type State = $ReadOnly<{|
-  pressability: Pressability,
-  extraStyles: ?ExtraStyles,
-|}>;
 
 /**
  * A wrapper for making views respond properly to touches.
@@ -152,17 +117,17 @@ type State = $ReadOnly<{|
  * ```
  *
  */
-class TouchableHighlight extends React.Component<Props, State> {
-  _hideTimeout: ?TimeoutID;
-  _isMounted: boolean = false;
+class TouchableHighlight extends React.Component {
+  _hideTimeout;
+  _isMounted = false;
 
-  state: State = {
+  state = {
     pressability: new Pressability(this._createPressabilityConfig()),
     extraStyles:
       this.props.testOnly_pressed === true ? this._createExtraStyles() : null,
   };
 
-  _createPressabilityConfig(): PressabilityConfig {
+  _createPressabilityConfig() {
     return {
       cancelable: !this.props.rejectResponderTermination,
       disabled:
@@ -228,7 +193,7 @@ class TouchableHighlight extends React.Component<Props, State> {
     };
   }
 
-  _createExtraStyles(): ExtraStyles {
+  _createExtraStyles() {
     return {
       child: {opacity: this.props.activeOpacity ?? 0.85},
       underlay: {
@@ -240,7 +205,7 @@ class TouchableHighlight extends React.Component<Props, State> {
     };
   }
 
-  _showUnderlay(): void {
+  _showUnderlay() {
     if (!this._isMounted || !this._hasPressHandler()) {
       return;
     }
@@ -250,7 +215,7 @@ class TouchableHighlight extends React.Component<Props, State> {
     }
   }
 
-  _hideUnderlay(): void {
+  _hideUnderlay() {
     if (this._hideTimeout != null) {
       clearTimeout(this._hideTimeout);
       this._hideTimeout = null;
@@ -266,7 +231,7 @@ class TouchableHighlight extends React.Component<Props, State> {
     }
   }
 
-  _hasPressHandler(): boolean {
+  _hasPressHandler() {
     return (
       this.props.onPress != null ||
       this.props.onPressIn != null ||
@@ -275,7 +240,7 @@ class TouchableHighlight extends React.Component<Props, State> {
     );
   }
 
-  render(): React.Node {
+  render() {
     const child = React.Children.only(this.props.children);
 
     // BACKWARD-COMPATIBILITY: Focus and blur events were never supported before
@@ -338,15 +303,15 @@ class TouchableHighlight extends React.Component<Props, State> {
     );
   }
 
-  componentDidMount(): void {
+  componentDidMount() {
     this._isMounted = true;
   }
 
-  componentDidUpdate(prevProps: Props, prevState: State) {
+  componentDidUpdate(prevProps, prevState) {
     this.state.pressability.configure(this._createPressabilityConfig());
   }
 
-  componentWillUnmount(): void {
+  componentWillUnmount() {
     this._isMounted = false;
     if (this._hideTimeout != null) {
       clearTimeout(this._hideTimeout);
@@ -357,10 +322,7 @@ class TouchableHighlight extends React.Component<Props, State> {
 
 const Touchable = (React.forwardRef((props, hostRef) => (
   <TouchableHighlight {...props} hostRef={hostRef} />
-)): React.AbstractComponent<
-  $ReadOnly<$Diff<Props, {|hostRef: React.Ref<typeof View>|}>>,
-  React.ElementRef<typeof View>,
->);
+)));
 
 Touchable.displayName = 'TouchableHighlight';
 

@@ -4,11 +4,10 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
-import type {PressEvent} from '../Types/CoreEventTypes';
 
 import Platform from '../Utilities/Platform';
 import * as PressabilityDebug from '../Pressability/PressabilityDebug';
@@ -17,7 +16,7 @@ import StyleSheet from '../StyleSheet/StyleSheet';
 import processColor from '../StyleSheet/processColor';
 import TextAncestor from './TextAncestor';
 import {NativeText, NativeVirtualText} from './TextNativeComponent';
-import {type TextProps} from './TextProps';
+import {} from './TextProps';
 import * as React from 'react';
 import {useContext, useMemo, useState} from 'react';
 
@@ -26,10 +25,7 @@ import {useContext, useMemo, useState} from 'react';
  *
  * @see https://reactnative.dev/docs/text
  */
-const Text: React.AbstractComponent<
-  TextProps,
-  React.ElementRef<typeof NativeText | typeof NativeVirtualText>,
-> = React.forwardRef((props: TextProps, forwardedRef) => {
+const Text = React.forwardRef((props, forwardedRef) => {
   const {
     accessible,
     allowFontScaling,
@@ -75,11 +71,11 @@ const Text: React.AbstractComponent<
             pressRectOffset: pressRetentionOffset,
             onLongPress,
             onPress,
-            onPressIn(event: PressEvent) {
+            onPressIn(event) {
               setHighlighted(!suppressHighlighting);
               onPressIn?.(event);
             },
-            onPressOut(event: PressEvent) {
+            onPressOut(event) {
               setHighlighted(false);
               onPressOut?.(event);
             },
@@ -108,25 +104,25 @@ const Text: React.AbstractComponent<
       eventHandlers == null
         ? null
         : {
-            onResponderGrant(event: PressEvent) {
+            onResponderGrant(event) {
               eventHandlers.onResponderGrant(event);
               if (onResponderGrant != null) {
                 onResponderGrant(event);
               }
             },
-            onResponderMove(event: PressEvent) {
+            onResponderMove(event) {
               eventHandlers.onResponderMove(event);
               if (onResponderMove != null) {
                 onResponderMove(event);
               }
             },
-            onResponderRelease(event: PressEvent) {
+            onResponderRelease(event) {
               eventHandlers.onResponderRelease(event);
               if (onResponderRelease != null) {
                 onResponderRelease(event);
               }
             },
-            onResponderTerminate(event: PressEvent) {
+            onResponderTerminate(event) {
               eventHandlers.onResponderTerminate(event);
               if (onResponderTerminate != null) {
                 onResponderTerminate(event);
@@ -214,7 +210,7 @@ Text.displayName = 'Text';
  * always return true. This is necessary to lazily initialize `Pressability` so
  * we do not eagerly create one for every pressable `Text` component.
  */
-function useLazyInitialization(newValue: boolean): boolean {
+function useLazyInitialization(newValue) {
   const [oldValue, setValue] = useState(newValue);
   if (!oldValue && newValue) {
     setValue(newValue);

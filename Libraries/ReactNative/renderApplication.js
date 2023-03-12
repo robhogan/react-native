@@ -5,14 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  */
 
 const AppContainer = require('./AppContainer');
 import GlobalPerformanceLogger from '../Utilities/GlobalPerformanceLogger';
-import type {IPerformanceLogger} from '../Utilities/createPerformanceLogger';
 import PerformanceLoggerContext from '../Utilities/PerformanceLoggerContext';
-import type {DisplayModeType} from './DisplayMode';
 import getCachedComponentWithDebugName from './getCachedComponentWithDebugName';
 const React = require('react');
 
@@ -21,24 +19,24 @@ const invariant = require('invariant');
 // require BackHandler so it sets the default handler that exits the app if no listeners respond
 require('../Utilities/BackHandler');
 
-function renderApplication<Props: Object>(
-  RootComponent: React.ComponentType<Props>,
-  initialProps: Props,
-  rootTag: any,
-  WrapperComponent?: ?React.ComponentType<any>,
-  fabric?: boolean,
-  showArchitectureIndicator?: boolean,
-  scopedPerformanceLogger?: IPerformanceLogger,
-  isLogBox?: boolean,
-  debugName?: string,
-  displayMode?: ?DisplayModeType,
-  useConcurrentRoot?: boolean,
+function renderApplication(
+  RootComponent,
+  initialProps,
+  rootTag,
+  WrapperComponent,
+  fabric,
+  showArchitectureIndicator,
+  scopedPerformanceLogger,
+  isLogBox,
+  debugName,
+  displayMode,
+  useConcurrentRoot,
 ) {
   invariant(rootTag, 'Expect to have a valid rootTag, instead got ', rootTag);
 
   const performanceLogger = scopedPerformanceLogger ?? GlobalPerformanceLogger;
 
-  let renderable: React.MixedElement = (
+  let renderable = (
     <PerformanceLoggerContext.Provider value={performanceLogger}>
       <AppContainer
         rootTag={rootTag}

@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
@@ -12,13 +12,13 @@ import {Property} from './Property';
 import {jsTypeToCppType, toCppNamespace, toCppType} from './Converters';
 
 export class Type {
-  domain: string;
-  id: string;
-  description: ?string;
-  exported: ?boolean;
-  experimental: ?boolean;
+  domain;
+  id;
+  description;
+  exported;
+  experimental;
 
-  static create(domain: string, obj: any, ignoreExperimental: boolean): ?Type {
+  static create(domain, obj, ignoreExperimental) {
     let type = null;
 
     if (obj.type === 'object' && obj.properties) {
@@ -36,7 +36,7 @@ export class Type {
     return type;
   }
 
-  constructor(domain: string, obj: any) {
+  constructor(domain, obj) {
     this.domain = domain;
     this.id = obj.id;
     this.description = obj.description;
@@ -44,45 +44,45 @@ export class Type {
     this.experimental = obj.experimental;
   }
 
-  getDebuggerName(): string {
+  getDebuggerName() {
     return `${this.domain}.${this.id}`;
   }
 
-  getCppNamespace(): string {
+  getCppNamespace() {
     return toCppNamespace(this.domain);
   }
 
-  getCppType(): string {
+  getCppType() {
     return toCppType(this.id);
   }
 
-  getForwardDecls(): Array<string> {
+  getForwardDecls() {
     throw new Error('subclass must implement');
   }
 
-  getForwardDeclSortKey(): string {
+  getForwardDeclSortKey() {
     return this.getCppType();
   }
 }
 
 export class PrimitiveType extends Type {
-  type: 'integer' | 'number' | 'object' | 'string';
+  type;
 
-  constructor(domain: string, obj: any, ignoreExperimental: boolean) {
+  constructor(domain, obj, ignoreExperimental) {
     super(domain, obj);
     this.type = obj.type;
   }
 
-  getForwardDecls(): Array<string> {
+  getForwardDecls() {
     return [`using ${this.getCppType()} = ${jsTypeToCppType(this.type)};`];
   }
 }
 
 export class PropsType extends Type {
-  type: 'object';
-  properties: Array<Property>;
+  type;
+  properties;
 
-  constructor(domain: string, obj: any, ignoreExperimental: boolean) {
+  constructor(domain, obj, ignoreExperimental) {
     super(domain, obj);
     this.type = obj.type;
     this.properties = Property.createArray(
@@ -92,7 +92,7 @@ export class PropsType extends Type {
     );
   }
 
-  getForwardDecls(): Array<string> {
+  getForwardDecls() {
     return [`struct ${this.getCppType()};`];
   }
 }

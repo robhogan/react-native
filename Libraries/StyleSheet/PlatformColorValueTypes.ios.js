@@ -5,36 +5,19 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
-import type {ColorValue} from './StyleSheet';
-import type {ProcessedColorValue} from './processColor';
 
-export opaque type NativeColorValue = {
-  semantic?: Array<string>,
-  dynamic?: {
-    light: ?(ColorValue | ProcessedColorValue),
-    dark: ?(ColorValue | ProcessedColorValue),
-    highContrastLight?: ?(ColorValue | ProcessedColorValue),
-    highContrastDark?: ?(ColorValue | ProcessedColorValue),
-  },
-};
 
-export const PlatformColor = (...names: Array<string>): ColorValue => {
+export const PlatformColor = (...names) => {
   return {semantic: names};
 };
 
-export type DynamicColorIOSTuplePrivate = {
-  light: ColorValue,
-  dark: ColorValue,
-  highContrastLight?: ColorValue,
-  highContrastDark?: ColorValue,
-};
 
 export const DynamicColorIOSPrivate = (
-  tuple: DynamicColorIOSTuplePrivate,
-): ColorValue => {
+  tuple,
+) => {
   return {
     dynamic: {
       light: tuple.light,
@@ -46,8 +29,8 @@ export const DynamicColorIOSPrivate = (
 };
 
 export const normalizeColorObject = (
-  color: NativeColorValue,
-): ?ProcessedColorValue => {
+  color,
+) => {
   if ('semantic' in color) {
     // an ios semantic color
     return color;
@@ -56,7 +39,7 @@ export const normalizeColorObject = (
 
     // a dynamic, appearance aware color
     const dynamic = color.dynamic;
-    const dynamicColor: NativeColorValue = {
+    const dynamicColor = {
       dynamic: {
         // $FlowFixMe[incompatible-use]
         light: normalizeColor(dynamic.light),
@@ -75,12 +58,12 @@ export const normalizeColorObject = (
 };
 
 export const processColorObject = (
-  color: NativeColorValue,
-): ?NativeColorValue => {
+  color,
+) => {
   if ('dynamic' in color && color.dynamic != null) {
     const processColor = require('./processColor');
     const dynamic = color.dynamic;
-    const dynamicColor: NativeColorValue = {
+    const dynamicColor = {
       dynamic: {
         // $FlowFixMe[incompatible-use]
         light: processColor(dynamic.light),

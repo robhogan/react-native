@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
 import NativeAccessibilityManager from './NativeAccessibilityManager';
@@ -15,9 +15,9 @@ import NativeAccessibilityManager from './NativeAccessibilityManager';
  * pre-Fabric renderer to emit accessibility events to pre-Fabric nodes.
  */
 function legacySendAccessibilityEvent(
-  reactTag: number,
-  eventType: string,
-): void {
+  reactTag,
+  eventType,
+) {
   if (eventType === 'focus' && NativeAccessibilityManager) {
     NativeAccessibilityManager.setAccessibilityFocus(reactTag);
   }

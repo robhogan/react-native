@@ -4,43 +4,25 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
 import Pressability, {
-  type PressabilityConfig,
 } from '../../Pressability/Pressability';
 import {PressabilityDebugView} from '../../Pressability/PressabilityDebug';
-import type {ViewStyleProp} from '../../StyleSheet/StyleSheet';
-import typeof TouchableWithoutFeedback from './TouchableWithoutFeedback';
 import {Animated, Platform} from 'react-native';
 import * as React from 'react';
 
-type Props = $ReadOnly<{|
-  ...React.ElementConfig<TouchableWithoutFeedback>,
 
-  onPressAnimationComplete?: ?() => void,
-  onPressWithCompletion?: ?(callback: () => void) => void,
-  releaseBounciness?: ?number,
-  releaseVelocity?: ?number,
-  style?: ?ViewStyleProp,
 
-  hostRef: React.Ref<typeof Animated.View>,
-|}>;
-
-type State = $ReadOnly<{|
-  pressability: Pressability,
-  scale: Animated.Value,
-|}>;
-
-class TouchableBounce extends React.Component<Props, State> {
-  state: State = {
+class TouchableBounce extends React.Component {
+  state = {
     pressability: new Pressability(this._createPressabilityConfig()),
     scale: new Animated.Value(1),
   };
 
-  _createPressabilityConfig(): PressabilityConfig {
+  _createPressabilityConfig() {
     return {
       cancelable: !this.props.rejectResponderTermination,
       disabled: this.props.disabled,
@@ -112,10 +94,10 @@ class TouchableBounce extends React.Component<Props, State> {
   }
 
   _bounceTo(
-    toValue: number,
-    velocity: number,
-    bounciness: number,
-    callback?: ?() => void,
+    toValue,
+    velocity,
+    bounciness,
+    callback,
   ) {
     Animated.spring(this.state.scale, {
       toValue,
@@ -125,7 +107,7 @@ class TouchableBounce extends React.Component<Props, State> {
     }).start(callback);
   }
 
-  render(): React.Node {
+  render() {
     // BACKWARD-COMPATIBILITY: Focus and blur events were never supported before
     // adopting `Pressability`, so preserve that behavior.
     const {onBlur, onFocus, ...eventHandlersWithoutBlurAndFocus} =
@@ -165,15 +147,15 @@ class TouchableBounce extends React.Component<Props, State> {
     );
   }
 
-  componentDidUpdate(prevProps: Props, prevState: State) {
+  componentDidUpdate(prevProps, prevState) {
     this.state.pressability.configure(this._createPressabilityConfig());
   }
 
-  componentWillUnmount(): void {
+  componentWillUnmount() {
     this.state.pressability.reset();
   }
 }
 
 module.exports = (React.forwardRef((props, hostRef) => (
   <TouchableBounce {...props} hostRef={hostRef} />
-)): React.AbstractComponent<$ReadOnly<$Diff<Props, {|hostRef: mixed|}>>>);
+)));

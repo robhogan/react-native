@@ -4,11 +4,10 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
-import type {LogLevel} from '../Data/LogBoxLog';
 
 import * as React from 'react';
 import DeviceInfo from '../../Utilities/DeviceInfo';
@@ -18,13 +17,8 @@ import View from '../../Components/View/View';
 import LogBoxButton from './LogBoxButton';
 import * as LogBoxStyle from './LogBoxStyle';
 
-type Props = $ReadOnly<{|
-  onDismiss: () => void,
-  onMinimize: () => void,
-  level?: ?LogLevel,
-|}>;
 
-function LogBoxInspectorFooter(props: Props): React.Node {
+function LogBoxInspectorFooter(props) {
   if (props.level === 'syntax') {
     return (
       <View style={styles.root}>
@@ -45,12 +39,8 @@ function LogBoxInspectorFooter(props: Props): React.Node {
   );
 }
 
-type ButtonProps = $ReadOnly<{|
-  onPress: () => void,
-  text: string,
-|}>;
 
-function FooterButton(props: ButtonProps): React.Node {
+function FooterButton(props) {
   return (
     <LogBoxButton
       backgroundColor={{

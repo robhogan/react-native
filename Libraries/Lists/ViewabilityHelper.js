@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
@@ -12,53 +12,8 @@
 
 const invariant = require('invariant');
 
-export type ViewToken = {
-  item: any,
-  key: string,
-  index: ?number,
-  isViewable: boolean,
-  section?: any,
-  ...
-};
 
-export type ViewabilityConfigCallbackPair = {
-  viewabilityConfig: ViewabilityConfig,
-  onViewableItemsChanged: (info: {
-    viewableItems: Array<ViewToken>,
-    changed: Array<ViewToken>,
-    ...
-  }) => void,
-  ...
-};
 
-export type ViewabilityConfig = {|
-  /**
-   * Minimum amount of time (in milliseconds) that an item must be physically viewable before the
-   * viewability callback will be fired. A high number means that scrolling through content without
-   * stopping will not mark the content as viewable.
-   */
-  minimumViewTime?: number,
-
-  /**
-   * Percent of viewport that must be covered for a partially occluded item to count as
-   * "viewable", 0-100. Fully visible items are always considered viewable. A value of 0 means
-   * that a single pixel in the viewport makes the item viewable, and a value of 100 means that
-   * an item must be either entirely visible or cover the entire viewport to count as viewable.
-   */
-  viewAreaCoveragePercentThreshold?: number,
-
-  /**
-   * Similar to `viewAreaPercentThreshold`, but considers the percent of the item that is visible,
-   * rather than the fraction of the viewable area it covers.
-   */
-  itemVisiblePercentThreshold?: number,
-
-  /**
-   * Nothing is considered viewable until the user scrolls or `recordInteraction` is called after
-   * render.
-   */
-  waitForInteraction?: boolean,
-|};
 
 /**
  * A Utility class for calculating viewable items based on current metrics like scroll position and
@@ -73,14 +28,14 @@ export type ViewabilityConfig = {|
  * - Entirely visible on screen
  */
 class ViewabilityHelper {
-  _config: ViewabilityConfig;
-  _hasInteracted: boolean = false;
-  _timers: Set<number> = new Set();
-  _viewableIndices: Array<number> = [];
-  _viewableItems: Map<string, ViewToken> = new Map();
+  _config;
+  _hasInteracted = false;
+  _timers = new Set();
+  _viewableIndices = [];
+  _viewableItems = new Map();
 
   constructor(
-    config: ViewabilityConfig = {viewAreaCoveragePercentThreshold: 0},
+    config = {viewAreaCoveragePercentThreshold: 0},
   ) {
     this._config = config;
   }
@@ -99,21 +54,13 @@ class ViewabilityHelper {
    * Determines which items are viewable based on the current metrics and config.
    */
   computeViewableItems(
-    itemCount: number,
-    scrollOffset: number,
-    viewportHeight: number,
-    getFrameMetrics: (index: number) => ?{
-      length: number,
-      offset: number,
-      ...
-    },
+    itemCount,
+    scrollOffset,
+    viewportHeight,
+    getFrameMetrics,
     // Optional optimization to reduce the scan size
-    renderRange?: {
-      first: number,
-      last: number,
-      ...
-    },
-  ): Array<number> {
+    renderRange,
+  ) {
     const {itemVisiblePercentThreshold, viewAreaCoveragePercentThreshold} =
       this._config;
     const viewAreaMode = viewAreaCoveragePercentThreshold != null;
@@ -172,27 +119,15 @@ class ViewabilityHelper {
    * `onViewableItemsChanged` as appropriate.
    */
   onUpdate(
-    itemCount: number,
-    scrollOffset: number,
-    viewportHeight: number,
-    getFrameMetrics: (index: number) => ?{
-      length: number,
-      offset: number,
-      ...
-    },
-    createViewToken: (index: number, isViewable: boolean) => ViewToken,
-    onViewableItemsChanged: ({
-      viewableItems: Array<ViewToken>,
-      changed: Array<ViewToken>,
-      ...
-    }) => void,
+    itemCount,
+    scrollOffset,
+    viewportHeight,
+    getFrameMetrics,
+    createViewToken,
+    onViewableItemsChanged,
     // Optional optimization to reduce the scan size
-    renderRange?: {
-      first: number,
-      last: number,
-      ...
-    },
-  ): void {
+    renderRange,
+  ) {
     if (
       (this._config.waitForInteraction && !this._hasInteracted) ||
       itemCount === 0 ||
@@ -259,13 +194,9 @@ class ViewabilityHelper {
   }
 
   _onUpdateSync(
-    viewableIndicesToCheck: Array<number>,
-    onViewableItemsChanged: ({
-      changed: Array<ViewToken>,
-      viewableItems: Array<ViewToken>,
-      ...
-    }) => void,
-    createViewToken: (index: number, isViewable: boolean) => ViewToken,
+    viewableIndicesToCheck,
+    onViewableItemsChanged,
+    createViewToken,
   ) {
     // Filter out indices that have gone out of view since this call was scheduled.
     viewableIndicesToCheck = viewableIndicesToCheck.filter(ii =>
@@ -302,13 +233,13 @@ class ViewabilityHelper {
 }
 
 function _isViewable(
-  viewAreaMode: boolean,
-  viewablePercentThreshold: number,
-  top: number,
-  bottom: number,
-  viewportHeight: number,
-  itemLength: number,
-): boolean {
+  viewAreaMode,
+  viewablePercentThreshold,
+  top,
+  bottom,
+  viewportHeight,
+  itemLength,
+) {
   if (_isEntirelyVisible(top, bottom, viewportHeight)) {
     return true;
   } else {
@@ -320,19 +251,19 @@ function _isViewable(
 }
 
 function _getPixelsVisible(
-  top: number,
-  bottom: number,
-  viewportHeight: number,
-): number {
+  top,
+  bottom,
+  viewportHeight,
+) {
   const visibleHeight = Math.min(bottom, viewportHeight) - Math.max(top, 0);
   return Math.max(0, visibleHeight);
 }
 
 function _isEntirelyVisible(
-  top: number,
-  bottom: number,
-  viewportHeight: number,
-): boolean {
+  top,
+  bottom,
+  viewportHeight,
+) {
   return top >= 0 && bottom <= viewportHeight && bottom > top;
 }
 

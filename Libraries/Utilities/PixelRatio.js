@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
 'use strict';
@@ -81,7 +81,7 @@ class PixelRatio {
    *   - PixelRatio.get() === 3.5
    *     - Nexus 6
    */
-  static get(): number {
+  static get() {
     return Dimensions.get('window').scale;
   }
 
@@ -96,7 +96,7 @@ class PixelRatio {
    *  - Settings > Display > Font size on Android,
    *  - Settings > Display & Brightness > Text Size on iOS.
    */
-  static getFontScale(): number {
+  static getFontScale() {
     return Dimensions.get('window').fontScale || PixelRatio.get();
   }
 
@@ -105,7 +105,7 @@ class PixelRatio {
    *
    * Guaranteed to return an integer number.
    */
-  static getPixelSizeForLayoutSize(layoutSize: number): number {
+  static getPixelSizeForLayoutSize(layoutSize) {
     return Math.round(layoutSize * PixelRatio.get());
   }
 
@@ -115,7 +115,7 @@ class PixelRatio {
    * of 3, `PixelRatio.roundToNearestPixel(8.4) = 8.33`, which corresponds to
    * exactly (8.33 * 3) = 25 pixels.
    */
-  static roundToNearestPixel(layoutSize: number): number {
+  static roundToNearestPixel(layoutSize) {
     const ratio = PixelRatio.get();
     return Math.round(layoutSize * ratio) / ratio;
   }

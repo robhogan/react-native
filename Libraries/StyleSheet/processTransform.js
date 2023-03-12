@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  */
 
 'use strict';
@@ -25,8 +25,8 @@ const stringifySafe = require('../Utilities/stringifySafe').default;
  * interface to native code.
  */
 function processTransform(
-  transform: Array<Object>,
-): Array<Object> | Array<number> {
+  transform,
+) {
   if (__DEV__) {
     _validateTransforms(transform);
   }
@@ -119,10 +119,10 @@ function processTransform(
 /* $FlowFixMe[missing-this-annot] The 'this' type annotation(s) required by
  * Flow's LTI update could not be added via codemod */
 function _multiplyTransform(
-  result: Array<number>,
-  matrixMathFunction: Function,
-  args: Array<number>,
-): void {
+  result,
+  matrixMathFunction,
+  args,
+) {
   const matrixToApply = MatrixMath.createIdentityMatrix();
   const argsWithIdentity = [matrixToApply].concat(args);
   matrixMathFunction.apply(this, argsWithIdentity);
@@ -133,12 +133,12 @@ function _multiplyTransform(
  * Parses a string like '0.5rad' or '60deg' into radians expressed in a float.
  * Note that validation on the string is done in `_validateTransform()`.
  */
-function _convertToRadians(value: string): number {
+function _convertToRadians(value) {
   const floatValue = parseFloat(value);
   return value.indexOf('rad') > -1 ? floatValue : (floatValue * Math.PI) / 180;
 }
 
-function _validateTransforms(transform: Array<Object>): void {
+function _validateTransforms(transform) {
   transform.forEach(transformation => {
     const keys = Object.keys(transformation);
     invariant(
@@ -153,24 +153,9 @@ function _validateTransforms(transform: Array<Object>): void {
 }
 
 function _validateTransform(
-  key:
-    | string
-    | $TEMPORARY$string<'matrix'>
-    | $TEMPORARY$string<'perspective'>
-    | $TEMPORARY$string<'rotate'>
-    | $TEMPORARY$string<'rotateX'>
-    | $TEMPORARY$string<'rotateY'>
-    | $TEMPORARY$string<'rotateZ'>
-    | $TEMPORARY$string<'scale'>
-    | $TEMPORARY$string<'scaleX'>
-    | $TEMPORARY$string<'scaleY'>
-    | $TEMPORARY$string<'skewX'>
-    | $TEMPORARY$string<'skewY'>
-    | $TEMPORARY$string<'translate'>
-    | $TEMPORARY$string<'translateX'>
-    | $TEMPORARY$string<'translateY'>,
-  value: any | number | string,
-  transformation: any,
+  key,
+  value,
+  transformation,
 ) {
   invariant(
     !value.getValue,

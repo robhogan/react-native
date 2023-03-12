@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
@@ -26,23 +26,18 @@ const standard = require('devtools-protocol/json/js_protocol.json');
 
 const custom = require('../src/custom.json');
 
-type Descriptor = {|
-  types: Array<Type>,
-  commands: Array<Command>,
-  events: Array<Event>,
-|};
 
-function mergeDomains(original: any, extra: any) {
+function mergeDomains(original, extra) {
   return {...original, domains: original.domains.concat(extra.domains)};
 }
 
 const proto = mergeDomains(standard, custom);
 
 function parseDomains(
-  domainObjs: Array<any>,
-  ignoreExperimental: boolean,
-  includeExperimental: Set<string>,
-): Descriptor {
+  domainObjs,
+  ignoreExperimental,
+  includeExperimental,
+) {
   const desc = {
     types: [],
     commands: [],
@@ -82,18 +77,18 @@ function parseDomains(
   return desc;
 }
 
-function buildGraph(desc: Descriptor): Graph {
+function buildGraph(desc) {
   const graph = new Graph();
 
   const types = desc.types;
   const commands = desc.commands;
   const events = desc.events;
 
-  const maybeAddPropEdges = function (nodeId: string, props: ?Array<Property>) {
+  const maybeAddPropEdges = function (nodeId, props) {
     if (props) {
       for (const prop of props) {
         const refId = prop.getRefDebuggerName();
-        (prop: Object).recursive = refId && refId === nodeId;
+        (prop).recursive = refId && refId === nodeId;
         if (refId && refId !== nodeId) {
           // Don't add edges for recursive properties.
           graph.addEdge(nodeId, refId);
@@ -126,7 +121,7 @@ function buildGraph(desc: Descriptor): Graph {
   return graph;
 }
 
-function parseRoots(desc: Descriptor, rootsPath: ?string): Array<string> {
+function parseRoots(desc, rootsPath) {
   const roots = [];
 
   if (rootsPath) {
@@ -157,15 +152,15 @@ function parseRoots(desc: Descriptor, rootsPath: ?string): Array<string> {
 // only include types, commands, events that can be reached from the given
 // root messages
 function filterReachableFromRoots(
-  desc: Descriptor,
-  graph: Graph,
-  roots: Array<string>,
-): Descriptor {
+  desc,
+  graph,
+  roots,
+) {
   const topoSortedIds = graph.traverse(roots);
 
   // Types can include other types by value, so they need to be topologically
   // sorted in the header.
-  const typeMap: Map<string, Type> = new Map();
+  const typeMap = new Map();
   for (const type of desc.types) {
     typeMap.set(type.getDebuggerName(), type);
   }
@@ -186,7 +181,7 @@ function filterReachableFromRoots(
 
   // Sort commands and events so the code is easier to read. Types have to be
   // topologically sorted as explained above.
-  const comparator = (a: Command | Event, b: Command | Event) => {
+  const comparator = (a, b) => {
     const id1 = a.getDebuggerName();
     const id2 = b.getDebuggerName();
     return id1 < id2 ? -1 : id1 > id2 ? 1 : 0;

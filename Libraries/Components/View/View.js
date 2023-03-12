@@ -5,16 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
-import type {ViewProps} from './ViewPropTypes';
 
 import ViewNativeComponent from './ViewNativeComponent';
 import TextAncestor from '../../Text/TextAncestor';
 import * as React from 'react';
 
-export type Props = ViewProps;
 
 /**
  * The most fundamental component for building a UI, View is a container that
@@ -23,10 +21,7 @@ export type Props = ViewProps;
  *
  * @see https://reactnative.dev/docs/view
  */
-const View: React.AbstractComponent<
-  ViewProps,
-  React.ElementRef<typeof ViewNativeComponent>,
-> = React.forwardRef((props: ViewProps, forwardedRef) => {
+const View = React.forwardRef((props, forwardedRef) => {
   return (
     <TextAncestor.Provider value={false}>
       <ViewNativeComponent {...props} ref={forwardedRef} />

@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
@@ -16,15 +16,9 @@ import Platform from '../../Utilities/Platform';
 import LogBoxButton from './LogBoxButton';
 import * as LogBoxStyle from './LogBoxStyle';
 
-import type {PressEvent} from '../../Types/CoreEventTypes';
-import type {StackFrame} from '../../Core/NativeExceptionsManager';
 
-type Props = $ReadOnly<{|
-  frame: StackFrame,
-  onPress?: ?(event: PressEvent) => void,
-|}>;
 
-function LogBoxInspectorStackFrame(props: Props): React.Node {
+function LogBoxInspectorStackFrame(props) {
   const {frame, onPress} = props;
   const column = frame.column != null && parseInt(frame.column, 10);
   const location =
@@ -57,7 +51,7 @@ function LogBoxInspectorStackFrame(props: Props): React.Node {
   );
 }
 
-function getFileName(file: ?string) {
+function getFileName(file) {
   if (file == null) {
     return '<unknown>';
   }

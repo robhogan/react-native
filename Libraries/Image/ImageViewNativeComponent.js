@@ -4,44 +4,16 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
-import type {ResolvedAssetSource} from './AssetSourceResolver';
-import type {ImageProps} from './ImageProps';
-import type {ViewProps} from '../Components/View/ViewPropTypes';
 import * as NativeComponentRegistry from '../NativeComponent/NativeComponentRegistry';
 import {ConditionallyIgnoredEventHandlers} from '../NativeComponent/ViewConfigIgnore';
-import type {
-  HostComponent,
-  PartialViewConfig,
-} from '../Renderer/shims/ReactNativeTypes';
-import type {
-  ColorValue,
-  DangerouslyImpreciseStyle,
-  ImageStyleProp,
-} from '../StyleSheet/StyleSheet';
 import Platform from '../Utilities/Platform';
 
-type Props = $ReadOnly<{
-  ...ImageProps,
-  ...ViewProps,
 
-  style?: ImageStyleProp | DangerouslyImpreciseStyle,
-
-  // iOS native props
-  tintColor?: ColorValue,
-
-  // Android native props
-  shouldNotifyLoadEvents?: boolean,
-  src?: ?ResolvedAssetSource | $ReadOnlyArray<{uri: string, ...}>,
-  headers?: ?{[string]: string},
-  defaultSrc?: ?string,
-  loadingIndicatorSrc?: ?string,
-}>;
-
-export const __INTERNAL_VIEW_CONFIG: PartialViewConfig =
+export const __INTERNAL_VIEW_CONFIG =
   Platform.OS === 'android'
     ? {
         uiViewClassName: 'RCTImageView',
@@ -140,8 +112,8 @@ export const __INTERNAL_VIEW_CONFIG: PartialViewConfig =
         },
       };
 
-const ImageViewNativeComponent: HostComponent<Props> =
-  NativeComponentRegistry.get<Props>(
+const ImageViewNativeComponent =
+  NativeComponentRegistry.get(
     'RCTImageView',
     () => __INTERNAL_VIEW_CONFIG,
   );

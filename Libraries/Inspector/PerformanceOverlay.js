@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  */
 
 'use strict';
@@ -16,8 +16,8 @@ const StyleSheet = require('../StyleSheet/StyleSheet');
 const Text = require('../Text/Text');
 const View = require('../Components/View/View');
 
-class PerformanceOverlay extends React.Component<{...}> {
-  render(): React.Node {
+class PerformanceOverlay extends React.Component {
+  render() {
     const perfLogs = PerformanceLogger.getTimespans();
     const items = [];
 

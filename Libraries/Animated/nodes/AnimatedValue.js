@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
@@ -15,14 +15,7 @@ const AnimatedWithChildren = require('./AnimatedWithChildren');
 const InteractionManager = require('../../Interaction/InteractionManager');
 const NativeAnimatedHelper = require('../NativeAnimatedHelper');
 
-import type AnimatedNode from './AnimatedNode';
-import type Animation, {EndCallback} from '../animations/Animation';
-import type {InterpolationConfigType} from './AnimatedInterpolation';
-import type AnimatedTracking from './AnimatedTracking';
 
-export type AnimatedValueConfig = $ReadOnly<{
-  useNativeDriver: boolean,
-}>;
 
 const NativeAnimatedAPI = NativeAnimatedHelper.API;
 
@@ -48,9 +41,9 @@ const NativeAnimatedAPI = NativeAnimatedHelper.API;
  * this two-phases process is to deal with composite props such as
  * transform which can receive values from multiple parents.
  */
-function _flush(rootNode: AnimatedValue): void {
+function _flush(rootNode) {
   const animatedStyles = new Set();
-  function findAnimatedStyles(node: AnimatedValue | AnimatedNode) {
+  function findAnimatedStyles(node) {
     /* $FlowFixMe[prop-missing] (>=0.68.0 site=react_native_fb) This comment
      * suppresses an error found when Flow v0.68 was deployed. To see the error
      * delete this comment and run Flow. */
@@ -70,7 +63,7 @@ function _flush(rootNode: AnimatedValue): void {
  * Animated component props change. For some of the changes which require immediate execution
  * (e.g. setValue), we create a separate batch in case none is scheduled.
  */
-function _executeAsAnimatedBatch(id: string, operation: () => void) {
+function _executeAsAnimatedBatch(id, operation) {
   NativeAnimatedAPI.setWaitingForIdentifier(id);
   operation();
   NativeAnimatedAPI.unsetWaitingForIdentifier(id);
@@ -85,13 +78,13 @@ function _executeAsAnimatedBatch(id: string, operation: () => void) {
  * See https://reactnative.dev/docs/animatedvalue
  */
 class AnimatedValue extends AnimatedWithChildren {
-  _value: number;
-  _startingValue: number;
-  _offset: number;
-  _animation: ?Animation;
-  _tracking: ?AnimatedTracking;
+  _value;
+  _startingValue;
+  _offset;
+  _animation;
+  _tracking;
 
-  constructor(value: number, config?: ?AnimatedValueConfig) {
+  constructor(value, config) {
     super();
     if (typeof value !== 'number') {
       throw new Error('AnimatedValue: Attempting to set value to undefined');
@@ -114,7 +107,7 @@ class AnimatedValue extends AnimatedWithChildren {
     super.__detach();
   }
 
-  __getValue(): number {
+  __getValue() {
     return this._value + this._offset;
   }
 
@@ -124,7 +117,7 @@ class AnimatedValue extends AnimatedWithChildren {
    *
    * See https://reactnative.dev/docs/animatedvalue#setvalue
    */
-  setValue(value: number): void {
+  setValue(value) {
     if (this._animation) {
       this._animation.stop();
       this._animation = null;
@@ -147,7 +140,7 @@ class AnimatedValue extends AnimatedWithChildren {
    *
    * See https://reactnative.dev/docs/animatedvalue#setoffset
    */
-  setOffset(offset: number): void {
+  setOffset(offset) {
     this._offset = offset;
     if (this.__isNative) {
       NativeAnimatedAPI.setAnimatedNodeOffset(this.__getNativeTag(), offset);
@@ -160,7 +153,7 @@ class AnimatedValue extends AnimatedWithChildren {
    *
    * See https://reactnative.dev/docs/animatedvalue#flattenoffset
    */
-  flattenOffset(): void {
+  flattenOffset() {
     this._value += this._offset;
     this._offset = 0;
     if (this.__isNative) {
@@ -174,7 +167,7 @@ class AnimatedValue extends AnimatedWithChildren {
    *
    * See https://reactnative.dev/docs/animatedvalue#extractoffset
    */
-  extractOffset(): void {
+  extractOffset() {
     this._offset += this._value;
     this._value = 0;
     if (this.__isNative) {
@@ -189,7 +182,7 @@ class AnimatedValue extends AnimatedWithChildren {
    *
    * See https://reactnative.dev/docs/animatedvalue#stopanimation
    */
-  stopAnimation(callback?: ?(value: number) => void): void {
+  stopAnimation(callback) {
     this.stopTracking();
     this._animation && this._animation.stop();
     this._animation = null;
@@ -207,7 +200,7 @@ class AnimatedValue extends AnimatedWithChildren {
    *
    * See https://reactnative.dev/docs/animatedvalue#resetanimation
    */
-  resetAnimation(callback?: ?(value: number) => void): void {
+  resetAnimation(callback) {
     this.stopAnimation(callback);
     this._value = this._startingValue;
     if (this.__isNative) {
@@ -218,7 +211,7 @@ class AnimatedValue extends AnimatedWithChildren {
     }
   }
 
-  __onAnimatedValueUpdateReceived(value: number): void {
+  __onAnimatedValueUpdateReceived(value) {
     this._updateValue(value, false /*flush*/);
   }
 
@@ -226,9 +219,9 @@ class AnimatedValue extends AnimatedWithChildren {
    * Interpolates the value before updating the property, e.g. mapping 0-1 to
    * 0-10.
    */
-  interpolate<OutputT: number | string>(
-    config: InterpolationConfigType<OutputT>,
-  ): AnimatedInterpolation<OutputT> {
+  interpolate(
+    config,
+  ) {
     return new AnimatedInterpolation(this, config);
   }
 
@@ -238,7 +231,7 @@ class AnimatedValue extends AnimatedWithChildren {
    *
    * See https://reactnative.dev/docs/animatedvalue#animate
    */
-  animate(animation: Animation, callback: ?EndCallback): void {
+  animate(animation, callback) {
     let handle = null;
     if (animation.__isInteraction) {
       handle = InteractionManager.createInteractionHandle();
@@ -268,7 +261,7 @@ class AnimatedValue extends AnimatedWithChildren {
   /**
    * Typically only used internally.
    */
-  stopTracking(): void {
+  stopTracking() {
     this._tracking && this._tracking.__detach();
     this._tracking = null;
   }
@@ -276,14 +269,14 @@ class AnimatedValue extends AnimatedWithChildren {
   /**
    * Typically only used internally.
    */
-  track(tracking: AnimatedTracking): void {
+  track(tracking) {
     this.stopTracking();
     this._tracking = tracking;
     // Make sure that the tracking animation starts executing
     this._tracking && this._tracking.update();
   }
 
-  _updateValue(value: number, flush: boolean): void {
+  _updateValue(value, flush) {
     if (value === undefined) {
       throw new Error('AnimatedValue: Attempting to set value to undefined');
     }
@@ -295,7 +288,7 @@ class AnimatedValue extends AnimatedWithChildren {
     super.__callListeners(this.__getValue());
   }
 
-  __getNativeConfig(): Object {
+  __getNativeConfig() {
     return {
       type: 'value',
       value: this._value,

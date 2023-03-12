@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
 'use strict';
@@ -13,8 +13,8 @@
 const React = require('react');
 const View = require('../Components/View/View');
 
-class BorderBox extends React.Component<$FlowFixMeProps> {
-  render(): $FlowFixMe | React.Node {
+class BorderBox extends React.Component {
+  render() {
     const box = this.props.box;
     if (!box) {
       return this.props.children;

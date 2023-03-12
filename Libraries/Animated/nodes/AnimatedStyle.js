@@ -4,13 +4,12 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
 'use strict';
 
-import type {PlatformConfig} from '../AnimatedPlatformConfig';
 
 const flattenStyle = require('../../StyleSheet/flattenStyle');
 const NativeAnimatedHelper = require('../NativeAnimatedHelper');
@@ -19,11 +18,11 @@ const AnimatedTransform = require('./AnimatedTransform');
 const AnimatedWithChildren = require('./AnimatedWithChildren');
 
 class AnimatedStyle extends AnimatedWithChildren {
-  _style: Object;
+  _style;
 
-  constructor(style: any) {
+  constructor(style) {
     super();
-    style = flattenStyle(style) || ({}: {[string]: any});
+    style = flattenStyle(style) || ({});
     if (style.transform) {
       style = {
         ...style,
@@ -34,8 +33,8 @@ class AnimatedStyle extends AnimatedWithChildren {
   }
 
   // Recursively get values for nested styles (like iOS's shadowOffset)
-  _walkStyleAndGetValues(style: any, initialStyle: ?Object) {
-    const updatedStyle: {[string]: any | {...}} = {};
+  _walkStyleAndGetValues(style, initialStyle) {
+    const updatedStyle = {};
     for (const key in style) {
       const value = style[key];
       if (value instanceof AnimatedNode) {
@@ -58,13 +57,13 @@ class AnimatedStyle extends AnimatedWithChildren {
     return updatedStyle;
   }
 
-  __getValue(initialStyle: ?Object): Object {
+  __getValue(initialStyle) {
     return this._walkStyleAndGetValues(this._style, initialStyle);
   }
 
   // Recursively get animated values for nested styles (like iOS's shadowOffset)
-  _walkStyleAndGetAnimatedValues(style: any) {
-    const updatedStyle: {[string]: any | {...}} = {};
+  _walkStyleAndGetAnimatedValues(style) {
+    const updatedStyle = {};
     for (const key in style) {
       const value = style[key];
       if (value instanceof AnimatedNode) {
@@ -77,11 +76,11 @@ class AnimatedStyle extends AnimatedWithChildren {
     return updatedStyle;
   }
 
-  __getAnimatedValue(): Object {
+  __getAnimatedValue() {
     return this._walkStyleAndGetAnimatedValues(this._style);
   }
 
-  __attach(): void {
+  __attach() {
     for (const key in this._style) {
       const value = this._style[key];
       if (value instanceof AnimatedNode) {
@@ -90,7 +89,7 @@ class AnimatedStyle extends AnimatedWithChildren {
     }
   }
 
-  __detach(): void {
+  __detach() {
     for (const key in this._style) {
       const value = this._style[key];
       if (value instanceof AnimatedNode) {
@@ -100,7 +99,7 @@ class AnimatedStyle extends AnimatedWithChildren {
     super.__detach();
   }
 
-  __makeNative(platformConfig: ?PlatformConfig) {
+  __makeNative(platformConfig) {
     for (const key in this._style) {
       const value = this._style[key];
       if (value instanceof AnimatedNode) {
@@ -110,8 +109,8 @@ class AnimatedStyle extends AnimatedWithChildren {
     super.__makeNative(platformConfig);
   }
 
-  __getNativeConfig(): Object {
-    const styleConfig: {[string]: ?number} = {};
+  __getNativeConfig() {
+    const styleConfig = {};
     for (const styleKey in this._style) {
       if (this._style[styleKey] instanceof AnimatedNode) {
         const style = this._style[styleKey];

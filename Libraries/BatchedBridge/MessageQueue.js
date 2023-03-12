@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict
+ *  strict
  * @format
  */
 
@@ -17,13 +17,6 @@ const warnOnce = require('../Utilities/warnOnce');
 const ErrorUtils = require('../vendor/core/ErrorUtils');
 const invariant = require('invariant');
 
-export type SpyData = {
-  type: number,
-  module: ?string,
-  method: string | number,
-  args: mixed[],
-  ...
-};
 
 const TO_JS = 0;
 const TO_NATIVE = 1;
@@ -39,20 +32,20 @@ const TRACE_TAG_REACT_APPS = 1 << 17;
 const DEBUG_INFO_LIMIT = 32;
 
 class MessageQueue {
-  _lazyCallableModules: {[key: string]: (void) => {...}, ...};
-  _queue: [number[], number[], mixed[], number];
-  _successCallbacks: Map<number, ?(...mixed[]) => void>;
-  _failureCallbacks: Map<number, ?(...mixed[]) => void>;
-  _callID: number;
-  _lastFlush: number;
-  _eventLoopStartTime: number;
-  _reactNativeMicrotasksCallback: ?() => void;
+  _lazyCallableModules;
+  _queue;
+  _successCallbacks;
+  _failureCallbacks;
+  _callID;
+  _lastFlush;
+  _eventLoopStartTime;
+  _reactNativeMicrotasksCallback;
 
-  _debugInfo: {[number]: [number, number], ...};
-  _remoteModuleTable: {[number]: string, ...};
-  _remoteMethodTable: {[number]: $ReadOnlyArray<string>, ...};
+  _debugInfo;
+  _remoteModuleTable;
+  _remoteMethodTable;
 
-  __spy: ?(data: SpyData) => void;
+  __spy;
 
   constructor() {
     this._lazyCallableModules = {};
@@ -88,7 +81,7 @@ class MessageQueue {
    * Public APIs
    */
 
-  static spy(spyOrToggle: boolean | ((data: SpyData) => void)) {
+  static spy(spyOrToggle) {
     if (spyOrToggle === true) {
       MessageQueue.prototype.__spy = info => {
         console.log(
@@ -105,10 +98,10 @@ class MessageQueue {
   }
 
   callFunctionReturnFlushedQueue(
-    module: string,
-    method: string,
-    args: mixed[],
-  ): null | [Array<number>, Array<number>, Array<mixed>, number] {
+    module,
+    method,
+    args,
+  ) {
     this.__guard(() => {
       this.__callFunction(module, method, args);
     });
@@ -117,9 +110,9 @@ class MessageQueue {
   }
 
   invokeCallbackAndReturnFlushedQueue(
-    cbID: number,
-    args: mixed[],
-  ): null | [Array<number>, Array<number>, Array<mixed>, number] {
+    cbID,
+    args,
+  ) {
     this.__guard(() => {
       this.__invokeCallback(cbID, args);
     });
@@ -127,7 +120,7 @@ class MessageQueue {
     return this.flushedQueue();
   }
 
-  flushedQueue(): null | [Array<number>, Array<number>, Array<mixed>, number] {
+  flushedQueue() {
     this.__guard(() => {
       this.__callReactNativeMicrotasks();
     });
@@ -137,17 +130,17 @@ class MessageQueue {
     return queue[0].length ? queue : null;
   }
 
-  getEventLoopRunningTime(): number {
+  getEventLoopRunningTime() {
     return Date.now() - this._eventLoopStartTime;
   }
 
-  registerCallableModule(name: string, module: {...}) {
+  registerCallableModule(name, module) {
     this._lazyCallableModules[name] = () => module;
   }
 
-  registerLazyCallableModule(name: string, factory: void => interface {}) {
-    let module: interface {};
-    let getValue: ?(void) => interface {} = factory;
+  registerLazyCallableModule(name, factory) {
+    let module;
+    let getValue = factory;
     this._lazyCallableModules[name] = () => {
       if (getValue) {
         module = getValue();
@@ -159,18 +152,18 @@ class MessageQueue {
     };
   }
 
-  getCallableModule(name: string): {...} | null {
+  getCallableModule(name) {
     const getValue = this._lazyCallableModules[name];
     return getValue ? getValue() : null;
   }
 
   callNativeSyncHook(
-    moduleID: number,
-    methodID: number,
-    params: mixed[],
-    onFail: ?(...mixed[]) => void,
-    onSucc: ?(...mixed[]) => void,
-  ): mixed {
+    moduleID,
+    methodID,
+    params,
+    onFail,
+    onSucc,
+  ) {
     if (__DEV__) {
       invariant(
         global.nativeCallSyncHook,
@@ -185,12 +178,12 @@ class MessageQueue {
   }
 
   processCallbacks(
-    moduleID: number,
-    methodID: number,
-    params: mixed[],
-    onFail: ?(...mixed[]) => void,
-    onSucc: ?(...mixed[]) => void,
-  ): void {
+    moduleID,
+    methodID,
+    params,
+    onFail,
+    onSucc,
+  ) {
     if (onFail || onSucc) {
       if (__DEV__) {
         this._debugInfo[this._callID] = [moduleID, methodID];
@@ -198,7 +191,7 @@ class MessageQueue {
           delete this._debugInfo[this._callID - DEBUG_INFO_LIMIT];
         }
         if (this._successCallbacks.size > 500) {
-          const info: {[number]: {method: string, module: string}} = {};
+          const info = {};
           this._successCallbacks.forEach((_, callID) => {
             const debug = this._debugInfo[callID];
             const module = debug && this._remoteModuleTable[debug[0]];
@@ -236,11 +229,11 @@ class MessageQueue {
   }
 
   enqueueNativeCall(
-    moduleID: number,
-    methodID: number,
-    params: mixed[],
-    onFail: ?(...mixed[]) => void,
-    onSucc: ?(...mixed[]) => void,
+    moduleID,
+    methodID,
+    params,
+    onFail,
+    onSucc,
   ) {
     this.processCallbacks(moduleID, methodID, params, onFail, onSucc);
 
@@ -252,7 +245,7 @@ class MessageQueue {
       // folly-convertible.  As a special case, if a prop value is a
       // function it is permitted here, and special-cased in the
       // conversion.
-      const isValidArgument = (val: mixed) => {
+      const isValidArgument = (val) => {
         switch (typeof val) {
           case 'undefined':
           case 'boolean':
@@ -286,7 +279,7 @@ class MessageQueue {
       // Replacement allows normally non-JSON-convertible values to be
       // seen.  There is ambiguity with string values, but in context,
       // it should at least be a strong hint.
-      const replacer = (key: string, val: $FlowFixMe) => {
+      const replacer = (key, val) => {
         const t = typeof val;
         if (t === 'function') {
           return '<<Function ' + val.name + '>>';
@@ -338,9 +331,9 @@ class MessageQueue {
   }
 
   createDebugLookup(
-    moduleID: number,
-    name: string,
-    methods: ?$ReadOnlyArray<string>,
+    moduleID,
+    name,
+    methods,
   ) {
     if (__DEV__) {
       this._remoteModuleTable[moduleID] = name;
@@ -351,7 +344,7 @@ class MessageQueue {
   // For JSTimers to register its callback. Otherwise a circular dependency
   // between modules is introduced. Note that only one callback may be
   // registered at a time.
-  setReactNativeMicrotasksCallback(fn: () => void) {
+  setReactNativeMicrotasksCallback(fn) {
     this._reactNativeMicrotasksCallback = fn;
   }
 
@@ -359,7 +352,7 @@ class MessageQueue {
    * Private methods
    */
 
-  __guard(fn: () => void) {
+  __guard(fn) {
     if (this.__shouldPauseOnThrow()) {
       fn();
     } else {
@@ -376,7 +369,7 @@ class MessageQueue {
   // This makes stacktraces to be placed at MessageQueue rather than at where they were launched
   // The parameter DebuggerInternal.shouldPauseOnThrow is used to check before catching all exceptions and
   // can be configured by the VM or any Inspector
-  __shouldPauseOnThrow(): boolean {
+  __shouldPauseOnThrow() {
     return (
       // $FlowFixMe[cannot-resolve-name]
       typeof DebuggerInternal !== 'undefined' &&
@@ -392,7 +385,7 @@ class MessageQueue {
     Systrace.endEvent();
   }
 
-  __callFunction(module: string, method: string, args: mixed[]): void {
+  __callFunction(module, method, args) {
     this._lastFlush = Date.now();
     this._eventLoopStartTime = this._lastFlush;
     if (__DEV__ || this.__spy) {
@@ -424,7 +417,7 @@ class MessageQueue {
     Systrace.endEvent();
   }
 
-  __invokeCallback(cbID: number, args: mixed[]) {
+  __invokeCallback(cbID, args) {
     this._lastFlush = Date.now();
     this._eventLoopStartTime = this._lastFlush;
 

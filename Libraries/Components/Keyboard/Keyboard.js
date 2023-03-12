@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
 import NativeEventEmitter from '../../EventEmitter/NativeEventEmitter';
@@ -13,52 +13,14 @@ import LayoutAnimation from '../../LayoutAnimation/LayoutAnimation';
 import dismissKeyboard from '../../Utilities/dismissKeyboard';
 import Platform from '../../Utilities/Platform';
 import NativeKeyboardObserver from './NativeKeyboardObserver';
-import type {EventSubscription} from '../../vendor/emitter/EventEmitter';
 
-export type KeyboardEventName = $Keys<KeyboardEventDefinitions>;
 
-export type KeyboardEventEasing =
-  | 'easeIn'
-  | 'easeInEaseOut'
-  | 'easeOut'
-  | 'linear'
-  | 'keyboard';
 
-export type KeyboardMetrics = $ReadOnly<{|
-  screenX: number,
-  screenY: number,
-  width: number,
-  height: number,
-|}>;
 
-export type KeyboardEvent = AndroidKeyboardEvent | IOSKeyboardEvent;
 
-type BaseKeyboardEvent = {|
-  duration: number,
-  easing: KeyboardEventEasing,
-  endCoordinates: KeyboardMetrics,
-|};
 
-export type AndroidKeyboardEvent = $ReadOnly<{|
-  ...BaseKeyboardEvent,
-  duration: 0,
-  easing: 'keyboard',
-|}>;
 
-export type IOSKeyboardEvent = $ReadOnly<{|
-  ...BaseKeyboardEvent,
-  startCoordinates: KeyboardMetrics,
-  isEventFromThisApp: boolean,
-|}>;
 
-type KeyboardEventDefinitions = {
-  keyboardWillShow: [KeyboardEvent],
-  keyboardDidShow: [KeyboardEvent],
-  keyboardWillHide: [KeyboardEvent],
-  keyboardDidHide: [KeyboardEvent],
-  keyboardWillChangeFrame: [KeyboardEvent],
-  keyboardDidChangeFrame: [KeyboardEvent],
-};
 
 /**
  * `Keyboard` module to control keyboard events.
@@ -103,9 +65,9 @@ type KeyboardEventDefinitions = {
  */
 
 class Keyboard {
-  _currentlyShowing: ?KeyboardEvent;
+  _currentlyShowing;
 
-  _emitter: NativeEventEmitter<KeyboardEventDefinitions> =
+  _emitter =
     new NativeEventEmitter(
       // T88715063: NativeEventEmitter only used this parameter on iOS. Now it uses it on all platforms, so this code was modified automatically to preserve its behavior
       // If you want to use the native module on other platforms, please remove this condition and test its behavior
@@ -144,11 +106,11 @@ class Keyboard {
    *
    * @param {function} callback function to be called when the event fires.
    */
-  addListener<K: $Keys<KeyboardEventDefinitions>>(
-    eventType: K,
-    listener: (...$ElementType<KeyboardEventDefinitions, K>) => mixed,
-    context?: mixed,
-  ): EventSubscription {
+  addListener(
+    eventType,
+    listener,
+    context,
+  ) {
     return this._emitter.addListener(eventType, listener);
   }
 
@@ -157,28 +119,28 @@ class Keyboard {
    *
    * @param {string} eventType The native event string listeners are watching which will be removed.
    */
-  removeAllListeners<K: $Keys<KeyboardEventDefinitions>>(eventType: ?K): void {
+  removeAllListeners(eventType) {
     this._emitter.removeAllListeners(eventType);
   }
 
   /**
    * Dismisses the active keyboard and removes focus.
    */
-  dismiss(): void {
+  dismiss() {
     dismissKeyboard();
   }
 
   /**
    * Whether the keyboard is last known to be visible.
    */
-  isVisible(): boolean {
+  isVisible() {
     return !!this._currentlyShowing;
   }
 
   /**
    * Return the metrics of the soft-keyboard if visible.
    */
-  metrics(): ?KeyboardMetrics {
+  metrics() {
     return this._currentlyShowing?.endCoordinates;
   }
 
@@ -186,7 +148,7 @@ class Keyboard {
    * Useful for syncing TextInput (or other keyboard accessory view) size of
    * position changes with keyboard movements.
    */
-  scheduleLayoutAnimation(event: KeyboardEvent): void {
+  scheduleLayoutAnimation(event) {
     const {duration, easing} = event;
     if (duration != null && duration !== 0) {
       LayoutAnimation.configureNext({
@@ -200,4 +162,4 @@ class Keyboard {
   }
 }
 
-module.exports = (new Keyboard(): Keyboard);
+module.exports = (new Keyboard());

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
 import UIManager from '../../ReactNative/UIManager';
@@ -15,9 +15,9 @@ import UIManager from '../../ReactNative/UIManager';
  * pre-Fabric renderer to emit accessibility events to pre-Fabric nodes.
  */
 function legacySendAccessibilityEvent(
-  reactTag: number,
-  eventType: string,
-): void {
+  reactTag,
+  eventType,
+) {
   if (eventType === 'focus') {
     UIManager.sendAccessibilityEvent(
       reactTag,

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
 import {
@@ -13,7 +13,6 @@ import {
   ConditionallyIgnoredEventHandlers,
 } from './ViewConfigIgnore';
 import ReactNativeStyleAttributes from '../Components/View/ReactNativeStyleAttributes';
-import type {PartialViewConfigWithoutName} from './PlatformBaseViewConfig';
 
 const bubblingEventTypes = {
   // Generic Events
@@ -335,7 +334,7 @@ const validAttributesForEventProps = ConditionallyIgnoredEventHandlers({
  * On iOS, view managers define all of a component's props.
  * All view managers extend RCTViewManager, and RCTViewManager declares these props.
  */
-const PlatformBaseViewConfigIos: PartialViewConfigWithoutName = {
+const PlatformBaseViewConfigIos = {
   bubblingEventTypes,
   directEventTypes,
   validAttributes: {

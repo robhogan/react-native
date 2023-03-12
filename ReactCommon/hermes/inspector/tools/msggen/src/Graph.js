@@ -4,20 +4,19 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
 import invariant from 'assert';
 
-type NodeId = string;
 
 class Node {
-  id: NodeId;
-  children: Set<Node>;
-  state: 'none' | 'visiting' | 'visited';
+  id;
+  children;
+  state;
 
-  constructor(id: NodeId) {
+  constructor(id) {
     this.id = id;
     this.children = new Set();
     this.state = 'none';
@@ -25,13 +24,13 @@ class Node {
 }
 
 export class Graph {
-  nodes: Map<NodeId, Node>;
+  nodes;
 
   constructor() {
     this.nodes = new Map();
   }
 
-  addNode(nodeId: NodeId): Node {
+  addNode(nodeId) {
     let node = this.nodes.get(nodeId);
     if (!node) {
       node = new Node(nodeId);
@@ -40,7 +39,7 @@ export class Graph {
     return node;
   }
 
-  addEdge(srcId: NodeId, dstId: NodeId) {
+  addEdge(srcId, dstId) {
     const src = this.addNode(srcId);
     const dst = this.addNode(dstId);
     src.children.add(dst);
@@ -49,7 +48,7 @@ export class Graph {
   // traverse returns all nodes in the graph reachable from the given rootIds.
   // the returned nodes are topologically sorted, with the deepest nodes
   // returned first.
-  traverse(rootIds: Array<NodeId>): Array<NodeId> {
+  traverse(rootIds) {
     // clear marks
     for (const node of this.nodes.values()) {
       node.state = 'none';
@@ -73,7 +72,7 @@ export class Graph {
   }
 }
 
-function postorder(node: Node, output: Array<NodeId>) {
+function postorder(node, output) {
   if (node.state === 'visited') {
     return;
   }

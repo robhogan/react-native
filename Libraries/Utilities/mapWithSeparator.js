@@ -5,16 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict
+ *  strict
  */
 
 'use strict';
 
-function mapWithSeparator<TFrom, TTo>(
-  items: Array<TFrom>,
-  itemRenderer: (item: TFrom, index: number, items: Array<TFrom>) => TTo,
-  spacerRenderer: (index: number) => TTo,
-): Array<TTo> {
+function mapWithSeparator(
+  items,
+  itemRenderer,
+  spacerRenderer,
+) {
   const mapped = [];
   if (items.length > 0) {
     mapped.push(itemRenderer(items[0], 0, items));

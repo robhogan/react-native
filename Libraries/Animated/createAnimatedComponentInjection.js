@@ -4,25 +4,22 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
 import * as React from 'react';
 
-type createAnimatedComponent = <TProps: {...}, TInstance>(
-  Component: React.AbstractComponent<TProps, TInstance>,
-) => React.AbstractComponent<TProps, TInstance>;
 
 // This can be undefined, null, or the experimental implementation. If this is
 // null, that means `createAnimatedComponent` has already been initialized and
 // it is too late to call `inject`.
-let injected: ?createAnimatedComponent;
+let injected;
 
 /**
  * Call during bundle initialization to opt-in to new `createAnimatedComponent`.
  */
-export function inject(newInjected: createAnimatedComponent): void {
+export function inject(newInjected) {
   if (injected !== undefined) {
     if (__DEV__) {
       console.error(
@@ -40,7 +37,7 @@ export function inject(newInjected: createAnimatedComponent): void {
 /**
  * Only called by `createAnimatedComponent.js`.
  */
-export function recordAndRetrieve(): createAnimatedComponent | null {
+export function recordAndRetrieve() {
   if (injected === undefined) {
     injected = null;
   }
