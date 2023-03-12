@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict
+ *  strict
  */
 
 /**
@@ -26,9 +26,9 @@
 
 'use strict';
 
-function groupByEveryN<T>(array: Array<T>, n: number): Array<Array<?T>> {
+function groupByEveryN(array, n) {
   const result = [];
-  let temp: Array<?T> = [];
+  let temp = [];
 
   for (let i = 0; i < array.length; ++i) {
     if (i > 0 && i % n === 0) {

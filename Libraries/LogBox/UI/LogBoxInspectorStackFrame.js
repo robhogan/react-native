@@ -4,12 +4,10 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
-import type {StackFrame} from '../../Core/NativeExceptionsManager';
-import type {PressEvent} from '../../Types/CoreEventTypes';
 
 import View from '../../Components/View/View';
 import StyleSheet from '../../StyleSheet/StyleSheet';
@@ -19,12 +17,8 @@ import LogBoxButton from './LogBoxButton';
 import * as LogBoxStyle from './LogBoxStyle';
 import * as React from 'react';
 
-type Props = $ReadOnly<{|
-  frame: StackFrame,
-  onPress?: ?(event: PressEvent) => void,
-|}>;
 
-function LogBoxInspectorStackFrame(props: Props): React.Node {
+function LogBoxInspectorStackFrame(props) {
   const {frame, onPress} = props;
   const column = frame.column != null && parseInt(frame.column, 10);
   const location =
@@ -57,7 +51,7 @@ function LogBoxInspectorStackFrame(props: Props): React.Node {
   );
 }
 
-function getFileName(file: ?string) {
+function getFileName(file) {
   if (file == null) {
     return '<unknown>';
   }

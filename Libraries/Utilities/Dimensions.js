@@ -5,25 +5,19 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  */
 
 import RCTDeviceEventEmitter from '../EventEmitter/RCTDeviceEventEmitter';
 import EventEmitter, {
-  type EventSubscription,
 } from '../vendor/emitter/EventEmitter';
 import NativeDeviceInfo, {
-  type DimensionsPayload,
-  type DisplayMetrics,
-  type DisplayMetricsAndroid,
 } from './NativeDeviceInfo';
 import invariant from 'invariant';
 
-const eventEmitter = new EventEmitter<{
-  change: [DimensionsPayload],
-}>();
+const eventEmitter = new EventEmitter();
 let dimensionsInitialized = false;
-let dimensions: DimensionsPayload;
+let dimensions;
 
 class Dimensions {
   /**
@@ -43,7 +37,7 @@ class Dimensions {
    * @param {string} dim Name of dimension as defined when calling `set`.
    * @returns {DisplayMetrics? | DisplayMetricsAndroid?} Value for the dimension.
    */
-  static get(dim: string): DisplayMetrics | DisplayMetricsAndroid {
+  static get(dim) {
     invariant(dimensions[dim], 'No dimension set for key ' + dim);
     return dimensions[dim];
   }
@@ -54,7 +48,7 @@ class Dimensions {
    *
    * @param {DimensionsPayload} dims Simple string-keyed object of dimensions to set
    */
-  static set(dims: $ReadOnly<DimensionsPayload>): void {
+  static set(dims) {
     // We calculate the window dimensions in JS so that we don't encounter loss of
     // precision in transferring the dimensions (which could be non-integers) over
     // the bridge.
@@ -98,9 +92,9 @@ class Dimensions {
    *   `Dimensions.get('screen')`, respectively.
    */
   static addEventListener(
-    type: 'change',
-    handler: Function,
-  ): EventSubscription {
+    type,
+    handler,
+  ) {
     invariant(
       type === 'change',
       'Trying to subscribe to unknown event: "%s"',
@@ -110,7 +104,7 @@ class Dimensions {
   }
 }
 
-let initialDims: ?$ReadOnly<DimensionsPayload> =
+let initialDims =
   global.nativeExtensions &&
   global.nativeExtensions.DeviceInfo &&
   global.nativeExtensions.DeviceInfo.Dimensions;
@@ -118,7 +112,7 @@ if (!initialDims) {
   // Subscribe before calling getConstants to make sure we don't miss any updates in between.
   RCTDeviceEventEmitter.addListener(
     'didUpdateDimensions',
-    (update: DimensionsPayload) => {
+    (update) => {
       Dimensions.set(update);
     },
   );

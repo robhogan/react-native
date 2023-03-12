@@ -5,19 +5,17 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  */
 
 /* eslint no-bitwise: 0 */
 
-import type {ProcessedColorValue} from './processColor';
-import type {ColorValue} from './StyleSheet';
 
 import _normalizeColor from '@react-native/normalize-color';
 
 function normalizeColor(
-  color: ?(ColorValue | ProcessedColorValue),
-): ?ProcessedColorValue {
+  color,
+) {
   if (typeof color === 'object' && color != null) {
     const {normalizeColorObject} = require('./PlatformColorValueTypes');
     const normalizedColor = normalizeColorObject(color);

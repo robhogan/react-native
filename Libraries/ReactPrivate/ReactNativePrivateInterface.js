@@ -5,70 +5,54 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
-import typeof BatchedBridge from '../BatchedBridge/BatchedBridge';
-import typeof legacySendAccessibilityEvent from '../Components/AccessibilityInfo/legacySendAccessibilityEvent';
-import typeof TextInputState from '../Components/TextInput/TextInputState';
-import typeof ExceptionsManager from '../Core/ExceptionsManager';
-import typeof RawEventEmitter from '../Core/RawEventEmitter';
-import typeof ReactFiberErrorDialog from '../Core/ReactFiberErrorDialog';
-import typeof RCTEventEmitter from '../EventEmitter/RCTEventEmitter';
-import typeof CustomEvent from '../Events/CustomEvent';
-import typeof UIManager from '../ReactNative/UIManager';
-import typeof ReactNativeViewConfigRegistry from '../Renderer/shims/ReactNativeViewConfigRegistry';
-import typeof flattenStyle from '../StyleSheet/flattenStyle';
-import typeof deepFreezeAndThrowOnMutationInDev from '../Utilities/deepFreezeAndThrowOnMutationInDev';
-import typeof deepDiffer from '../Utilities/differ/deepDiffer';
-import typeof Platform from '../Utilities/Platform';
 
-import {type DangerouslyImpreciseStyleProp} from '../StyleSheet/StyleSheet';
+import {} from '../StyleSheet/StyleSheet';
 
 // flowlint unsafe-getters-setters:off
 module.exports = {
-  get BatchedBridge(): BatchedBridge {
+  get BatchedBridge() {
     return require('../BatchedBridge/BatchedBridge');
   },
-  get ExceptionsManager(): ExceptionsManager {
+  get ExceptionsManager() {
     return require('../Core/ExceptionsManager');
   },
-  get Platform(): Platform {
+  get Platform() {
     return require('../Utilities/Platform');
   },
-  get RCTEventEmitter(): RCTEventEmitter {
+  get RCTEventEmitter() {
     return require('../EventEmitter/RCTEventEmitter');
   },
-  get ReactNativeViewConfigRegistry(): ReactNativeViewConfigRegistry {
+  get ReactNativeViewConfigRegistry() {
     return require('../Renderer/shims/ReactNativeViewConfigRegistry');
   },
-  get TextInputState(): TextInputState {
+  get TextInputState() {
     return require('../Components/TextInput/TextInputState');
   },
-  get UIManager(): UIManager {
+  get UIManager() {
     return require('../ReactNative/UIManager');
   },
-  get deepDiffer(): deepDiffer {
+  get deepDiffer() {
     return require('../Utilities/differ/deepDiffer');
   },
-  get deepFreezeAndThrowOnMutationInDev(): deepFreezeAndThrowOnMutationInDev<
-    {...} | Array<mixed>,
-  > {
+  get deepFreezeAndThrowOnMutationInDev() {
     return require('../Utilities/deepFreezeAndThrowOnMutationInDev');
   },
-  get flattenStyle(): flattenStyle<DangerouslyImpreciseStyleProp> {
+  get flattenStyle() {
     return require('../StyleSheet/flattenStyle');
   },
-  get ReactFiberErrorDialog(): ReactFiberErrorDialog {
+  get ReactFiberErrorDialog() {
     return require('../Core/ReactFiberErrorDialog').default;
   },
-  get legacySendAccessibilityEvent(): legacySendAccessibilityEvent {
+  get legacySendAccessibilityEvent() {
     return require('../Components/AccessibilityInfo/legacySendAccessibilityEvent');
   },
-  get RawEventEmitter(): RawEventEmitter {
+  get RawEventEmitter() {
     return require('../Core/RawEventEmitter').default;
   },
-  get CustomEvent(): CustomEvent {
+  get CustomEvent() {
     return require('../Events/CustomEvent').default;
   },
 };

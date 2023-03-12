@@ -4,11 +4,10 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
-import type {PressEvent} from '../../Types/CoreEventTypes';
 
 import Animated from '../../Animated/Animated';
 import Easing from '../../Animated/Easing';
@@ -18,12 +17,8 @@ import LogBoxButton from './LogBoxButton';
 import * as LogBoxStyle from './LogBoxStyle';
 import * as React from 'react';
 
-type Props = $ReadOnly<{|
-  onPress?: ?(event: PressEvent) => void,
-  status: 'COMPLETE' | 'FAILED' | 'NONE' | 'PENDING',
-|}>;
 
-function LogBoxInspectorSourceMapStatus(props: Props): React.Node {
+function LogBoxInspectorSourceMapStatus(props) {
   const [state, setState] = React.useState({
     animation: null,
     rotate: null,

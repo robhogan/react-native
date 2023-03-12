@@ -5,10 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
-import type {PartialViewConfigWithoutName} from './PlatformBaseViewConfig';
 
 import ReactNativeStyleAttributes from '../Components/View/ReactNativeStyleAttributes';
 import {DynamicallyInjectedByGestureHandler} from './ViewConfigIgnore';
@@ -299,7 +298,7 @@ const validAttributesForEventProps = {
  *
  * So, these ViewConfigs are generated from LayoutShadowNode and BaseViewManager.
  */
-const PlatformBaseViewConfigAndroid: PartialViewConfigWithoutName = {
+const PlatformBaseViewConfigAndroid = {
   directEventTypes,
   bubblingEventTypes,
   validAttributes: {

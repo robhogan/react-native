@@ -5,18 +5,17 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
-import type {Args} from './NativeAlertManager';
 
 import NativeAlertManager from './NativeAlertManager';
 
 module.exports = {
   alertWithArgs(
-    args: Args,
-    callback: (id: number, value: string) => void,
-  ): void {
+    args,
+    callback,
+  ) {
     if (NativeAlertManager == null) {
       return;
     }

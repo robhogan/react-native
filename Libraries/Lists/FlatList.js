@@ -4,19 +4,12 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
-import typeof ScrollViewNativeComponent from '../Components/ScrollView/ScrollViewNativeComponent';
-import type {ViewStyleProp} from '../StyleSheet/StyleSheet';
-import type {
-  ViewabilityConfigCallbackPair,
-  ViewToken,
-} from './ViewabilityHelper';
-import type {RenderItemProps, RenderItemType} from './VirtualizedList';
 
-import {type ScrollResponderType} from '../Components/ScrollView/ScrollView';
+import {} from '../Components/ScrollView/ScrollView';
 import VirtualizedList from './VirtualizedList';
 import {keyExtractor as defaultKeyExtractor} from './VirtualizeUtils';
 import memoizeOne from 'memoize-one';
@@ -28,125 +21,6 @@ const Platform = require('../Utilities/Platform');
 const invariant = require('invariant');
 const React = require('react');
 
-type RequiredProps<ItemT> = {|
-  /**
-   * An array (or array-like list) of items to render. Other data types can be
-   * used by targetting VirtualizedList directly.
-   */
-  data: ?$ArrayLike<ItemT>,
-|};
-type OptionalProps<ItemT> = {|
-  /**
-   * Takes an item from `data` and renders it into the list. Example usage:
-   *
-   *     <FlatList
-   *       ItemSeparatorComponent={Platform.OS !== 'android' && ({highlighted}) => (
-   *         <View style={[style.separator, highlighted && {marginLeft: 0}]} />
-   *       )}
-   *       data={[{title: 'Title Text', key: 'item1'}]}
-   *       renderItem={({item, separators}) => (
-   *         <TouchableHighlight
-   *           onPress={() => this._onPress(item)}
-   *           onShowUnderlay={separators.highlight}
-   *           onHideUnderlay={separators.unhighlight}>
-   *           <View style={{backgroundColor: 'white'}}>
-   *             <Text>{item.title}</Text>
-   *           </View>
-   *         </TouchableHighlight>
-   *       )}
-   *     />
-   *
-   * Provides additional metadata like `index` if you need it, as well as a more generic
-   * `separators.updateProps` function which let's you set whatever props you want to change the
-   * rendering of either the leading separator or trailing separator in case the more common
-   * `highlight` and `unhighlight` (which set the `highlighted: boolean` prop) are insufficient for
-   * your use-case.
-   */
-  renderItem?: ?RenderItemType<ItemT>,
-
-  /**
-   * Optional custom style for multi-item rows generated when numColumns > 1.
-   */
-  columnWrapperStyle?: ViewStyleProp,
-  /**
-   * A marker property for telling the list to re-render (since it implements `PureComponent`). If
-   * any of your `renderItem`, Header, Footer, etc. functions depend on anything outside of the
-   * `data` prop, stick it here and treat it immutably.
-   */
-  extraData?: any,
-  /**
-   * `getItemLayout` is an optional optimizations that let us skip measurement of dynamic content if
-   * you know the height of items a priori. `getItemLayout` is the most efficient, and is easy to
-   * use if you have fixed height items, for example:
-   *
-   *     getItemLayout={(data, index) => (
-   *       {length: ITEM_HEIGHT, offset: ITEM_HEIGHT * index, index}
-   *     )}
-   *
-   * Adding `getItemLayout` can be a great performance boost for lists of several hundred items.
-   * Remember to include separator length (height or width) in your offset calculation if you
-   * specify `ItemSeparatorComponent`.
-   */
-  getItemLayout?: (
-    data: ?Array<ItemT>,
-    index: number,
-  ) => {
-    length: number,
-    offset: number,
-    index: number,
-    ...
-  },
-  /**
-   * If true, renders items next to each other horizontally instead of stacked vertically.
-   */
-  horizontal?: ?boolean,
-  /**
-   * How many items to render in the initial batch. This should be enough to fill the screen but not
-   * much more. Note these items will never be unmounted as part of the windowed rendering in order
-   * to improve perceived performance of scroll-to-top actions.
-   */
-  initialNumToRender?: ?number,
-  /**
-   * Instead of starting at the top with the first item, start at `initialScrollIndex`. This
-   * disables the "scroll to top" optimization that keeps the first `initialNumToRender` items
-   * always rendered and immediately renders the items starting at this initial index. Requires
-   * `getItemLayout` to be implemented.
-   */
-  initialScrollIndex?: ?number,
-  /**
-   * Reverses the direction of scroll. Uses scale transforms of -1.
-   */
-  inverted?: ?boolean,
-  /**
-   * Used to extract a unique key for a given item at the specified index. Key is used for caching
-   * and as the react key to track item re-ordering. The default extractor checks `item.key`, then
-   * falls back to using the index, like React does.
-   */
-  keyExtractor?: ?(item: ItemT, index: number) => string,
-  /**
-   * Multiple columns can only be rendered with `horizontal={false}` and will zig-zag like a
-   * `flexWrap` layout. Items should all be the same height - masonry layouts are not supported.
-   *
-   * The default value is 1.
-   */
-  numColumns?: number,
-  /**
-   * Note: may have bugs (missing content) in some circumstances - use at your own risk.
-   *
-   * This may improve scroll performance for large lists.
-   *
-   * The default value is true for Android.
-   */
-  removeClippedSubviews?: boolean,
-  /**
-   * See `ScrollView` for flow type and further documentation.
-   */
-  fadingEdgeLength?: ?number,
-  /**
-   * Enable an optimization to memoize the item renderer to prevent unnecessary rerenders.
-   */
-  strictMode?: boolean,
-|};
 
 /**
  * Default Props Helper Functions
@@ -154,42 +28,22 @@ type OptionalProps<ItemT> = {|
  */
 
 // removeClippedSubviewsOrDefault(this.props.removeClippedSubviews)
-function removeClippedSubviewsOrDefault(removeClippedSubviews: ?boolean) {
+function removeClippedSubviewsOrDefault(removeClippedSubviews) {
   return removeClippedSubviews ?? Platform.OS === 'android';
 }
 
 // numColumnsOrDefault(this.props.numColumns)
-function numColumnsOrDefault(numColumns: ?number) {
+function numColumnsOrDefault(numColumns) {
   return numColumns ?? 1;
 }
 
-function isArrayLike(data: mixed): boolean {
+function isArrayLike(data) {
   // $FlowExpectedError[incompatible-use]
   return typeof Object(data).length === 'number';
 }
 
-type FlatListProps<ItemT> = {|
-  ...RequiredProps<ItemT>,
-  ...OptionalProps<ItemT>,
-|};
 
-type VirtualizedListProps = React.ElementConfig<typeof VirtualizedList>;
 
-export type Props<ItemT> = {
-  ...$Diff<
-    VirtualizedListProps,
-    {
-      getItem: $PropertyType<VirtualizedListProps, 'getItem'>,
-      getItemCount: $PropertyType<VirtualizedListProps, 'getItemCount'>,
-      getItemLayout: $PropertyType<VirtualizedListProps, 'getItemLayout'>,
-      renderItem: $PropertyType<VirtualizedListProps, 'renderItem'>,
-      keyExtractor: $PropertyType<VirtualizedListProps, 'keyExtractor'>,
-      ...
-    },
-  >,
-  ...FlatListProps<ItemT>,
-  ...
-};
 
 /**
  * A performant interface for rendering simple, flat lists, supporting the most handy features:
@@ -299,12 +153,12 @@ export type Props<ItemT> = {
  *
  * Also inherits [ScrollView Props](docs/scrollview.html#props), unless it is nested in another FlatList of same orientation.
  */
-class FlatList<ItemT> extends React.PureComponent<Props<ItemT>, void> {
-  props: Props<ItemT>;
+class FlatList extends React.PureComponent {
+  props;
   /**
    * Scrolls to the end of the content. May be janky without `getItemLayout` prop.
    */
-  scrollToEnd(params?: ?{animated?: ?boolean, ...}) {
+  scrollToEnd(params) {
     if (this._listRef) {
       this._listRef.scrollToEnd(params);
     }
@@ -318,13 +172,7 @@ class FlatList<ItemT> extends React.PureComponent<Props<ItemT>, void> {
    * Note: cannot scroll to locations outside the render window without specifying the
    * `getItemLayout` prop.
    */
-  scrollToIndex(params: {
-    animated?: ?boolean,
-    index: number,
-    viewOffset?: number,
-    viewPosition?: number,
-    ...
-  }) {
+  scrollToIndex(params) {
     if (this._listRef) {
       this._listRef.scrollToIndex(params);
     }
@@ -336,13 +184,7 @@ class FlatList<ItemT> extends React.PureComponent<Props<ItemT>, void> {
    * Note: cannot scroll to locations outside the render window without specifying the
    * `getItemLayout` prop.
    */
-  scrollToItem(params: {
-    animated?: ?boolean,
-    item: ItemT,
-    viewOffset?: number,
-    viewPosition?: number,
-    ...
-  }) {
+  scrollToItem(params) {
     if (this._listRef) {
       this._listRef.scrollToItem(params);
     }
@@ -353,7 +195,7 @@ class FlatList<ItemT> extends React.PureComponent<Props<ItemT>, void> {
    *
    * Check out [scrollToOffset](docs/virtualizedlist.html#scrolltooffset) of VirtualizedList
    */
-  scrollToOffset(params: {animated?: ?boolean, offset: number, ...}) {
+  scrollToOffset(params) {
     if (this._listRef) {
       this._listRef.scrollToOffset(params);
     }
@@ -384,7 +226,7 @@ class FlatList<ItemT> extends React.PureComponent<Props<ItemT>, void> {
   /**
    * Provides a handle to the underlying scroll responder.
    */
-  getScrollResponder(): ?ScrollResponderType {
+  getScrollResponder() {
     if (this._listRef) {
       return this._listRef.getScrollResponder();
     }
@@ -393,9 +235,7 @@ class FlatList<ItemT> extends React.PureComponent<Props<ItemT>, void> {
   /**
    * Provides a reference to the underlying host component
    */
-  getNativeScrollRef():
-    | ?React.ElementRef<typeof View>
-    | ?React.ElementRef<ScrollViewNativeComponent> {
+  getNativeScrollRef() {
     if (this._listRef) {
       /* $FlowFixMe[incompatible-return] Suppresses errors found when fixing
        * TextInput typing */
@@ -403,19 +243,19 @@ class FlatList<ItemT> extends React.PureComponent<Props<ItemT>, void> {
     }
   }
 
-  getScrollableNode(): any {
+  getScrollableNode() {
     if (this._listRef) {
       return this._listRef.getScrollableNode();
     }
   }
 
-  setNativeProps(props: {[string]: mixed, ...}) {
+  setNativeProps(props) {
     if (this._listRef) {
       this._listRef.setNativeProps(props);
     }
   }
 
-  constructor(props: Props<ItemT>) {
+  constructor(props) {
     super(props);
     this._checkProps(this.props);
     if (this.props.viewabilityConfigCallbackPairs) {
@@ -440,7 +280,7 @@ class FlatList<ItemT> extends React.PureComponent<Props<ItemT>, void> {
   }
 
   // $FlowFixMe[missing-local-annot]
-  componentDidUpdate(prevProps: Props<ItemT>) {
+  componentDidUpdate(prevProps) {
     invariant(
       prevProps.numColumns === this.props.numColumns,
       'Changing numColumns on the fly is not supported. Change the key prop on FlatList when ' +
@@ -463,15 +303,15 @@ class FlatList<ItemT> extends React.PureComponent<Props<ItemT>, void> {
     this._checkProps(this.props);
   }
 
-  _listRef: ?React.ElementRef<typeof VirtualizedList>;
-  _virtualizedListPairs: Array<ViewabilityConfigCallbackPair> = [];
+  _listRef;
+  _virtualizedListPairs = [];
 
-  _captureRef = (ref: ?React.ElementRef<typeof VirtualizedList>) => {
+  _captureRef = (ref) => {
     this._listRef = ref;
   };
 
   // $FlowFixMe[missing-local-annot]
-  _checkProps(props: Props<ItemT>) {
+  _checkProps(props) {
     const {
       // $FlowFixMe[prop-missing] this prop doesn't exist, is only used for an invariant
       getItem,
@@ -503,9 +343,9 @@ class FlatList<ItemT> extends React.PureComponent<Props<ItemT>, void> {
   }
 
   _getItem = (
-    data: $ArrayLike<ItemT>,
-    index: number,
-  ): ?(ItemT | $ReadOnlyArray<ItemT>) => {
+    data,
+    index,
+  ) => {
     const numColumns = numColumnsOrDefault(this.props.numColumns);
     if (numColumns > 1) {
       const ret = [];
@@ -522,7 +362,7 @@ class FlatList<ItemT> extends React.PureComponent<Props<ItemT>, void> {
     }
   };
 
-  _getItemCount = (data: ?$ArrayLike<ItemT>): number => {
+  _getItemCount = (data) => {
     // Legacy behavior of FlatList was to forward "undefined" length if invalid
     // data like a non-arraylike object is passed. VirtualizedList would then
     // coerce this, and the math would work out to no-op. For compatibility, if
@@ -537,7 +377,7 @@ class FlatList<ItemT> extends React.PureComponent<Props<ItemT>, void> {
     }
   };
 
-  _keyExtractor = (items: ItemT | Array<ItemT>, index: number): string => {
+  _keyExtractor = (items, index) => {
     const numColumns = numColumnsOrDefault(this.props.numColumns);
     const keyExtractor = this.props.keyExtractor ?? defaultKeyExtractor;
 
@@ -550,7 +390,7 @@ class FlatList<ItemT> extends React.PureComponent<Props<ItemT>, void> {
       );
       return items
         .map((item, kk) =>
-          keyExtractor(((item: $FlowFixMe): ItemT), index * numColumns + kk),
+          keyExtractor(((item)), index * numColumns + kk),
         )
         .join(':');
     }
@@ -559,7 +399,7 @@ class FlatList<ItemT> extends React.PureComponent<Props<ItemT>, void> {
     return keyExtractor(items, index);
   };
 
-  _pushMultiColumnViewable(arr: Array<ViewToken>, v: ViewToken): void {
+  _pushMultiColumnViewable(arr, v) {
     const numColumns = numColumnsOrDefault(this.props.numColumns);
     const keyExtractor = this.props.keyExtractor ?? defaultKeyExtractor;
     v.item.forEach((item, ii) => {
@@ -570,23 +410,15 @@ class FlatList<ItemT> extends React.PureComponent<Props<ItemT>, void> {
   }
 
   _createOnViewableItemsChanged(
-    onViewableItemsChanged: ?(info: {
-      viewableItems: Array<ViewToken>,
-      changed: Array<ViewToken>,
-      ...
-    }) => void,
+    onViewableItemsChanged,
     // $FlowFixMe[missing-local-annot]
   ) {
-    return (info: {
-      viewableItems: Array<ViewToken>,
-      changed: Array<ViewToken>,
-      ...
-    }) => {
+    return (info) => {
       const numColumns = numColumnsOrDefault(this.props.numColumns);
       if (onViewableItemsChanged) {
         if (numColumns > 1) {
-          const changed: Array<ViewToken> = [];
-          const viewableItems: Array<ViewToken> = [];
+          const changed = [];
+          const viewableItems = [];
           info.viewableItems.forEach(v =>
             this._pushMultiColumnViewable(viewableItems, v),
           );
@@ -600,16 +432,16 @@ class FlatList<ItemT> extends React.PureComponent<Props<ItemT>, void> {
   }
 
   _renderer = (
-    ListItemComponent: ?(React.ComponentType<any> | React.Element<any>),
-    renderItem: ?RenderItemType<ItemT>,
-    columnWrapperStyle: ?ViewStyleProp,
-    numColumns: ?number,
-    extraData: ?any,
+    ListItemComponent,
+    renderItem,
+    columnWrapperStyle,
+    numColumns,
+    extraData,
     // $FlowFixMe[missing-local-annot]
   ) => {
     const cols = numColumnsOrDefault(numColumns);
 
-    const render = (props: RenderItemProps<ItemT>): React.Node => {
+    const render = (props) => {
       if (ListItemComponent) {
         // $FlowFixMe[not-a-component] Component isn't valid
         // $FlowFixMe[incompatible-type-arg] Component isn't valid
@@ -623,7 +455,7 @@ class FlatList<ItemT> extends React.PureComponent<Props<ItemT>, void> {
       }
     };
 
-    const renderProp = (info: RenderItemProps<ItemT>) => {
+    const renderProp = (info) => {
       if (cols > 1) {
         const {item, index} = info;
         invariant(
@@ -658,7 +490,7 @@ class FlatList<ItemT> extends React.PureComponent<Props<ItemT>, void> {
   // $FlowFixMe[missing-local-annot]
   _memoizedRenderer = memoizeOne(this._renderer);
 
-  render(): React.Node {
+  render() {
     const {
       numColumns,
       columnWrapperStyle,

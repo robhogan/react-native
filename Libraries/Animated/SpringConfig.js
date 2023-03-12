@@ -5,29 +5,24 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict
+ *  strict
  */
 
 'use strict';
 
-type SpringConfigType = {
-  stiffness: number,
-  damping: number,
-  ...
-};
 
-function stiffnessFromOrigamiValue(oValue: number) {
+function stiffnessFromOrigamiValue(oValue) {
   return (oValue - 30) * 3.62 + 194;
 }
 
-function dampingFromOrigamiValue(oValue: number) {
+function dampingFromOrigamiValue(oValue) {
   return (oValue - 8) * 3 + 25;
 }
 
 export function fromOrigamiTensionAndFriction(
-  tension: number,
-  friction: number,
-): SpringConfigType {
+  tension,
+  friction,
+) {
   return {
     stiffness: stiffnessFromOrigamiValue(tension),
     damping: dampingFromOrigamiValue(friction),
@@ -35,34 +30,34 @@ export function fromOrigamiTensionAndFriction(
 }
 
 export function fromBouncinessAndSpeed(
-  bounciness: number,
-  speed: number,
-): SpringConfigType {
-  function normalize(value: number, startValue: number, endValue: number) {
+  bounciness,
+  speed,
+) {
+  function normalize(value, startValue, endValue) {
     return (value - startValue) / (endValue - startValue);
   }
 
-  function projectNormal(n: number, start: number, end: number) {
+  function projectNormal(n, start, end) {
     return start + n * (end - start);
   }
 
-  function linearInterpolation(t: number, start: number, end: number) {
+  function linearInterpolation(t, start, end) {
     return t * end + (1 - t) * start;
   }
 
-  function quadraticOutInterpolation(t: number, start: number, end: number) {
+  function quadraticOutInterpolation(t, start, end) {
     return linearInterpolation(2 * t - t * t, start, end);
   }
 
-  function b3Friction1(x: number) {
+  function b3Friction1(x) {
     return 0.0007 * Math.pow(x, 3) - 0.031 * Math.pow(x, 2) + 0.64 * x + 1.28;
   }
 
-  function b3Friction2(x: number) {
+  function b3Friction2(x) {
     return 0.000044 * Math.pow(x, 3) - 0.006 * Math.pow(x, 2) + 0.36 * x + 2;
   }
 
-  function b3Friction3(x: number) {
+  function b3Friction3(x) {
     return (
       0.00000045 * Math.pow(x, 3) -
       0.000332 * Math.pow(x, 2) +
@@ -71,7 +66,7 @@ export function fromBouncinessAndSpeed(
     );
   }
 
-  function b3Nobounce(tension: number) {
+  function b3Nobounce(tension) {
     if (tension <= 18) {
       return b3Friction1(tension);
     } else if (tension > 18 && tension <= 44) {

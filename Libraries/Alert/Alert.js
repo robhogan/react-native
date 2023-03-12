@@ -5,34 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  */
 
-import type {DialogOptions} from '../NativeModules/specs/NativeDialogManagerAndroid';
 
 import Platform from '../Utilities/Platform';
 import RCTAlertManager from './RCTAlertManager';
 
-export type AlertType =
-  | 'default'
-  | 'plain-text'
-  | 'secure-text'
-  | 'login-password';
-export type AlertButtonStyle = 'default' | 'cancel' | 'destructive';
-export type Buttons = Array<{
-  text?: string,
-  onPress?: ?Function,
-  isPreferred?: boolean,
-  style?: AlertButtonStyle,
-  ...
-}>;
 
-type Options = {
-  cancelable?: ?boolean,
-  userInterfaceStyle?: 'unspecified' | 'light' | 'dark',
-  onDismiss?: ?() => void,
-  ...
-};
 
 /**
  * Launches an alert dialog with the specified title and message.
@@ -41,11 +21,11 @@ type Options = {
  */
 class Alert {
   static alert(
-    title: ?string,
-    message?: ?string,
-    buttons?: Buttons,
-    options?: Options,
-  ): void {
+    title,
+    message,
+    buttons,
+    options,
+  ) {
     if (Platform.OS === 'ios') {
       Alert.prompt(
         title,
@@ -64,7 +44,7 @@ class Alert {
       }
       const constants = NativeDialogManagerAndroid.getConstants();
 
-      const config: DialogOptions = {
+      const config = {
         title: title || '',
         message: message || '',
         cancelable: false,
@@ -76,7 +56,7 @@ class Alert {
       // At most three buttons (neutral, negative, positive). Ignore rest.
       // The text 'OK' should be probably localized. iOS Alert does that in native.
       const defaultPositiveText = 'OK';
-      const validButtons: Buttons = buttons
+      const validButtons = buttons
         ? buttons.slice(0, 3)
         : [{text: defaultPositiveText}];
       const buttonPositive = validButtons.pop();
@@ -108,22 +88,22 @@ class Alert {
           options && options.onDismiss && options.onDismiss();
         }
       };
-      const onError = (errorMessage: string) => console.warn(errorMessage);
+      const onError = (errorMessage) => console.warn(errorMessage);
       NativeDialogManagerAndroid.showAlert(config, onError, onAction);
     }
   }
 
   static prompt(
-    title: ?string,
-    message?: ?string,
-    callbackOrButtons?: ?(((text: string) => void) | Buttons),
-    type?: ?AlertType = 'plain-text',
-    defaultValue?: string,
-    keyboardType?: string,
-    options?: Options,
-  ): void {
+    title,
+    message,
+    callbackOrButtons,
+    type = 'plain-text',
+    defaultValue,
+    keyboardType,
+    options,
+  ) {
     if (Platform.OS === 'ios') {
-      let callbacks: Array<?any> = [];
+      let callbacks = [];
       const buttons = [];
       let cancelButtonKey;
       let destructiveButtonKey;
@@ -142,7 +122,7 @@ class Alert {
             preferredButtonKey = String(index);
           }
           if (btn.text || index < (callbackOrButtons || []).length - 1) {
-            const btnDef: {[number]: string} = {};
+            const btnDef = {};
             btnDef[index] = btn.text || '';
             buttons.push(btnDef);
           }

@@ -5,27 +5,24 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict
+ *  strict
  */
 
 'use strict';
 
-import type {ExtendedError} from './ExtendedError';
-import type {ExceptionData} from './NativeExceptionsManager';
 
 class SyntheticError extends Error {
-  name: string = '';
+  name = '';
 }
 
-type ExceptionDecorator = ExceptionData => ExceptionData;
 
-let userExceptionDecorator: ?ExceptionDecorator;
+let userExceptionDecorator;
 let inUserExceptionDecorator = false;
 
 // This Symbol is used to decorate an ExtendedError with extra data in select usecases.
 // Note that data passed using this method should be strictly contained,
 // as data that's not serializable/too large may cause issues with passing the error to the native code.
-const decoratedExtraDataKey: symbol = Symbol('decoratedExtraDataKey');
+const decoratedExtraDataKey = Symbol('decoratedExtraDataKey');
 
 /**
  * Allows the app to add information to the exception report before it is sent
@@ -33,12 +30,12 @@ const decoratedExtraDataKey: symbol = Symbol('decoratedExtraDataKey');
  */
 
 function unstable_setExceptionDecorator(
-  exceptionDecorator: ?ExceptionDecorator,
+  exceptionDecorator,
 ) {
   userExceptionDecorator = exceptionDecorator;
 }
 
-function preprocessException(data: ExceptionData): ExceptionData {
+function preprocessException(data) {
   if (userExceptionDecorator && !inUserExceptionDecorator) {
     inUserExceptionDecorator = true;
     try {
@@ -57,9 +54,9 @@ function preprocessException(data: ExceptionData): ExceptionData {
  */
 let exceptionID = 0;
 function reportException(
-  e: ExtendedError,
-  isFatal: boolean,
-  reportToConsole: boolean, // only true when coming from handleException; the error has not yet been logged
+  e,
+  isFatal,
+  reportToConsole, // only true when coming from handleException; the error has not yet been logged
 ) {
   const parseErrorStack = require('./Devtools/parseErrorStack');
   const stack = parseErrorStack(e?.stack);
@@ -117,11 +114,6 @@ function reportException(
   }
 }
 
-declare var console: typeof console & {
-  _errorOriginal: typeof console.error,
-  reportErrorsAsExceptions: boolean,
-  ...
-};
 
 // If we trigger console.error _from_ handleException,
 // we do want to make sure that console.error doesn't trigger error reporting again
@@ -130,8 +122,8 @@ let inExceptionHandler = false;
 /**
  * Logs exceptions to the (native) console and displays them
  */
-function handleException(e: mixed, isFatal: boolean) {
-  let error: Error;
+function handleException(e, isFatal) {
+  let error;
   if (e instanceof Error) {
     error = e;
   } else {

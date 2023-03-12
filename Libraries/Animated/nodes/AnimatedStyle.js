@@ -4,13 +4,12 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
 'use strict';
 
-import type {PlatformConfig} from '../AnimatedPlatformConfig';
 
 import flattenStyle from '../../StyleSheet/flattenStyle';
 import NativeAnimatedHelper from '../NativeAnimatedHelper';
@@ -19,11 +18,11 @@ import AnimatedTransform from './AnimatedTransform';
 import AnimatedWithChildren from './AnimatedWithChildren';
 
 export default class AnimatedStyle extends AnimatedWithChildren {
-  _style: Object;
+  _style;
 
-  constructor(style: any) {
+  constructor(style) {
     super();
-    style = flattenStyle(style) || ({}: {[string]: any});
+    style = flattenStyle(style) || ({});
     if (style.transform) {
       style = {
         ...style,
@@ -34,8 +33,8 @@ export default class AnimatedStyle extends AnimatedWithChildren {
   }
 
   // Recursively get values for nested styles (like iOS's shadowOffset)
-  _walkStyleAndGetValues(style: any): {[string]: any | {...}} {
-    const updatedStyle: {[string]: any | {...}} = {};
+  _walkStyleAndGetValues(style) {
+    const updatedStyle = {};
     for (const key in style) {
       const value = style[key];
       if (value instanceof AnimatedNode) {
@@ -50,13 +49,13 @@ export default class AnimatedStyle extends AnimatedWithChildren {
     return updatedStyle;
   }
 
-  __getValue(): Object {
+  __getValue() {
     return this._walkStyleAndGetValues(this._style);
   }
 
   // Recursively get animated values for nested styles (like iOS's shadowOffset)
-  _walkStyleAndGetAnimatedValues(style: any): {[string]: any | {...}} {
-    const updatedStyle: {[string]: any | {...}} = {};
+  _walkStyleAndGetAnimatedValues(style) {
+    const updatedStyle = {};
     for (const key in style) {
       const value = style[key];
       if (value instanceof AnimatedNode) {
@@ -69,11 +68,11 @@ export default class AnimatedStyle extends AnimatedWithChildren {
     return updatedStyle;
   }
 
-  __getAnimatedValue(): Object {
+  __getAnimatedValue() {
     return this._walkStyleAndGetAnimatedValues(this._style);
   }
 
-  __attach(): void {
+  __attach() {
     for (const key in this._style) {
       const value = this._style[key];
       if (value instanceof AnimatedNode) {
@@ -82,7 +81,7 @@ export default class AnimatedStyle extends AnimatedWithChildren {
     }
   }
 
-  __detach(): void {
+  __detach() {
     for (const key in this._style) {
       const value = this._style[key];
       if (value instanceof AnimatedNode) {
@@ -92,7 +91,7 @@ export default class AnimatedStyle extends AnimatedWithChildren {
     super.__detach();
   }
 
-  __makeNative(platformConfig: ?PlatformConfig) {
+  __makeNative(platformConfig) {
     for (const key in this._style) {
       const value = this._style[key];
       if (value instanceof AnimatedNode) {
@@ -102,8 +101,8 @@ export default class AnimatedStyle extends AnimatedWithChildren {
     super.__makeNative(platformConfig);
   }
 
-  __getNativeConfig(): Object {
-    const styleConfig: {[string]: ?number} = {};
+  __getNativeConfig() {
+    const styleConfig = {};
     for (const styleKey in this._style) {
       if (this._style[styleKey] instanceof AnimatedNode) {
         const style = this._style[styleKey];

@@ -4,18 +4,12 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
 'use strict';
 
-import type {Spec as FabricUIManagerSpec} from '../ReactNative/FabricUIManager';
-import type {
-  LayoutAnimationConfig as LayoutAnimationConfig_,
-  LayoutAnimationProperty,
-  LayoutAnimationType,
-} from '../Renderer/shims/ReactNativeTypes';
 
 import ReactNativeFeatureFlags from '../ReactNative/ReactNativeFeatureFlags';
 import Platform from '../Utilities/Platform';
@@ -23,15 +17,12 @@ import Platform from '../Utilities/Platform';
 const UIManager = require('../ReactNative/UIManager');
 
 // Reexport type
-export type LayoutAnimationConfig = LayoutAnimationConfig_;
 
-type OnAnimationDidEndCallback = () => void;
-type OnAnimationDidFailCallback = () => void;
 
-let isLayoutAnimationEnabled: boolean =
+let isLayoutAnimationEnabled =
   ReactNativeFeatureFlags.isLayoutAnimationEnabled();
 
-function setEnabled(value: boolean) {
+function setEnabled(value) {
   isLayoutAnimationEnabled = isLayoutAnimationEnabled;
 }
 
@@ -44,9 +35,9 @@ function setEnabled(value: boolean) {
  * parsing fails.
  */
 function configureNext(
-  config: LayoutAnimationConfig,
-  onAnimationDidEnd?: OnAnimationDidEndCallback,
-  onAnimationDidFail?: OnAnimationDidFailCallback,
+  config,
+  onAnimationDidEnd,
+  onAnimationDidFail,
 ) {
   if (Platform.isTesting) {
     return;
@@ -77,7 +68,7 @@ function configureNext(
 
   // In Fabric, LayoutAnimations are unconditionally enabled for Android, and
   // conditionally enabled on iOS (pending fully shipping; this is a temporary state).
-  const FabricUIManager: FabricUIManagerSpec = global?.nativeFabricUIManager;
+  const FabricUIManager = global?.nativeFabricUIManager;
   if (FabricUIManager?.configureNextLayoutAnimation) {
     global?.nativeFabricUIManager?.configureNextLayoutAnimation(
       config,
@@ -102,10 +93,10 @@ function configureNext(
 }
 
 function create(
-  duration: number,
-  type: LayoutAnimationType,
-  property: LayoutAnimationProperty,
-): LayoutAnimationConfig {
+  duration,
+  type,
+  property,
+) {
   return {
     duration,
     create: {type, property},
@@ -119,8 +110,8 @@ const Presets = {
     300,
     'easeInEaseOut',
     'opacity',
-  ): LayoutAnimationConfig),
-  linear: (create(500, 'linear', 'opacity'): LayoutAnimationConfig),
+  )),
+  linear: (create(500, 'linear', 'opacity')),
   spring: {
     duration: 700,
     create: {
@@ -181,19 +172,13 @@ const LayoutAnimation = {
     scaleY: 'scaleY',
     scaleXY: 'scaleXY',
   }),
-  checkConfig(...args: Array<mixed>) {
+  checkConfig(...args) {
     console.error('LayoutAnimation.checkConfig(...) has been disabled.');
   },
   Presets,
-  easeInEaseOut: (configureNext.bind(null, Presets.easeInEaseOut): (
-    onAnimationDidEnd?: OnAnimationDidEndCallback,
-  ) => void),
-  linear: (configureNext.bind(null, Presets.linear): (
-    onAnimationDidEnd?: OnAnimationDidEndCallback,
-  ) => void),
-  spring: (configureNext.bind(null, Presets.spring): (
-    onAnimationDidEnd?: OnAnimationDidEndCallback,
-  ) => void),
+  easeInEaseOut: (configureNext.bind(null, Presets.easeInEaseOut)),
+  linear: (configureNext.bind(null, Presets.linear)),
+  spring: (configureNext.bind(null, Presets.spring)),
   setEnabled,
 };
 

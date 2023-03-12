@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
@@ -15,7 +15,7 @@
  * Note that a polyfill can technically fake this behavior but few does it.
  * Therefore, this is usually good enough for our purpose.
  */
-function isNativeFunction(f: Function): boolean {
+function isNativeFunction(f) {
   return typeof f === 'function' && f.toString().indexOf('[native code]') > -1;
 }
 
@@ -23,7 +23,7 @@ function isNativeFunction(f: Function): boolean {
  * @return whether or not the constructor of @param {object} o is an native
  * function named with @param {string} expectedName.
  */
-function hasNativeConstructor(o: Object, expectedName: string): boolean {
+function hasNativeConstructor(o, expectedName) {
   const con = Object.getPrototypeOf(o).constructor;
   return con.name === expectedName && isNativeFunction(con);
 }

@@ -5,14 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict
+ *  strict
  */
 
 'use strict';
 
 const getDevServer = require('./getDevServer');
 
-function openFileInEditor(file: string, lineNumber: number) {
+function openFileInEditor(file, lineNumber) {
   fetch(getDevServer().url + 'open-stack-frame', {
     method: 'POST',
     headers: {

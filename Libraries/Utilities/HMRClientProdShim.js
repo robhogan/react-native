@@ -5,16 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
 'use strict';
 
-import type {HMRClientNativeInterface} from './HMRClient';
 
 // This shim ensures DEV binary builds don't crash in JS
 // when they're combined with a PROD JavaScript build.
-const HMRClientProdShim: HMRClientNativeInterface = {
+const HMRClientProdShim = {
   setup() {},
   enable() {
     console.error(

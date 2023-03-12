@@ -5,12 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  */
 
 'use strict';
 
-import type {ViewStyleProp} from '../StyleSheet/StyleSheet';
 
 const TouchableHighlight = require('../Components/Touchable/TouchableHighlight');
 const TouchableWithoutFeedback = require('../Components/Touchable/TouchableWithoutFeedback');
@@ -24,21 +23,9 @@ const BoxInspector = require('./BoxInspector');
 const StyleInspector = require('./StyleInspector');
 const React = require('react');
 
-type Props = $ReadOnly<{|
-  hierarchy: Array<{|name: string|}>,
-  style?: ?ViewStyleProp,
-  source?: ?{
-    fileName?: string,
-    lineNumber?: number,
-    ...
-  },
-  frame?: ?Object,
-  selection?: ?number,
-  setSelection?: number => mixed,
-|}>;
 
-class ElementProperties extends React.Component<Props> {
-  render(): React.Node {
+class ElementProperties extends React.Component {
+  render() {
     const style = flattenStyle(this.props.style);
     const selection = this.props.selection;
     let openFileButton;
@@ -65,7 +52,7 @@ class ElementProperties extends React.Component<Props> {
           <View style={styles.breadcrumb}>
             {mapWithSeparator(
               this.props.hierarchy,
-              (hierarchyItem, i): React.MixedElement => (
+              (hierarchyItem, i) => (
                 <TouchableHighlight
                   key={'item-' + i}
                   style={[styles.breadItem, i === selection && styles.selected]}
@@ -74,7 +61,7 @@ class ElementProperties extends React.Component<Props> {
                   <Text style={styles.breadItemText}>{hierarchyItem.name}</Text>
                 </TouchableHighlight>
               ),
-              (i): React.MixedElement => (
+              (i) => (
                 <Text key={'sep-' + i} style={styles.breadSep}>
                   &#9656;
                 </Text>

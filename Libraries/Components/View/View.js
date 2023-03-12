@@ -5,10 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
-import type {ViewProps} from './ViewPropTypes';
 
 import flattenStyle from '../../StyleSheet/flattenStyle';
 import TextAncestor from '../../Text/TextAncestor';
@@ -16,7 +15,6 @@ import {getAccessibilityRoleFromRole} from '../../Utilities/AcessibilityMapping'
 import ViewNativeComponent from './ViewNativeComponent';
 import * as React from 'react';
 
-export type Props = ViewProps;
 
 /**
  * The most fundamental component for building a UI, View is a container that
@@ -25,10 +23,7 @@ export type Props = ViewProps;
  *
  * @see https://reactnative.dev/docs/view
  */
-const View: React.AbstractComponent<
-  ViewProps,
-  React.ElementRef<typeof ViewNativeComponent>,
-> = React.forwardRef(
+const View = React.forwardRef(
   (
     {
       accessibilityElementsHidden,
@@ -60,7 +55,7 @@ const View: React.AbstractComponent<
       style,
       tabIndex,
       ...otherProps
-    }: ViewProps,
+    },
     forwardedRef,
   ) => {
     const _accessibilityLabelledBy =

@@ -4,15 +4,12 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
 'use strict';
 
-import type {ViewProps} from '../Components/View/ViewPropTypes';
-import type {HostComponent} from '../Renderer/shims/ReactNativeTypes';
-import type {ImageBackgroundProps} from './ImageProps';
 
 import View from '../Components/View/View';
 import flattenStyle from '../StyleSheet/flattenStyle';
@@ -44,8 +41,8 @@ import * as React from 'react';
  * AppRegistry.registerComponent('DisplayAnImageBackground', () => DisplayAnImageBackground);
  * ```
  */
-class ImageBackground extends React.Component<ImageBackgroundProps> {
-  setNativeProps(props: Object) {
+class ImageBackground extends React.Component {
+  setNativeProps(props) {
     // Work-around flow
     const viewRef = this._viewRef;
     if (viewRef) {
@@ -53,20 +50,15 @@ class ImageBackground extends React.Component<ImageBackgroundProps> {
     }
   }
 
-  _viewRef: ?React.ElementRef<typeof View> = null;
+  _viewRef = null;
 
   _captureRef = (
-    ref: null | React$ElementRef<
-      React$AbstractComponent<
-        ViewProps,
-        React.ElementRef<HostComponent<ViewProps>>,
-      >,
-    >,
+    ref,
   ) => {
     this._viewRef = ref;
   };
 
-  render(): React.Node {
+  render() {
     const {
       children,
       style,

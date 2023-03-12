@@ -5,25 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format strict-local
- * @flow
+ * 
  */
 
-import type {ImageProps as ImagePropsType} from './ImageProps';
 
 import ImageViewNativeComponent from './ImageViewNativeComponent';
 import TextInlineImageNativeComponent from './TextInlineImageNativeComponent';
 import * as React from 'react';
 
 export default {
-  unstable_createImageComponent: (null: ?(
-    Image: React.AbstractComponent<
-      ImagePropsType,
-      | React.ElementRef<typeof TextInlineImageNativeComponent>
-      | React.ElementRef<typeof ImageViewNativeComponent>,
-    >,
-  ) => React.AbstractComponent<
-    ImagePropsType,
-    | React.ElementRef<typeof TextInlineImageNativeComponent>
-    | React.ElementRef<typeof ImageViewNativeComponent>,
-  >),
+  unstable_createImageComponent: (null),
 };

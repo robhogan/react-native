@@ -5,21 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  * @generate-docs
  */
 
 'use strict';
 
-import type {PressEvent} from '../Types/CoreEventTypes';
-import type {Button as ButtonType} from './Button.flow';
-import type {
-  AccessibilityActionEvent,
-  AccessibilityActionInfo,
-  AccessibilityState,
-} from './View/ViewAccessibility';
 
-import StyleSheet, {type ColorValue} from '../StyleSheet/StyleSheet';
+import StyleSheet, {} from '../StyleSheet/StyleSheet';
 import Text from '../Text/Text';
 import Platform from '../Utilities/Platform';
 import TouchableNativeFeedback from './Touchable/TouchableNativeFeedback';
@@ -28,147 +21,6 @@ import View from './View/View';
 import invariant from 'invariant';
 import * as React from 'react';
 
-type ButtonProps = $ReadOnly<{|
-  /**
-    Text to display inside the button. On Android the given title will be
-    converted to the uppercased form.
-   */
-  title: string,
-
-  /**
-    Handler to be called when the user taps the button. The first function
-    argument is an event in form of [PressEvent](pressevent).
-   */
-  onPress: (event?: PressEvent) => mixed,
-
-  /**
-    If `true`, doesn't play system sound on touch.
-
-    @platform android
-
-    @default false
-   */
-  touchSoundDisabled?: ?boolean,
-
-  /**
-    Color of the text (iOS), or background color of the button (Android).
-
-    @default {@platform android} '#2196F3'
-    @default {@platform ios} '#007AFF'
-   */
-  color?: ?ColorValue,
-
-  /**
-    TV preferred focus.
-
-    @platform tv
-
-    @default false
-   */
-  hasTVPreferredFocus?: ?boolean,
-
-  /**
-    Designates the next view to receive focus when the user navigates down. See
-    the [Android documentation][android:nextFocusDown].
-
-    [android:nextFocusDown]:
-    https://developer.android.com/reference/android/view/View.html#attr_android:nextFocusDown
-
-    @platform android, tv
-   */
-  nextFocusDown?: ?number,
-
-  /**
-    Designates the next view to receive focus when the user navigates forward.
-    See the [Android documentation][android:nextFocusForward].
-
-    [android:nextFocusForward]:
-    https://developer.android.com/reference/android/view/View.html#attr_android:nextFocusForward
-
-    @platform android, tv
-   */
-  nextFocusForward?: ?number,
-
-  /**
-    Designates the next view to receive focus when the user navigates left. See
-    the [Android documentation][android:nextFocusLeft].
-
-    [android:nextFocusLeft]:
-    https://developer.android.com/reference/android/view/View.html#attr_android:nextFocusLeft
-
-    @platform android, tv
-   */
-  nextFocusLeft?: ?number,
-
-  /**
-    Designates the next view to receive focus when the user navigates right. See
-    the [Android documentation][android:nextFocusRight].
-
-    [android:nextFocusRight]:
-    https://developer.android.com/reference/android/view/View.html#attr_android:nextFocusRight
-
-    @platform android, tv
-   */
-  nextFocusRight?: ?number,
-
-  /**
-    Designates the next view to receive focus when the user navigates up. See
-    the [Android documentation][android:nextFocusUp].
-
-    [android:nextFocusUp]:
-    https://developer.android.com/reference/android/view/View.html#attr_android:nextFocusUp
-
-    @platform android, tv
-   */
-  nextFocusUp?: ?number,
-
-  /**
-    Text to display for blindness accessibility features.
-   */
-  accessibilityLabel?: ?string,
-  /**
-   * Alias for accessibilityLabel  https://reactnative.dev/docs/view#accessibilitylabel
-   * https://github.com/facebook/react-native/issues/34424
-   */
-  'aria-label'?: ?string,
-  /**
-    If `true`, disable all interactions for this component.
-
-    @default false
-   */
-  disabled?: ?boolean,
-
-  /**
-    Used to locate this view in end-to-end tests.
-   */
-  testID?: ?string,
-
-  /**
-   * Accessibility props.
-   */
-  accessible?: ?boolean,
-  accessibilityActions?: ?$ReadOnlyArray<AccessibilityActionInfo>,
-  onAccessibilityAction?: ?(event: AccessibilityActionEvent) => mixed,
-  accessibilityState?: ?AccessibilityState,
-
-  /**
-   * alias for accessibilityState
-   *
-   * see https://reactnative.dev/docs/accessibility#accessibilitystate
-   */
-  'aria-busy'?: ?boolean,
-  'aria-checked'?: ?boolean | 'mixed',
-  'aria-disabled'?: ?boolean,
-  'aria-expanded'?: ?boolean,
-  'aria-selected'?: ?boolean,
-
-  /**
-   * [Android] Controlling if a view fires accessibility events and if it is reported to accessibility services.
-   */
-  importantForAccessibility?: ?('auto' | 'yes' | 'no' | 'no-hide-descendants'),
-  accessibilityHint?: ?string,
-  accessibilityLanguage?: ?Stringish,
-|}>;
 
 /**
   A basic button component that should render nicely on any platform. Supports a
@@ -281,8 +133,8 @@ type ButtonProps = $ReadOnly<{|
   ```
  */
 
-class Button extends React.Component<ButtonProps> {
-  render(): React.Node {
+class Button extends React.Component {
+  render() {
     const {
       accessibilityLabel,
       accessibilityState,
@@ -431,4 +283,4 @@ const styles = StyleSheet.create({
   }),
 });
 
-module.exports = (Button: ButtonType);
+module.exports = (Button);

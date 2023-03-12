@@ -5,15 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  * @generate-docs
  */
 
 'use strict';
-import type {ViewProps} from '../View/ViewPropTypes';
-import type {ActivityIndicator as ActivityIndicatorType} from './ActivityIndicator.flow';
 
-import StyleSheet, {type ColorValue} from '../../StyleSheet/StyleSheet';
+import StyleSheet, {} from '../../StyleSheet/StyleSheet';
 import Platform from '../../Utilities/Platform';
 import View from '../View/View';
 import * as React from 'react';
@@ -25,41 +23,7 @@ const PlatformActivityIndicator =
 
 const GRAY = '#999999';
 
-type IndicatorSize = number | 'small' | 'large';
 
-type IOSProps = $ReadOnly<{|
-  /**
-    Whether the indicator should hide when not animating.
-
-    @platform ios
-  */
-  hidesWhenStopped?: ?boolean,
-|}>;
-type Props = $ReadOnly<{|
-  ...ViewProps,
-  ...IOSProps,
-
-  /**
-   	Whether to show the indicator (`true`) or hide it (`false`).
-   */
-  animating?: ?boolean,
-
-  /**
-    The foreground color of the spinner.
-
-    @default {@platform android} `null` (system accent default color)
-    @default {@platform ios} '#999999'
-  */
-  color?: ?ColorValue,
-
-  /**
-    Size of the indicator.
-
-    @type enum(`'small'`, `'large'`)
-    @type {@platform android} number
-  */
-  size?: ?IndicatorSize,
-|}>;
 
 const ActivityIndicator = (
   {
@@ -70,8 +34,8 @@ const ActivityIndicator = (
     size = 'small',
     style,
     ...restProps
-  }: Props,
-  forwardedRef?: any,
+  },
+  forwardedRef,
 ) => {
   let sizeStyle;
   let sizeProp;
@@ -184,7 +148,7 @@ const ActivityIndicator = (
   ```
 */
 
-const ActivityIndicatorWithRef: ActivityIndicatorType =
+const ActivityIndicatorWithRef =
   React.forwardRef(ActivityIndicator);
 ActivityIndicatorWithRef.displayName = 'ActivityIndicator';
 

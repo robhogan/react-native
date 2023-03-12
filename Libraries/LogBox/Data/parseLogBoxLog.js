@@ -4,12 +4,10 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict
+ *  strict
  * @format
  */
 
-import type {ExceptionData} from '../../Core/NativeExceptionsManager';
-import type {LogBoxLogData} from './LogBoxLog';
 
 import parseErrorStack from '../../Core/Devtools/parseErrorStack';
 import UTFSequence from '../../UTFSequence';
@@ -23,43 +21,11 @@ const BABEL_CODE_FRAME_ERROR_FORMAT =
 const METRO_ERROR_FORMAT =
   /^(?:InternalError Metro has encountered an error:) (.*): (.*) \((\d+):(\d+)\)\n\n([\s\S]+)/u;
 
-export type ExtendedExceptionData = ExceptionData & {
-  isComponentError: boolean,
-  ...
-};
-export type Category = string;
-export type CodeFrame = $ReadOnly<{|
-  content: string,
-  location: ?{
-    row: number,
-    column: number,
-    ...
-  },
-  fileName: string,
 
-  // TODO: When React switched to using call stack frames,
-  // we gained the ability to use the collapse flag, but
-  // it is not integrated into the LogBox UI.
-  collapse?: boolean,
-|}>;
-export type Message = $ReadOnly<{|
-  content: string,
-  substitutions: $ReadOnlyArray<
-    $ReadOnly<{|
-      length: number,
-      offset: number,
-    |}>,
-  >,
-|}>;
-
-export type ComponentStack = $ReadOnlyArray<CodeFrame>;
 
 const SUBSTITUTION = UTFSequence.BOM + '%s';
 
-export function parseInterpolation(args: $ReadOnlyArray<mixed>): $ReadOnly<{|
-  category: Category,
-  message: Message,
-|}> {
+export function parseInterpolation(args) {
   const categoryParts = [];
   const contentParts = [];
   const substitutionOffsets = [];
@@ -131,7 +97,7 @@ export function parseInterpolation(args: $ReadOnlyArray<mixed>): $ReadOnly<{|
   };
 }
 
-function isComponentStack(consoleArgument: string) {
+function isComponentStack(consoleArgument) {
   const isOldComponentStackFormat = / {4}in/.test(consoleArgument);
   const isNewComponentStackFormat = / {4}at/.test(consoleArgument);
   const isNewJSCComponentStackFormat = /@.*\n/.test(consoleArgument);
@@ -143,7 +109,7 @@ function isComponentStack(consoleArgument: string) {
   );
 }
 
-export function parseComponentStack(message: string): ComponentStack {
+export function parseComponentStack(message) {
   // In newer versions of React, the component stack is formatted as a call stack frame.
   // First try to parse the component stack as a call stack frame, and if that doesn't
   // work then we'll fallback to the old custom component stack format parsing.
@@ -182,8 +148,8 @@ export function parseComponentStack(message: string): ComponentStack {
 }
 
 export function parseLogBoxException(
-  error: ExtendedExceptionData,
-): LogBoxLogData {
+  error,
+) {
   const message =
     error.originalMessage != null ? error.originalMessage : 'Unknown';
 
@@ -311,14 +277,10 @@ export function parseLogBoxException(
   };
 }
 
-export function parseLogBoxLog(args: $ReadOnlyArray<mixed>): {|
-  componentStack: ComponentStack,
-  category: Category,
-  message: Message,
-|} {
+export function parseLogBoxLog(args) {
   const message = args[0];
-  let argsWithoutComponentStack: Array<mixed> = [];
-  let componentStack: ComponentStack = [];
+  let argsWithoutComponentStack = [];
+  let componentStack = [];
 
   // Extract component stack from warnings like "Some warning%s".
   if (

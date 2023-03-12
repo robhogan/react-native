@@ -4,11 +4,10 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
-import type {Node} from 'react';
 
 import TouchableOpacity from '../../Components/Touchable/TouchableOpacity';
 import View from '../../Components/View/View';
@@ -74,7 +73,7 @@ const links = [
   },
 ];
 
-const LinkList = (): Node => {
+const LinkList = () => {
   const isDarkMode = useColorScheme() === 'dark';
   return (
     <View style={styles.container}>

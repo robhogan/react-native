@@ -5,33 +5,19 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict
+ *  strict
  */
 
 'use strict';
 
-import type {StackFrame} from '../NativeExceptionsManager';
 
 const getDevServer = require('./getDevServer');
 
-export type CodeFrame = $ReadOnly<{
-  content: string,
-  location: ?{
-    row: number,
-    column: number,
-    ...
-  },
-  fileName: string,
-}>;
 
-export type SymbolicatedStackTrace = $ReadOnly<{
-  stack: Array<StackFrame>,
-  codeFrame: ?CodeFrame,
-}>;
 
 async function symbolicateStackTrace(
-  stack: Array<StackFrame>,
-): Promise<SymbolicatedStackTrace> {
+  stack,
+) {
   const devServer = getDevServer();
   if (!devServer.bundleLoadedFromServer) {
     throw new Error('Bundle was not loaded from Metro.');

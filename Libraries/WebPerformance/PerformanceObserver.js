@@ -5,34 +5,23 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict
+ *  strict
  */
 
-import type {
-  RawPerformanceEntry,
-  RawPerformanceEntryType,
-} from './NativePerformanceObserver';
 
 import warnOnce from '../Utilities/warnOnce';
 import NativePerformanceObserver from './NativePerformanceObserver';
 
-export type HighResTimeStamp = number;
 // TODO: Extend once new types (such as event) are supported.
 // TODO: Get rid of the "undefined" once there is at least one type supported.
-export type PerformanceEntryType = 'undefined';
 
 export class PerformanceEntry {
-  name: string;
-  entryType: PerformanceEntryType;
-  startTime: HighResTimeStamp;
-  duration: number;
+  name;
+  entryType;
+  startTime;
+  duration;
 
-  constructor(init: {
-    name: string,
-    entryType: PerformanceEntryType,
-    startTime: HighResTimeStamp,
-    duration: number,
-  }) {
+  constructor(init) {
     this.name = init.name;
     this.entryType = init.entryType;
     this.startTime = init.startTime;
@@ -40,7 +29,7 @@ export class PerformanceEntry {
   }
 
   // $FlowIgnore: Flow(unclear-type)
-  toJSON(): Object {
+  toJSON() {
     return {
       name: this.name,
       entryType: this.entryType,
@@ -51,12 +40,12 @@ export class PerformanceEntry {
 }
 
 function rawToPerformanceEntryType(
-  type: RawPerformanceEntryType,
-): PerformanceEntryType {
+  type,
+) {
   return 'undefined';
 }
 
-function rawToPerformanceEntry(entry: RawPerformanceEntry): PerformanceEntry {
+function rawToPerformanceEntry(entry) {
   return new PerformanceEntry({
     name: entry.name,
     entryType: rawToPerformanceEntryType(entry.entryType),
@@ -65,27 +54,26 @@ function rawToPerformanceEntry(entry: RawPerformanceEntry): PerformanceEntry {
   });
 }
 
-export type PerformanceEntryList = $ReadOnlyArray<PerformanceEntry>;
 
 export class PerformanceObserverEntryList {
-  _entries: PerformanceEntryList;
+  _entries;
 
-  constructor(entries: PerformanceEntryList) {
+  constructor(entries) {
     this._entries = entries;
   }
 
-  getEntries(): PerformanceEntryList {
+  getEntries() {
     return this._entries;
   }
 
-  getEntriesByType(type: PerformanceEntryType): PerformanceEntryList {
+  getEntriesByType(type) {
     return this._entries.filter(entry => entry.entryType === type);
   }
 
   getEntriesByName(
-    name: string,
-    type?: PerformanceEntryType,
-  ): PerformanceEntryList {
+    name,
+    type,
+  ) {
     if (type === undefined) {
       return this._entries.filter(entry => entry.name === name);
     } else {
@@ -96,24 +84,13 @@ export class PerformanceObserverEntryList {
   }
 }
 
-export type PerformanceObserverCallback = (
-  list: PerformanceObserverEntryList,
-  observer: PerformanceObserver,
-) => void;
 
-export type PerformanceObserverInit =
-  | {
-      entryTypes: Array<PerformanceEntryType>,
-    }
-  | {
-      type: PerformanceEntryType,
-    };
 
-let _observedEntryTypeRefCount: Map<PerformanceEntryType, number> = new Map();
+let _observedEntryTypeRefCount = new Map();
 
-let _observers: Set<PerformanceObserver> = new Set();
+let _observers = new Set();
 
-let _onPerformanceEntryCallbackIsSet: boolean = false;
+let _onPerformanceEntryCallbackIsSet = false;
 
 function warnNoNativePerformanceObserver() {
   warnOnce(
@@ -143,14 +120,14 @@ function warnNoNativePerformanceObserver() {
  * observer.observe({ type: "event" });
  */
 export default class PerformanceObserver {
-  _callback: PerformanceObserverCallback;
-  _entryTypes: $ReadOnlySet<PerformanceEntryType>;
+  _callback;
+  _entryTypes;
 
-  constructor(callback: PerformanceObserverCallback) {
+  constructor(callback) {
     this._callback = callback;
   }
 
-  observe(options: PerformanceObserverInit) {
+  observe(options) {
     if (!NativePerformanceObserver) {
       warnNoNativePerformanceObserver();
       return;
@@ -178,7 +155,7 @@ export default class PerformanceObserver {
     _observers.add(this);
   }
 
-  disconnect(): void {
+  disconnect() {
     if (!NativePerformanceObserver) {
       warnNoNativePerformanceObserver();
       return;
@@ -199,7 +176,7 @@ export default class PerformanceObserver {
     }
   }
 
-  static supportedEntryTypes: $ReadOnlyArray<PerformanceEntryType> =
+  static supportedEntryTypes =
     // TODO: add types once they are fully supported
     Object.freeze([]);
 }
@@ -212,7 +189,7 @@ function onPerformanceEntry() {
   const rawEntries = NativePerformanceObserver.getPendingEntries();
   const entries = rawEntries.map(rawToPerformanceEntry);
   _observers.forEach(observer => {
-    const entriesForObserver: PerformanceEntryList = entries.filter(entry =>
+    const entriesForObserver = entries.filter(entry =>
       observer._entryTypes.has(entry.entryType),
     );
     observer._callback(

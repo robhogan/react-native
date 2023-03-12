@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
@@ -21,7 +21,7 @@ const sizesDiffer = require('../Utilities/differ/sizesDiffer');
 const UIManager = require('./UIManager');
 const invariant = require('invariant');
 
-function getNativeComponentAttributes(uiViewClassName: string): any {
+function getNativeComponentAttributes(uiViewClassName) {
   const viewConfig = UIManager.getViewManagerConfig(uiViewClassName);
 
   invariant(
@@ -59,7 +59,7 @@ function getNativeComponentAttributes(uiViewClassName: string): any {
     }
   }
 
-  const validAttributes: {[string]: mixed} = {};
+  const validAttributes = {};
 
   for (const key in nativeProps) {
     const typeName = nativeProps[key];
@@ -98,7 +98,7 @@ function getNativeComponentAttributes(uiViewClassName: string): any {
   return viewConfig;
 }
 
-function attachDefaultEventTypes(viewConfig: any) {
+function attachDefaultEventTypes(viewConfig) {
   // This is supported on UIManager platforms (ex: Android),
   // as lazy view managers are not implemented for all platforms.
   // See [UIManager] for details on constants and implementations.
@@ -119,7 +119,7 @@ function attachDefaultEventTypes(viewConfig: any) {
 }
 
 // TODO: Figure out how to avoid all this runtime initialization cost.
-function merge(destination: ?Object, source: ?Object): ?Object {
+function merge(destination, source) {
   if (!source) {
     return destination;
   }
@@ -148,8 +148,8 @@ function merge(destination: ?Object, source: ?Object): ?Object {
 }
 
 function getDifferForType(
-  typeName: string,
-): ?(prevProp: any, nextProp: any) => boolean {
+  typeName,
+) {
   switch (typeName) {
     // iOS Types
     case 'CATransform3D':
@@ -169,7 +169,7 @@ function getDifferForType(
   return null;
 }
 
-function getProcessorForType(typeName: string): ?(nextProp: any) => any {
+function getProcessorForType(typeName) {
   switch (typeName) {
     // iOS Types
     case 'CGColor':

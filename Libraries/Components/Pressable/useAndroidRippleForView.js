@@ -4,12 +4,10 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
-import type {ColorValue} from '../../StyleSheet/StyleSheet';
-import type {PressEvent} from '../../Types/CoreEventTypes';
 
 import processColor from '../../StyleSheet/processColor';
 import Platform from '../../Utilities/Platform';
@@ -19,35 +17,16 @@ import invariant from 'invariant';
 import * as React from 'react';
 import {useMemo} from 'react';
 
-type NativeBackgroundProp = $ReadOnly<{|
-  type: 'RippleAndroid',
-  color: ?number,
-  borderless: boolean,
-  rippleRadius: ?number,
-|}>;
 
-export type RippleConfig = {|
-  color?: ColorValue,
-  borderless?: boolean,
-  radius?: number,
-  foreground?: boolean,
-|};
 
 /**
  * Provides the event handlers and props for configuring the ripple effect on
  * supported versions of Android.
  */
 export default function useAndroidRippleForView(
-  rippleConfig: ?RippleConfig,
-  viewRef: {|current: null | React.ElementRef<typeof View>|},
-): ?$ReadOnly<{|
-  onPressIn: (event: PressEvent) => void,
-  onPressMove: (event: PressEvent) => void,
-  onPressOut: (event: PressEvent) => void,
-  viewProps:
-    | $ReadOnly<{|nativeBackgroundAndroid: NativeBackgroundProp|}>
-    | $ReadOnly<{|nativeForegroundAndroid: NativeBackgroundProp|}>,
-|}> {
+  rippleConfig,
+  viewRef,
+) {
   const {color, borderless, radius, foreground} = rippleConfig ?? {};
 
   return useMemo(() => {
@@ -74,7 +53,7 @@ export default function useAndroidRippleForView(
           foreground === true
             ? {nativeForegroundAndroid: nativeRippleValue}
             : {nativeBackgroundAndroid: nativeRippleValue},
-        onPressIn(event: PressEvent): void {
+        onPressIn(event) {
           const view = viewRef.current;
           if (view != null) {
             Commands.hotspotUpdate(
@@ -85,7 +64,7 @@ export default function useAndroidRippleForView(
             Commands.setPressed(view, true);
           }
         },
-        onPressMove(event: PressEvent): void {
+        onPressMove(event) {
           const view = viewRef.current;
           if (view != null) {
             Commands.hotspotUpdate(
@@ -95,7 +74,7 @@ export default function useAndroidRippleForView(
             );
           }
         },
-        onPressOut(event: PressEvent): void {
+        onPressOut(event) {
           const view = viewRef.current;
           if (view != null) {
             Commands.setPressed(view, false);

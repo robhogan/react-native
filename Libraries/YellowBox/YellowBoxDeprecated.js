@@ -4,23 +4,21 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
 'use strict';
 
-import type {IgnorePattern} from '../LogBox/Data/LogBoxData';
 
 const LogBox = require('../LogBox/LogBox');
 const React = require('react');
 
-type Props = $ReadOnly<{||}>;
 
 let YellowBox;
 if (__DEV__) {
-  YellowBox = class extends React.Component<Props> {
-    static ignoreWarnings(patterns: $ReadOnlyArray<IgnorePattern>): void {
+  YellowBox = class extends React.Component {
+    static ignoreWarnings(patterns) {
       console.warn(
         'YellowBox has been replaced with LogBox. Please call LogBox.ignoreLogs() instead.',
       );
@@ -28,48 +26,43 @@ if (__DEV__) {
       LogBox.ignoreLogs(patterns);
     }
 
-    static install(): void {
+    static install() {
       console.warn(
         'YellowBox has been replaced with LogBox. Please call LogBox.install() instead.',
       );
       LogBox.install();
     }
 
-    static uninstall(): void {
+    static uninstall() {
       console.warn(
         'YellowBox has been replaced with LogBox. Please call LogBox.uninstall() instead.',
       );
       LogBox.uninstall();
     }
 
-    render(): React.Node {
+    render() {
       return null;
     }
   };
 } else {
-  YellowBox = class extends React.Component<Props> {
-    static ignoreWarnings(patterns: $ReadOnlyArray<IgnorePattern>): void {
+  YellowBox = class extends React.Component {
+    static ignoreWarnings(patterns) {
       // Do nothing.
     }
 
-    static install(): void {
+    static install() {
       // Do nothing.
     }
 
-    static uninstall(): void {
+    static uninstall() {
       // Do nothing.
     }
 
-    render(): React.Node {
+    render() {
       return null;
     }
   };
 }
 
 // $FlowFixMe[method-unbinding]
-module.exports = (YellowBox: Class<React.Component<Props>> & {
-  ignoreWarnings($ReadOnlyArray<IgnorePattern>): void,
-  install(): void,
-  uninstall(): void,
-  ...
-});
+module.exports = (YellowBox);

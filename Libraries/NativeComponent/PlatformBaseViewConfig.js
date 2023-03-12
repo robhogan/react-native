@@ -5,19 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
-import type {PartialViewConfig} from '../Renderer/shims/ReactNativeTypes';
 
 import BaseViewConfig from './BaseViewConfig';
 
-export type PartialViewConfigWithoutName = $Rest<
-  PartialViewConfig,
-  {uiViewClassName: string},
->;
 
-const PlatformBaseViewConfig: PartialViewConfigWithoutName = BaseViewConfig;
+const PlatformBaseViewConfig = BaseViewConfig;
 
 // In Wilde/FB4A, use RNHostComponentListRoute in Bridge mode to verify
 // whether the JS props defined here match the native props defined

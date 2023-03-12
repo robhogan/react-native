@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict
+ *  strict
  */
 
 'use strict';
@@ -13,23 +13,18 @@
 /**
  * Defines a lazily evaluated property on the supplied `object`.
  */
-function defineLazyObjectProperty<T>(
-  object: interface {},
-  name: string,
-  descriptor: {
-    get: () => T,
-    enumerable?: boolean,
-    writable?: boolean,
-    ...
-  },
-): void {
+function defineLazyObjectProperty(
+  object,
+  name,
+  descriptor,
+) {
   const {get} = descriptor;
   const enumerable = descriptor.enumerable !== false;
   const writable = descriptor.writable !== false;
 
   let value;
   let valueSet = false;
-  function getValue(): T {
+  function getValue() {
     // WORKAROUND: A weird infinite loop occurs where calling `getValue` calls
     // `setValue` which calls `Object.defineProperty` which somehow triggers
     // `getValue` again. Adding `valueSet` breaks this loop.
@@ -44,7 +39,7 @@ function defineLazyObjectProperty<T>(
     }
     return value;
   }
-  function setValue(newValue: T): void {
+  function setValue(newValue) {
     value = newValue;
     valueSet = true;
     Object.defineProperty(object, name, {

@@ -5,12 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
 'use strict';
 
-import type {ViewStyleProp} from '../StyleSheet/StyleSheet';
 
 import SafeAreaView from '../Components/SafeAreaView/SafeAreaView';
 
@@ -24,36 +23,9 @@ const NetworkOverlay = require('./NetworkOverlay');
 const PerformanceOverlay = require('./PerformanceOverlay');
 const React = require('react');
 
-type Props = $ReadOnly<{|
-  devtoolsIsOpen: boolean,
-  inspecting: boolean,
-  setInspecting: (val: boolean) => void,
-  perfing: boolean,
-  setPerfing: (val: boolean) => void,
-  touchTargeting: boolean,
-  setTouchTargeting: (val: boolean) => void,
-  networking: boolean,
-  setNetworking: (val: boolean) => void,
-  hierarchy?: ?Array<{|name: string|}>,
-  selection?: ?number,
-  setSelection: number => mixed,
-  inspected?: ?$ReadOnly<{|
-    style?: ?ViewStyleProp,
-    frame?: ?$ReadOnly<{|
-      top?: ?number,
-      left?: ?number,
-      width?: ?number,
-      height: ?number,
-    |}>,
-    source?: ?{|
-      fileName?: string,
-      lineNumber?: number,
-    |},
-  |}>,
-|}>;
 
-class InspectorPanel extends React.Component<Props> {
-  renderWaiting(): React.Node {
+class InspectorPanel extends React.Component {
+  renderWaiting() {
     if (this.props.inspecting) {
       return (
         <Text style={styles.waitingText}>Tap something to inspect it</Text>
@@ -62,7 +34,7 @@ class InspectorPanel extends React.Component<Props> {
     return <Text style={styles.waitingText}>Nothing is inspected</Text>;
   }
 
-  render(): React.Node {
+  render() {
     let contents;
     if (this.props.inspected) {
       contents = (
@@ -115,14 +87,9 @@ class InspectorPanel extends React.Component<Props> {
   }
 }
 
-type InspectorPanelButtonProps = $ReadOnly<{|
-  onClick: (val: boolean) => void,
-  pressed: boolean,
-  title: string,
-|}>;
 
-class InspectorPanelButton extends React.Component<InspectorPanelButtonProps> {
-  render(): React.Node {
+class InspectorPanelButton extends React.Component {
+  render() {
     return (
       <TouchableHighlight
         onPress={() => this.props.onClick(!this.props.pressed)}

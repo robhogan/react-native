@@ -5,35 +5,31 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  */
 
 import RCTDeviceEventEmitter from '../EventEmitter/RCTDeviceEventEmitter';
 import NativeSettingsManager from './NativeSettingsManager';
 import invariant from 'invariant';
 
-const subscriptions: Array<{
-  keys: Array<string>,
-  callback: ?Function,
-  ...
-}> = [];
+const subscriptions = [];
 
 const Settings = {
   _settings: (NativeSettingsManager &&
-    NativeSettingsManager.getConstants().settings: any),
+    NativeSettingsManager.getConstants().settings),
 
-  get(key: string): mixed {
+  get(key) {
     // $FlowFixMe[object-this-reference]
     return this._settings[key];
   },
 
-  set(settings: Object) {
+  set(settings) {
     // $FlowFixMe[object-this-reference]
     this._settings = Object.assign(this._settings, settings);
     NativeSettingsManager.setValues(settings);
   },
 
-  watchKeys(keys: string | Array<string>, callback: Function): number {
+  watchKeys(keys, callback) {
     if (typeof keys === 'string') {
       keys = [keys];
     }
@@ -48,13 +44,13 @@ const Settings = {
     return sid;
   },
 
-  clearWatch(watchId: number) {
+  clearWatch(watchId) {
     if (watchId < subscriptions.length) {
       subscriptions[watchId] = {keys: [], callback: null};
     }
   },
 
-  _sendObservations(body: Object) {
+  _sendObservations(body) {
     Object.keys(body).forEach(key => {
       const newValue = body[key];
       // $FlowFixMe[object-this-reference]

@@ -4,11 +4,10 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
-import type {LayoutEvent} from '../../Types/CoreEventTypes';
 
 import Animated from '../../Animated/Animated';
 import StyleSheet from '../../StyleSheet/StyleSheet';
@@ -17,30 +16,9 @@ import useMergeRefs from '../../Utilities/useMergeRefs';
 import * as React from 'react';
 import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
-export type Props = $ReadOnly<{
-  children?: React.Element<$FlowFixMe>,
-  nextHeaderLayoutY: ?number,
-  onLayout: (event: LayoutEvent) => void,
-  scrollAnimatedValue: Animated.Value,
-  // Will cause sticky headers to stick at the bottom of the ScrollView instead
-  // of the top.
-  inverted: ?boolean,
-  // The height of the parent ScrollView. Currently only set when inverted.
-  scrollViewHeight: ?number,
-  nativeID?: ?string,
-  hiddenOnScroll?: ?boolean,
-}>;
 
-type Instance = {
-  ...React.ElementRef<typeof Animated.View>,
-  setNextHeaderY: number => void,
-  ...
-};
 
-const ScrollViewStickyHeaderWithForwardedRef: React.AbstractComponent<
-  Props,
-  Instance,
-> = React.forwardRef(function ScrollViewStickyHeader(props, forwardedRef) {
+const ScrollViewStickyHeaderWithForwardedRef = React.forwardRef(function ScrollViewStickyHeader(props, forwardedRef) {
   const {
     inverted,
     scrollViewHeight,
@@ -49,15 +27,15 @@ const ScrollViewStickyHeaderWithForwardedRef: React.AbstractComponent<
     nextHeaderLayoutY: _nextHeaderLayoutY,
   } = props;
 
-  const [measured, setMeasured] = useState<boolean>(false);
-  const [layoutY, setLayoutY] = useState<number>(0);
-  const [layoutHeight, setLayoutHeight] = useState<number>(0);
-  const [translateY, setTranslateY] = useState<?number>(null);
+  const [measured, setMeasured] = useState(false);
+  const [layoutY, setLayoutY] = useState(0);
+  const [layoutHeight, setLayoutHeight] = useState(0);
+  const [translateY, setTranslateY] = useState(null);
   const [nextHeaderLayoutY, setNextHeaderLayoutY] =
-    useState<?number>(_nextHeaderLayoutY);
-  const [isFabric, setIsFabric] = useState<boolean>(false);
+    useState(_nextHeaderLayoutY);
+  const [isFabric, setIsFabric] = useState(false);
 
-  const callbackRef = (ref: Instance | null): void => {
+  const callbackRef = (ref) => {
     if (ref == null) {
       return;
     }
@@ -69,9 +47,9 @@ const ScrollViewStickyHeaderWithForwardedRef: React.AbstractComponent<
     const _internalInstanceHandler = ref['_internalInstanceHandle']; // eslint-disable-line dot-notation
     setIsFabric(Boolean(_internalInstanceHandler?.stateNode?.canonical));
   };
-  const ref: (React.ElementRef<typeof Animated.View> | null) => void =
+  const ref =
     // $FlowFixMe[incompatible-type] - Ref is mutated by `callbackRef`.
-    useMergeRefs<Instance | null>(callbackRef, forwardedRef);
+    useMergeRefs(callbackRef, forwardedRef);
 
   const offset = useMemo(
     () =>
@@ -81,11 +59,11 @@ const ScrollViewStickyHeaderWithForwardedRef: React.AbstractComponent<
               .interpolate({
                 extrapolateLeft: 'clamp',
                 inputRange: [layoutY, layoutY + 1],
-                outputRange: ([0, 1]: Array<number>),
+                outputRange: ([0, 1]),
               })
               .interpolate({
                 inputRange: [0, 1],
-                outputRange: ([0, -1]: Array<number>),
+                outputRange: ([0, -1]),
               }),
             -layoutHeight,
             0,
@@ -94,10 +72,10 @@ const ScrollViewStickyHeaderWithForwardedRef: React.AbstractComponent<
     [scrollAnimatedValue, layoutHeight, layoutY, hiddenOnScroll],
   );
 
-  const [animatedTranslateY, setAnimatedTranslateY] = useState<Animated.Node>(
+  const [animatedTranslateY, setAnimatedTranslateY] = useState(
     () => {
-      const inputRange: Array<number> = [-1, 0];
-      const outputRange: Array<number> = [0, 0];
+      const inputRange = [-1, 0];
+      const outputRange = [0, 0];
       const initialTranslateY = scrollAnimatedValue.interpolate({
         inputRange,
         outputRange,
@@ -110,8 +88,8 @@ const ScrollViewStickyHeaderWithForwardedRef: React.AbstractComponent<
     },
   );
 
-  const _haveReceivedInitialZeroTranslateY = useRef<boolean>(true);
-  const _timer = useRef<?TimeoutID>(null);
+  const _haveReceivedInitialZeroTranslateY = useRef(true);
+  const _timer = useRef(null);
 
   useEffect(() => {
     if (translateY !== 0 && translateY != null) {
@@ -135,7 +113,7 @@ const ScrollViewStickyHeaderWithForwardedRef: React.AbstractComponent<
   //    of the current position.
   const animatedValueListener = useCallback(
     ({value}) => {
-      const _debounceTimeout: number = Platform.OS === 'android' ? 15 : 64;
+      const _debounceTimeout = Platform.OS === 'android' ? 15 : 64;
       // When the AnimatedInterpolation is recreated, it always initializes
       // to a value of zero and emits a value change of 0 to its listeners.
       if (value === 0 && !_haveReceivedInitialZeroTranslateY.current) {
@@ -155,8 +133,8 @@ const ScrollViewStickyHeaderWithForwardedRef: React.AbstractComponent<
   );
 
   useEffect(() => {
-    const inputRange: Array<number> = [-1, 0];
-    const outputRange: Array<number> = [0, 0];
+    const inputRange = [-1, 0];
+    const outputRange = [0, 0];
 
     if (measured) {
       if (inverted === true) {
@@ -220,7 +198,7 @@ const ScrollViewStickyHeaderWithForwardedRef: React.AbstractComponent<
       }
     }
 
-    let newAnimatedTranslateY: Animated.Node = scrollAnimatedValue.interpolate({
+    let newAnimatedTranslateY = scrollAnimatedValue.interpolate({
       inputRange,
       outputRange,
     });
@@ -250,7 +228,7 @@ const ScrollViewStickyHeaderWithForwardedRef: React.AbstractComponent<
     };
   }, [nextHeaderLayoutY, measured, layoutHeight, layoutY, scrollViewHeight, scrollAnimatedValue, inverted, offset, animatedValueListener, isFabric]);
 
-  const _onLayout = (event: LayoutEvent) => {
+  const _onLayout = (event) => {
     setLayoutY(event.nativeEvent.layout.y);
     setLayoutHeight(event.nativeEvent.layout.height);
     setMeasured(true);

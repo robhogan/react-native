@@ -4,13 +4,10 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
-import type {RootTag} from '../Types/RootTagTypes';
-import type {ImageAndroid} from './Image.flow';
-import type {ImageProps as ImagePropsType} from './ImageProps';
 
 import flattenStyle from '../StyleSheet/flattenStyle';
 import StyleSheet from '../StyleSheet/StyleSheet';
@@ -36,10 +33,10 @@ function generateRequestId() {
  * See https://reactnative.dev/docs/image#getsize
  */
 function getSize(
-  url: string,
-  success: (width: number, height: number) => void,
-  failure?: (error: any) => void,
-): any {
+  url,
+  success,
+  failure,
+) {
   return NativeImageLoaderAndroid.getSize(url)
     .then(function (sizes) {
       success(sizes.width, sizes.height);
@@ -59,11 +56,11 @@ function getSize(
  * See https://reactnative.dev/docs/image#getsizewithheaders
  */
 function getSizeWithHeaders(
-  url: string,
-  headers: {[string]: string, ...},
-  success: (width: number, height: number) => void,
-  failure?: (error: any) => void,
-): any {
+  url,
+  headers,
+  success,
+  failure,
+) {
   return NativeImageLoaderAndroid.getSizeWithHeaders(url, headers)
     .then(function (sizes) {
       success(sizes.width, sizes.height);
@@ -77,22 +74,22 @@ function getSizeWithHeaders(
 }
 
 function prefetchWithMetadata(
-  url: string,
-  queryRootName: string,
-  rootTag?: ?RootTag,
-  callback: ?Function,
-): any {
+  url,
+  queryRootName,
+  rootTag,
+  callback,
+) {
   // TODO: T79192300 Log queryRootName and rootTag
   prefetch(url, callback);
 }
 
-function prefetch(url: string, callback: ?Function): any {
+function prefetch(url, callback) {
   const requestId = generateRequestId();
   callback && callback(requestId);
   return NativeImageLoaderAndroid.prefetchImage(url, requestId);
 }
 
-function abortPrefetch(requestId: number) {
+function abortPrefetch(requestId) {
   NativeImageLoaderAndroid.abortRequest(requestId);
 }
 
@@ -102,20 +99,11 @@ function abortPrefetch(requestId: number) {
  * See https://reactnative.dev/docs/image#querycache
  */
 async function queryCache(
-  urls: Array<string>,
-): Promise<{[string]: 'memory' | 'disk' | 'disk/memory', ...}> {
+  urls,
+) {
   return await NativeImageLoaderAndroid.queryCache(urls);
 }
 
-export type ImageComponentStatics = $ReadOnly<{|
-  getSize: typeof getSize,
-  getSizeWithHeaders: typeof getSizeWithHeaders,
-  prefetch: typeof prefetch,
-  prefetchWithMetadata: typeof prefetchWithMetadata,
-  abortPrefetch: typeof abortPrefetch,
-  queryCache: typeof queryCache,
-  resolveAssetSource: typeof resolveAssetSource,
-|}>;
 
 /**
  * A React component for displaying different types of images,
@@ -126,7 +114,7 @@ export type ImageComponentStatics = $ReadOnly<{|
  */
 /* $FlowFixMe[missing-local-annot] The type annotation(s) required by Flow's
  * LTI update could not be added via codemod */
-const BaseImage = (props: ImagePropsType, forwardedRef) => {
+const BaseImage = (props, forwardedRef) => {
   let source = getImageSourcesFromImageProps(props) || {
     uri: undefined,
     width: undefined,
@@ -173,7 +161,7 @@ const BaseImage = (props: ImagePropsType, forwardedRef) => {
     src: sources,
     /* $FlowFixMe(>=0.78.0 site=react_native_android_fb) This issue was found
      * when making Flow check .android.js files. */
-    headers: (source?.[0]?.headers || source?.headers: ?{[string]: string}),
+    headers: (source?.[0]?.headers || source?.headers),
     defaultSrc: defaultSource ? defaultSource.uri : null,
     loadingIndicatorSrc: loadingIndicatorSource
       ? loadingIndicatorSource.uri
@@ -240,11 +228,7 @@ const BaseImage = (props: ImagePropsType, forwardedRef) => {
   );
 };
 
-let Image = React.forwardRef<
-  ImagePropsType,
-  | React.ElementRef<typeof TextInlineImageNativeComponent>
-  | React.ElementRef<typeof ImageViewNativeComponent>,
->(BaseImage);
+let Image = React.forwardRef(BaseImage);
 
 if (ImageInjection.unstable_createImageComponent != null) {
   Image = ImageInjection.unstable_createImageComponent(Image);
@@ -337,4 +321,4 @@ const styles = StyleSheet.create({
   },
 });
 
-module.exports = ((Image: any): ImageAndroid);
+module.exports = ((Image));

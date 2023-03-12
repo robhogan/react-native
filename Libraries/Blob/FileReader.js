@@ -4,22 +4,17 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
-import type Blob from './Blob';
 
 import NativeFileReaderModule from './NativeFileReaderModule';
 
 const EventTarget = require('event-target-shim');
 
-type ReadyState =
-  | 0 // EMPTY
-  | 1 // LOADING
-  | 2; // DONE
+ // DONE
 
-type ReaderResult = string | ArrayBuffer;
 
 const READER_EVENTS = [
   'abort',
@@ -34,32 +29,32 @@ const EMPTY = 0;
 const LOADING = 1;
 const DONE = 2;
 
-class FileReader extends (EventTarget(...READER_EVENTS): any) {
-  static EMPTY: number = EMPTY;
-  static LOADING: number = LOADING;
-  static DONE: number = DONE;
+class FileReader extends (EventTarget(...READER_EVENTS)) {
+  static EMPTY = EMPTY;
+  static LOADING = LOADING;
+  static DONE = DONE;
 
-  EMPTY: number = EMPTY;
-  LOADING: number = LOADING;
-  DONE: number = DONE;
+  EMPTY = EMPTY;
+  LOADING = LOADING;
+  DONE = DONE;
 
-  _readyState: ReadyState;
-  _error: ?Error;
-  _result: ?ReaderResult;
-  _aborted: boolean = false;
+  _readyState;
+  _error;
+  _result;
+  _aborted = false;
 
   constructor() {
     super();
     this._reset();
   }
 
-  _reset(): void {
+  _reset() {
     this._readyState = EMPTY;
     this._error = null;
     this._result = null;
   }
 
-  _setReadyState(newState: ReadyState) {
+  _setReadyState(newState) {
     this._readyState = newState;
     this.dispatchEvent({type: 'readystatechange'});
     if (newState === DONE) {
@@ -74,11 +69,11 @@ class FileReader extends (EventTarget(...READER_EVENTS): any) {
     }
   }
 
-  readAsArrayBuffer(): any {
+  readAsArrayBuffer() {
     throw new Error('FileReader.readAsArrayBuffer is not implemented');
   }
 
-  readAsDataURL(blob: ?Blob): void {
+  readAsDataURL(blob) {
     this._aborted = false;
 
     if (blob == null) {
@@ -88,7 +83,7 @@ class FileReader extends (EventTarget(...READER_EVENTS): any) {
     }
 
     NativeFileReaderModule.readAsDataURL(blob.data).then(
-      (text: string) => {
+      (text) => {
         if (this._aborted) {
           return;
         }
@@ -105,7 +100,7 @@ class FileReader extends (EventTarget(...READER_EVENTS): any) {
     );
   }
 
-  readAsText(blob: ?Blob, encoding: string = 'UTF-8'): void {
+  readAsText(blob, encoding = 'UTF-8') {
     this._aborted = false;
 
     if (blob == null) {
@@ -115,7 +110,7 @@ class FileReader extends (EventTarget(...READER_EVENTS): any) {
     }
 
     NativeFileReaderModule.readAsText(blob.data, encoding).then(
-      (text: string) => {
+      (text) => {
         if (this._aborted) {
           return;
         }
@@ -143,15 +138,15 @@ class FileReader extends (EventTarget(...READER_EVENTS): any) {
     this._reset();
   }
 
-  get readyState(): ReadyState {
+  get readyState() {
     return this._readyState;
   }
 
-  get error(): ?Error {
+  get error() {
     return this._error;
   }
 
-  get result(): ?ReaderResult {
+  get result() {
     return this._result;
   }
 }

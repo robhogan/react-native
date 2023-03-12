@@ -4,13 +4,11 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
 import StyleSheet, {
-  type ColorValue,
-  type ViewStyleProp,
 } from '../../StyleSheet/StyleSheet';
 import Platform from '../../Utilities/Platform';
 import RCTInputAccessoryViewNativeComponent from './RCTInputAccessoryViewNativeComponent';
@@ -74,19 +72,9 @@ import * as React from 'react';
  * For an example, look at InputAccessoryViewExample.js in RNTester.
  */
 
-type Props = $ReadOnly<{|
-  +children: React.Node,
-  /**
-   * An ID which is used to associate this `InputAccessoryView` to
-   * specified TextInput(s).
-   */
-  nativeID?: ?string,
-  style?: ?ViewStyleProp,
-  backgroundColor?: ?ColorValue,
-|}>;
 
-class InputAccessoryView extends React.Component<Props> {
-  render(): React.Node {
+class InputAccessoryView extends React.Component {
+  render() {
     if (Platform.OS === 'ios') {
       if (React.Children.count(this.props.children) === 0) {
         return null;

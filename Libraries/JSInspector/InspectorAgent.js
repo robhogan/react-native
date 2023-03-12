@@ -5,21 +5,20 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict
+ *  strict
  */
 
 'use strict';
 
-export type EventSender = (name: string, params: mixed) => void;
 
 class InspectorAgent {
-  _eventSender: EventSender;
+  _eventSender;
 
-  constructor(eventSender: EventSender) {
+  constructor(eventSender) {
     this._eventSender = eventSender;
   }
 
-  sendEvent(name: string, params: mixed) {
+  sendEvent(name, params) {
     this._eventSender(name, params);
   }
 }

@@ -4,14 +4,10 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
-import type {HostComponent} from '../../Renderer/shims/ReactNativeTypes';
-import type {EventSubscription} from '../../vendor/emitter/EventEmitter';
-import type {AccessibilityInfoType} from './AccessibilityInfo.flow';
-import type {ElementRef} from 'react';
 
 import RCTDeviceEventEmitter from '../../EventEmitter/RCTDeviceEventEmitter';
 import {sendAccessibilityEvent} from '../../ReactNative/RendererProxy';
@@ -21,34 +17,13 @@ import NativeAccessibilityInfoAndroid from './NativeAccessibilityInfo';
 import NativeAccessibilityManagerIOS from './NativeAccessibilityManager';
 
 // Events that are only supported on Android.
-type AccessibilityEventDefinitionsAndroid = {
-  accessibilityServiceChanged: [boolean],
-};
 
 // Events that are only supported on iOS.
-type AccessibilityEventDefinitionsIOS = {
-  announcementFinished: [{announcement: string, success: boolean}],
-  boldTextChanged: [boolean],
-  grayscaleChanged: [boolean],
-  invertColorsChanged: [boolean],
-  reduceTransparencyChanged: [boolean],
-};
 
-type AccessibilityEventDefinitions = {
-  ...AccessibilityEventDefinitionsAndroid,
-  ...AccessibilityEventDefinitionsIOS,
-  change: [boolean], // screenReaderChanged
-  reduceMotionChanged: [boolean],
-  screenReaderChanged: [boolean],
-};
 
-type AccessibilityEventTypes = 'click' | 'focus';
 
 // Mapping of public event names to platform-specific event names.
-const EventNames: Map<
-  $Keys<AccessibilityEventDefinitions>,
-  string,
-> = Platform.OS === 'android'
+const EventNames = Platform.OS === 'android'
   ? new Map([
       ['change', 'touchExplorationDidChange'],
       ['reduceMotionChanged', 'reduceMotionDidChange'],
@@ -75,7 +50,7 @@ const EventNames: Map<
  *
  * See https://reactnative.dev/docs/accessibilityinfo
  */
-const AccessibilityInfo: AccessibilityInfoType = {
+const AccessibilityInfo = {
   /**
    * Query whether bold text is currently enabled.
    *
@@ -84,7 +59,7 @@ const AccessibilityInfo: AccessibilityInfoType = {
    *
    * See https://reactnative.dev/docs/accessibilityinfo#isBoldTextEnabled
    */
-  isBoldTextEnabled(): Promise<boolean> {
+  isBoldTextEnabled() {
     if (Platform.OS === 'android') {
       return Promise.resolve(false);
     } else {
@@ -109,7 +84,7 @@ const AccessibilityInfo: AccessibilityInfoType = {
    *
    * See https://reactnative.dev/docs/accessibilityinfo#isGrayscaleEnabled
    */
-  isGrayscaleEnabled(): Promise<boolean> {
+  isGrayscaleEnabled() {
     if (Platform.OS === 'android') {
       return Promise.resolve(false);
     } else {
@@ -134,7 +109,7 @@ const AccessibilityInfo: AccessibilityInfoType = {
    *
    * See https://reactnative.dev/docs/accessibilityinfo#isInvertColorsEnabled
    */
-  isInvertColorsEnabled(): Promise<boolean> {
+  isInvertColorsEnabled() {
     if (Platform.OS === 'android') {
       return Promise.resolve(false);
     } else {
@@ -159,7 +134,7 @@ const AccessibilityInfo: AccessibilityInfoType = {
    *
    * See https://reactnative.dev/docs/accessibilityinfo#isReduceMotionEnabled
    */
-  isReduceMotionEnabled(): Promise<boolean> {
+  isReduceMotionEnabled() {
     return new Promise((resolve, reject) => {
       if (Platform.OS === 'android') {
         if (NativeAccessibilityInfoAndroid != null) {
@@ -188,7 +163,7 @@ const AccessibilityInfo: AccessibilityInfoType = {
    *
    * See https://reactnative.dev/docs/accessibilityinfo#prefersCrossFadeTransitions
    */
-  prefersCrossFadeTransitions(): Promise<boolean> {
+  prefersCrossFadeTransitions() {
     return new Promise((resolve, reject) => {
       if (Platform.OS === 'android') {
         return Promise.resolve(false);
@@ -216,7 +191,7 @@ const AccessibilityInfo: AccessibilityInfoType = {
    *
    * See https://reactnative.dev/docs/accessibilityinfo#isReduceTransparencyEnabled
    */
-  isReduceTransparencyEnabled(): Promise<boolean> {
+  isReduceTransparencyEnabled() {
     if (Platform.OS === 'android') {
       return Promise.resolve(false);
     } else {
@@ -241,7 +216,7 @@ const AccessibilityInfo: AccessibilityInfoType = {
    *
    * See https://reactnative.dev/docs/accessibilityinfo#isScreenReaderEnabled
    */
-  isScreenReaderEnabled(): Promise<boolean> {
+  isScreenReaderEnabled() {
     return new Promise((resolve, reject) => {
       if (Platform.OS === 'android') {
         if (NativeAccessibilityInfoAndroid != null) {
@@ -272,7 +247,7 @@ const AccessibilityInfo: AccessibilityInfoType = {
    *
    * See https://reactnative.dev/docs/accessibilityinfo/#isaccessibilityserviceenabled-android
    */
-  isAccessibilityServiceEnabled(): Promise<boolean> {
+  isAccessibilityServiceEnabled() {
     return new Promise((resolve, reject) => {
       if (Platform.OS === 'android') {
         if (
@@ -323,14 +298,14 @@ const AccessibilityInfo: AccessibilityInfoType = {
    *
    * See https://reactnative.dev/docs/accessibilityinfo#addeventlistener
    */
-  addEventListener<K: $Keys<AccessibilityEventDefinitions>>(
-    eventName: K,
+  addEventListener(
+    eventName,
     // $FlowIssue[incompatible-type] - Flow bug with unions and generics (T128099423)
-    handler: (...$ElementType<AccessibilityEventDefinitions, K>) => void,
-  ): EventSubscription {
+    handler,
+  ) {
     const deviceEventName = EventNames.get(eventName);
     return deviceEventName == null
-      ? {remove(): void {}}
+      ? {remove() {}}
       : // $FlowFixMe[incompatible-call]
         RCTDeviceEventEmitter.addListener(deviceEventName, handler);
   },
@@ -340,7 +315,7 @@ const AccessibilityInfo: AccessibilityInfoType = {
    *
    * See https://reactnative.dev/docs/accessibilityinfo#setaccessibilityfocus
    */
-  setAccessibilityFocus(reactTag: number): void {
+  setAccessibilityFocus(reactTag) {
     legacySendAccessibilityEvent(reactTag, 'focus');
   },
 
@@ -348,8 +323,8 @@ const AccessibilityInfo: AccessibilityInfoType = {
    * Send a named accessibility event to a HostComponent.
    */
   sendAccessibilityEvent(
-    handle: ElementRef<HostComponent<mixed>>,
-    eventType: AccessibilityEventTypes,
+    handle,
+    eventType,
   ) {
     // iOS only supports 'focus' event types
     if (Platform.OS === 'ios' && eventType === 'click') {
@@ -364,7 +339,7 @@ const AccessibilityInfo: AccessibilityInfoType = {
    *
    * See https://reactnative.dev/docs/accessibilityinfo#announceforaccessibility
    */
-  announceForAccessibility(announcement: string): void {
+  announceForAccessibility(announcement) {
     if (Platform.OS === 'android') {
       NativeAccessibilityInfoAndroid?.announceForAccessibility(announcement);
     } else {
@@ -379,9 +354,9 @@ const AccessibilityInfo: AccessibilityInfoType = {
    *   - `queue`: The announcement will be queued behind existing announcements. iOS only.
    */
   announceForAccessibilityWithOptions(
-    announcement: string,
-    options: {queue?: boolean},
-  ): void {
+    announcement,
+    options,
+  ) {
     if (Platform.OS === 'android') {
       NativeAccessibilityInfoAndroid?.announceForAccessibility(announcement);
     } else {
@@ -401,7 +376,7 @@ const AccessibilityInfo: AccessibilityInfoType = {
    *
    * See https://reactnative.dev/docs/accessibilityinfo#getrecommendedtimeoutmillis
    */
-  getRecommendedTimeoutMillis(originalTimeout: number): Promise<number> {
+  getRecommendedTimeoutMillis(originalTimeout) {
     if (Platform.OS === 'android') {
       return new Promise((resolve, reject) => {
         if (NativeAccessibilityInfoAndroid?.getRecommendedTimeoutMillis) {

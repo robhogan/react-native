@@ -4,14 +4,12 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
 'use strict';
 
-import type {ResolvedAssetSource} from './AssetSourceResolver';
-import type {ImageProps} from './ImageProps';
 
 import resolveAssetSource from './resolveAssetSource';
 
@@ -20,15 +18,15 @@ import resolveAssetSource from './resolveAssetSource';
  * by resolving the `source`, `src` and `srcSet` props.
  */
 export function getImageSourcesFromImageProps(
-  imageProps: ImageProps,
-): ?ResolvedAssetSource | $ReadOnlyArray<{uri: string, ...}> {
+  imageProps,
+) {
   let source = resolveAssetSource(imageProps.source);
 
   let sources;
 
   const {crossOrigin, referrerPolicy, src, srcSet, width, height} = imageProps;
 
-  const headers: {[string]: string} = {};
+  const headers = {};
   if (crossOrigin === 'use-credentials') {
     headers['Access-Control-Allow-Credentials'] = 'true';
   }

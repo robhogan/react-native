@@ -4,13 +4,12 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
 'use strict';
 
-import type {PlatformConfig} from '../AnimatedPlatformConfig';
 
 import {findNodeHandle} from '../../ReactNative/RendererProxy';
 import {AnimatedEvent} from '../AnimatedEvent';
@@ -20,11 +19,11 @@ import AnimatedStyle from './AnimatedStyle';
 import invariant from 'invariant';
 
 export default class AnimatedProps extends AnimatedNode {
-  _props: Object;
-  _animatedView: any;
-  _callback: () => void;
+  _props;
+  _animatedView;
+  _callback;
 
-  constructor(props: Object, callback: () => void) {
+  constructor(props, callback) {
     super();
     if (props.style) {
       props = {
@@ -36,8 +35,8 @@ export default class AnimatedProps extends AnimatedNode {
     this._callback = callback;
   }
 
-  __getValue(): Object {
-    const props: {[string]: any | ((...args: any) => void)} = {};
+  __getValue() {
+    const props = {};
     for (const key in this._props) {
       const value = this._props[key];
       if (value instanceof AnimatedNode) {
@@ -52,8 +51,8 @@ export default class AnimatedProps extends AnimatedNode {
     return props;
   }
 
-  __getAnimatedValue(): Object {
-    const props: {[string]: any} = {};
+  __getAnimatedValue() {
+    const props = {};
     for (const key in this._props) {
       const value = this._props[key];
       if (value instanceof AnimatedNode) {
@@ -63,7 +62,7 @@ export default class AnimatedProps extends AnimatedNode {
     return props;
   }
 
-  __attach(): void {
+  __attach() {
     for (const key in this._props) {
       const value = this._props[key];
       if (value instanceof AnimatedNode) {
@@ -72,7 +71,7 @@ export default class AnimatedProps extends AnimatedNode {
     }
   }
 
-  __detach(): void {
+  __detach() {
     if (this.__isNative && this._animatedView) {
       this.__disconnectAnimatedView();
     }
@@ -85,11 +84,11 @@ export default class AnimatedProps extends AnimatedNode {
     super.__detach();
   }
 
-  update(): void {
+  update() {
     this._callback();
   }
 
-  __makeNative(platformConfig: ?PlatformConfig): void {
+  __makeNative(platformConfig) {
     if (!this.__isNative) {
       this.__isNative = true;
       for (const key in this._props) {
@@ -110,7 +109,7 @@ export default class AnimatedProps extends AnimatedNode {
     }
   }
 
-  setNativeView(animatedView: any): void {
+  setNativeView(animatedView) {
     if (this._animatedView === animatedView) {
       return;
     }
@@ -120,9 +119,9 @@ export default class AnimatedProps extends AnimatedNode {
     }
   }
 
-  __connectAnimatedView(): void {
+  __connectAnimatedView() {
     invariant(this.__isNative, 'Expected node to be marked as "native"');
-    const nativeViewTag: ?number = findNodeHandle(this._animatedView);
+    const nativeViewTag = findNodeHandle(this._animatedView);
     invariant(
       nativeViewTag != null,
       'Unable to locate attached view in the native tree',
@@ -133,9 +132,9 @@ export default class AnimatedProps extends AnimatedNode {
     );
   }
 
-  __disconnectAnimatedView(): void {
+  __disconnectAnimatedView() {
     invariant(this.__isNative, 'Expected node to be marked as "native"');
-    const nativeViewTag: ?number = findNodeHandle(this._animatedView);
+    const nativeViewTag = findNodeHandle(this._animatedView);
     invariant(
       nativeViewTag != null,
       'Unable to locate attached view in the native tree',
@@ -146,7 +145,7 @@ export default class AnimatedProps extends AnimatedNode {
     );
   }
 
-  __restoreDefaultValues(): void {
+  __restoreDefaultValues() {
     // When using the native driver, view properties need to be restored to
     // their default values manually since react no longer tracks them. This
     // is needed to handle cases where a prop driven by native animated is removed
@@ -156,8 +155,8 @@ export default class AnimatedProps extends AnimatedNode {
     }
   }
 
-  __getNativeConfig(): Object {
-    const propsConfig: {[string]: number} = {};
+  __getNativeConfig() {
+    const propsConfig = {};
     for (const propKey in this._props) {
       const value = this._props[propKey];
       if (value instanceof AnimatedNode) {

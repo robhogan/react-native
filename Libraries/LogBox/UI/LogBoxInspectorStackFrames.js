@@ -4,13 +4,10 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
-import type {StackFrame} from '../../Core/NativeExceptionsManager';
-import type LogBoxLog from '../Data/LogBoxLog';
-import type {Stack} from '../Data/LogBoxSymbolication';
 
 import View from '../../Components/View/View';
 import openFileInEditor from '../../Core/Devtools/openFileInEditor';
@@ -23,15 +20,11 @@ import LogBoxInspectorStackFrame from './LogBoxInspectorStackFrame';
 import * as LogBoxStyle from './LogBoxStyle';
 import * as React from 'react';
 
-type Props = $ReadOnly<{|
-  log: LogBoxLog,
-  onRetry: () => void,
-|}>;
 
 export function getCollapseMessage(
-  stackFrames: Stack,
-  collapsed: boolean,
-): string {
+  stackFrames,
+  collapsed,
+) {
   if (stackFrames.length === 0) {
     return 'No frames to show';
   }
@@ -64,7 +57,7 @@ export function getCollapseMessage(
   }
 }
 
-function LogBoxInspectorStackFrames(props: Props): React.Node {
+function LogBoxInspectorStackFrames(props) {
   const [collapsed, setCollapsed] = React.useState(() => {
     // Only collapse frames initially if some frames are not collapsed.
     return props.log.getAvailableStack().some(({collapse}) => !collapse);
@@ -113,10 +106,7 @@ function LogBoxInspectorStackFrames(props: Props): React.Node {
   );
 }
 
-function StackFrameList(props: {
-  list: Stack | Array<StackFrame>,
-  status: string | 'COMPLETE' | 'FAILED' | 'NONE' | 'PENDING',
-}) {
+function StackFrameList(props) {
   return (
     <>
       {props.list.map((frame, index) => {
@@ -138,7 +128,7 @@ function StackFrameList(props: {
 }
 
 function StackFrameFooter(
-  props: $TEMPORARY$object<{message: string, onPress: () => void}>,
+  props,
 ) {
   return (
     <View style={stackStyles.collapseContainer}>

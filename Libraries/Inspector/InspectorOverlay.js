@@ -5,13 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  */
 
 'use strict';
 
-import type {ViewStyleProp} from '../StyleSheet/StyleSheet';
-import type {PressEvent} from '../Types/CoreEventTypes';
 
 const View = require('../Components/View/View');
 const StyleSheet = require('../StyleSheet/StyleSheet');
@@ -19,29 +17,21 @@ const Dimensions = require('../Utilities/Dimensions');
 const ElementBox = require('./ElementBox');
 const React = require('react');
 
-type Inspected = $ReadOnly<{|
-  frame?: Object,
-  style?: ViewStyleProp,
-|}>;
 
-type Props = $ReadOnly<{|
-  inspected?: Inspected,
-  onTouchPoint: (locationX: number, locationY: number) => void,
-|}>;
 
-class InspectorOverlay extends React.Component<Props> {
-  findViewForTouchEvent: (e: PressEvent) => void = (e: PressEvent) => {
+class InspectorOverlay extends React.Component {
+  findViewForTouchEvent = (e) => {
     const {locationX, locationY} = e.nativeEvent.touches[0];
 
     this.props.onTouchPoint(locationX, locationY);
   };
 
-  shouldSetResponser: (e: PressEvent) => boolean = (e: PressEvent): boolean => {
+  shouldSetResponser = (e) => {
     this.findViewForTouchEvent(e);
     return true;
   };
 
-  render(): React.Node {
+  render() {
     let content = null;
     if (this.props.inspected) {
       content = (

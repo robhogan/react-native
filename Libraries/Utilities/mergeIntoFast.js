@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  */
 
 'use strict';
@@ -17,7 +17,7 @@
  * @param {object} one Object to assign to.
  * @param {object} two Object to assign from.
  */
-const mergeIntoFast = function (one: Object, two: Object): void {
+const mergeIntoFast = function (one, two) {
   for (const keyTwo in two) {
     one[keyTwo] = two[keyTwo];
   }

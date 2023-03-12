@@ -4,11 +4,10 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
-import type LogBoxLog from '../Data/LogBoxLog';
 
 import View from '../../Components/View/View';
 import openFileInEditor from '../../Core/Devtools/openFileInEditor';
@@ -20,14 +19,11 @@ import LogBoxInspectorSection from './LogBoxInspectorSection';
 import * as LogBoxStyle from './LogBoxStyle';
 import * as React from 'react';
 
-type Props = $ReadOnly<{|
-  log: LogBoxLog,
-|}>;
 
 const BEFORE_SLASH_RE = /^(.*)[\\/]/;
 
 // Taken from React https://github.com/facebook/react/blob/206d61f72214e8ae5b935f0bf8628491cb7f0797/packages/react-devtools-shared/src/backend/describeComponentFrame.js#L27-L41
-function getPrettyFileName(path: string) {
+function getPrettyFileName(path) {
   let fileName = path.replace(BEFORE_SLASH_RE, '');
 
   // In DEV, include code for a common special case:
@@ -48,7 +44,7 @@ function getPrettyFileName(path: string) {
 
   return fileName;
 }
-function LogBoxInspectorReactFrames(props: Props): React.Node {
+function LogBoxInspectorReactFrames(props) {
   const [collapsed, setCollapsed] = React.useState(true);
   if (props.log.componentStack == null || props.log.componentStack.length < 1) {
     return null;

@@ -5,44 +5,39 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
-import type {
-  EventSubscription,
-  IEventEmitter,
-} from '../../vendor/emitter/EventEmitter';
 
 import RCTDeviceEventEmitter from '../RCTDeviceEventEmitter';
 
 /**
  * Mock `NativeEventEmitter` to ignore Native Modules.
  */
-export default class NativeEventEmitter<TEventToArgsMap: {...}>
-  implements IEventEmitter<TEventToArgsMap>
+export default class NativeEventEmitter
 {
-  addListener<TEvent: $Keys<TEventToArgsMap>>(
-    eventType: TEvent,
-    listener: (...args: $ElementType<TEventToArgsMap, TEvent>) => mixed,
-    context?: mixed,
-  ): EventSubscription {
+  addListener(
+    eventType,
+    listener,
+    context,
+  ) {
     return RCTDeviceEventEmitter.addListener(eventType, listener, context);
   }
 
-  emit<TEvent: $Keys<TEventToArgsMap>>(
-    eventType: TEvent,
-    ...args: $ElementType<TEventToArgsMap, TEvent>
-  ): void {
+  emit(
+    eventType,
+    ...args
+  ) {
     RCTDeviceEventEmitter.emit(eventType, ...args);
   }
 
-  removeAllListeners<TEvent: $Keys<TEventToArgsMap>>(
-    eventType?: ?TEvent,
-  ): void {
+  removeAllListeners(
+    eventType,
+  ) {
     RCTDeviceEventEmitter.removeAllListeners(eventType);
   }
 
-  listenerCount<TEvent: $Keys<TEventToArgsMap>>(eventType: TEvent): number {
+  listenerCount(eventType) {
     return RCTDeviceEventEmitter.listenerCount(eventType);
   }
 }

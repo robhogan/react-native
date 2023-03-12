@@ -4,16 +4,12 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
 'use strict';
 
-import type {NativeColorValue} from '../../StyleSheet/PlatformColorValueTypes';
-import type {ProcessedColorValue} from '../../StyleSheet/processColor';
-import type {ColorValue} from '../../StyleSheet/StyleSheet';
-import type {PlatformConfig} from '../AnimatedPlatformConfig';
 
 import normalizeColor from '../../StyleSheet/normalizeColor';
 import {processColorObject} from '../../StyleSheet/PlatformColorValueTypes';
@@ -21,65 +17,47 @@ import NativeAnimatedHelper from '../NativeAnimatedHelper';
 import AnimatedValue from './AnimatedValue';
 import AnimatedWithChildren from './AnimatedWithChildren';
 
-export type AnimatedColorConfig = $ReadOnly<{
-  useNativeDriver: boolean,
-}>;
 
-type ColorListenerCallback = (value: ColorValue) => mixed;
 
-export type RgbaValue = {
-  +r: number,
-  +g: number,
-  +b: number,
-  +a: number,
-  ...
-};
 
-type RgbaAnimatedValue = {
-  +r: AnimatedValue,
-  +g: AnimatedValue,
-  +b: AnimatedValue,
-  +a: AnimatedValue,
-  ...
-};
 
 const NativeAnimatedAPI = NativeAnimatedHelper.API;
 
-const defaultColor: RgbaValue = {r: 0, g: 0, b: 0, a: 1.0};
+const defaultColor = {r: 0, g: 0, b: 0, a: 1.0};
 let _uniqueId = 1;
 
 /* eslint no-bitwise: 0 */
 function processColor(
-  color?: ?(ColorValue | RgbaValue),
-): ?(RgbaValue | NativeColorValue) {
+  color,
+) {
   if (color === undefined || color === null) {
     return null;
   }
 
   if (isRgbaValue(color)) {
     // $FlowIgnore[incompatible-cast] - Type is verified above
-    return (color: RgbaValue);
+    return (color);
   }
 
-  let normalizedColor: ?ProcessedColorValue = normalizeColor(
+  let normalizedColor = normalizeColor(
     // $FlowIgnore[incompatible-cast] - Type is verified above
-    (color: ColorValue),
+    (color),
   );
   if (normalizedColor === undefined || normalizedColor === null) {
     return null;
   }
 
   if (typeof normalizedColor === 'object') {
-    const processedColorObj: ?NativeColorValue =
+    const processedColorObj =
       processColorObject(normalizedColor);
     if (processedColorObj != null) {
       return processedColorObj;
     }
   } else if (typeof normalizedColor === 'number') {
-    const r: number = (normalizedColor & 0xff000000) >>> 24;
-    const g: number = (normalizedColor & 0x00ff0000) >>> 16;
-    const b: number = (normalizedColor & 0x0000ff00) >>> 8;
-    const a: number = (normalizedColor & 0x000000ff) / 255;
+    const r = (normalizedColor & 0xff000000) >>> 24;
+    const g = (normalizedColor & 0x00ff0000) >>> 16;
+    const b = (normalizedColor & 0x0000ff00) >>> 8;
+    const a = (normalizedColor & 0x000000ff) / 255;
 
     return {r, g, b, a};
   }
@@ -87,7 +65,7 @@ function processColor(
   return null;
 }
 
-function isRgbaValue(value: any): boolean {
+function isRgbaValue(value) {
   return (
     value &&
     typeof value.r === 'number' &&
@@ -97,7 +75,7 @@ function isRgbaValue(value: any): boolean {
   );
 }
 
-function isRgbaAnimatedValue(value: any): boolean {
+function isRgbaAnimatedValue(value) {
   return (
     value &&
     value.r instanceof AnimatedValue &&
@@ -108,47 +86,38 @@ function isRgbaAnimatedValue(value: any): boolean {
 }
 
 export default class AnimatedColor extends AnimatedWithChildren {
-  r: AnimatedValue;
-  g: AnimatedValue;
-  b: AnimatedValue;
-  a: AnimatedValue;
-  nativeColor: ?NativeColorValue;
-  _listeners: {
-    [key: string]: {
-      r: string,
-      g: string,
-      b: string,
-      a: string,
-      ...
-    },
-    ...
-  } = {};
+  r;
+  g;
+  b;
+  a;
+  nativeColor;
+  _listeners = {};
 
   constructor(
-    valueIn?: ?(RgbaValue | RgbaAnimatedValue | ColorValue),
-    config?: ?AnimatedColorConfig,
+    valueIn,
+    config,
   ) {
     super();
-    let value: RgbaValue | RgbaAnimatedValue | ColorValue =
+    let value =
       valueIn ?? defaultColor;
     if (isRgbaAnimatedValue(value)) {
       // $FlowIgnore[incompatible-cast] - Type is verified above
-      const rgbaAnimatedValue: RgbaAnimatedValue = (value: RgbaAnimatedValue);
+      const rgbaAnimatedValue = (value);
       this.r = rgbaAnimatedValue.r;
       this.g = rgbaAnimatedValue.g;
       this.b = rgbaAnimatedValue.b;
       this.a = rgbaAnimatedValue.a;
     } else {
-      const processedColor: RgbaValue | NativeColorValue =
+      const processedColor =
         // $FlowIgnore[incompatible-cast] - Type is verified above
-        processColor((value: ColorValue | RgbaValue)) ?? defaultColor;
-      let initColor: RgbaValue = defaultColor;
+        processColor((value)) ?? defaultColor;
+      let initColor = defaultColor;
       if (isRgbaValue(processedColor)) {
         // $FlowIgnore[incompatible-cast] - Type is verified above
-        initColor = (processedColor: RgbaValue);
+        initColor = (processedColor);
       } else {
         // $FlowIgnore[incompatible-cast] - Type is verified above
-        this.nativeColor = (processedColor: NativeColorValue);
+        this.nativeColor = (processedColor);
       }
 
       this.r = new AnimatedValue(initColor.r);
@@ -165,18 +134,18 @@ export default class AnimatedColor extends AnimatedWithChildren {
    * Directly set the value. This will stop any animations running on the value
    * and update all the bound properties.
    */
-  setValue(value: RgbaValue | ColorValue): void {
+  setValue(value) {
     let shouldUpdateNodeConfig = false;
     if (this.__isNative) {
       const nativeTag = this.__getNativeTag();
       NativeAnimatedAPI.setWaitingForIdentifier(nativeTag.toString());
     }
 
-    const processedColor: RgbaValue | NativeColorValue =
+    const processedColor =
       processColor(value) ?? defaultColor;
     if (isRgbaValue(processedColor)) {
       // $FlowIgnore[incompatible-type] - Type is verified above
-      const rgbaValue: RgbaValue = processedColor;
+      const rgbaValue = processedColor;
       this.r.setValue(rgbaValue.r);
       this.g.setValue(rgbaValue.g);
       this.b.setValue(rgbaValue.b);
@@ -187,7 +156,7 @@ export default class AnimatedColor extends AnimatedWithChildren {
       }
     } else {
       // $FlowIgnore[incompatible-type] - Type is verified above
-      const nativeColor: NativeColorValue = processedColor;
+      const nativeColor = processedColor;
       if (this.nativeColor !== nativeColor) {
         this.nativeColor = nativeColor;
         shouldUpdateNodeConfig = true;
@@ -211,7 +180,7 @@ export default class AnimatedColor extends AnimatedWithChildren {
    * via `setValue`, an animation, or `Animated.event`. Useful for compensating
    * things like the start of a pan gesture.
    */
-  setOffset(offset: RgbaValue): void {
+  setOffset(offset) {
     this.r.setOffset(offset.r);
     this.g.setOffset(offset.g);
     this.b.setOffset(offset.b);
@@ -222,7 +191,7 @@ export default class AnimatedColor extends AnimatedWithChildren {
    * Merges the offset value into the base value and resets the offset to zero.
    * The final output of the value is unchanged.
    */
-  flattenOffset(): void {
+  flattenOffset() {
     this.r.flattenOffset();
     this.g.flattenOffset();
     this.b.flattenOffset();
@@ -233,7 +202,7 @@ export default class AnimatedColor extends AnimatedWithChildren {
    * Sets the offset value to the base value, and resets the base value to
    * zero. The final output of the value is unchanged.
    */
-  extractOffset(): void {
+  extractOffset() {
     this.r.extractOffset();
     this.g.extractOffset();
     this.b.extractOffset();
@@ -247,9 +216,9 @@ export default class AnimatedColor extends AnimatedWithChildren {
    *
    * Returns a string that serves as an identifier for the listener.
    */
-  addListener(callback: ColorListenerCallback): string {
+  addListener(callback) {
     const id = String(_uniqueId++);
-    const jointCallback = ({value: number}: any) => {
+    const jointCallback = ({value: number}) => {
       callback(this.__getValue());
     };
     this._listeners[id] = {
@@ -265,7 +234,7 @@ export default class AnimatedColor extends AnimatedWithChildren {
    * Unregister a listener. The `id` param shall match the identifier
    * previously returned by `addListener()`.
    */
-  removeListener(id: string): void {
+  removeListener(id) {
     this.r.removeListener(this._listeners[id].r);
     this.g.removeListener(this._listeners[id].g);
     this.b.removeListener(this._listeners[id].b);
@@ -276,7 +245,7 @@ export default class AnimatedColor extends AnimatedWithChildren {
   /**
    * Remove all registered listeners.
    */
-  removeAllListeners(): void {
+  removeAllListeners() {
     this.r.removeAllListeners();
     this.g.removeAllListeners();
     this.b.removeAllListeners();
@@ -289,7 +258,7 @@ export default class AnimatedColor extends AnimatedWithChildren {
    * final value after stopping the animation, which is useful for updating
    * state to match the animation position with layout.
    */
-  stopAnimation(callback?: ColorListenerCallback): void {
+  stopAnimation(callback) {
     this.r.stopAnimation();
     this.g.stopAnimation();
     this.b.stopAnimation();
@@ -300,7 +269,7 @@ export default class AnimatedColor extends AnimatedWithChildren {
   /**
    * Stops any animation and resets the value to its original.
    */
-  resetAnimation(callback?: ColorListenerCallback): void {
+  resetAnimation(callback) {
     this.r.resetAnimation();
     this.g.resetAnimation();
     this.b.resetAnimation();
@@ -308,7 +277,7 @@ export default class AnimatedColor extends AnimatedWithChildren {
     callback && callback(this.__getValue());
   }
 
-  __getValue(): ColorValue {
+  __getValue() {
     if (this.nativeColor != null) {
       return this.nativeColor;
     } else {
@@ -316,7 +285,7 @@ export default class AnimatedColor extends AnimatedWithChildren {
     }
   }
 
-  __attach(): void {
+  __attach() {
     this.r.__addChild(this);
     this.g.__addChild(this);
     this.b.__addChild(this);
@@ -324,7 +293,7 @@ export default class AnimatedColor extends AnimatedWithChildren {
     super.__attach();
   }
 
-  __detach(): void {
+  __detach() {
     this.r.__removeChild(this);
     this.g.__removeChild(this);
     this.b.__removeChild(this);
@@ -332,7 +301,7 @@ export default class AnimatedColor extends AnimatedWithChildren {
     super.__detach();
   }
 
-  __makeNative(platformConfig: ?PlatformConfig) {
+  __makeNative(platformConfig) {
     this.r.__makeNative(platformConfig);
     this.g.__makeNative(platformConfig);
     this.b.__makeNative(platformConfig);
@@ -340,7 +309,7 @@ export default class AnimatedColor extends AnimatedWithChildren {
     super.__makeNative(platformConfig);
   }
 
-  __getNativeConfig(): {...} {
+  __getNativeConfig() {
     return {
       type: 'color',
       r: this.r.__getNativeTag(),

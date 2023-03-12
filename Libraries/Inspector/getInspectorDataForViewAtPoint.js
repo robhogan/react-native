@@ -5,34 +5,18 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  */
 
-import type {
-  HostComponent,
-  TouchedViewDataAtPoint,
-} from '../Renderer/shims/ReactNativeTypes';
 
 const invariant = require('invariant');
 const React = require('react');
 
-export type HostRef = React.ElementRef<HostComponent<mixed>>;
-export type ReactRenderer = {
-  rendererConfig: {
-    getInspectorDataForViewAtPoint: (
-      inspectedView: ?HostRef,
-      locationX: number,
-      locationY: number,
-      callback: Function,
-    ) => void,
-    ...
-  },
-};
 
 const hook = window.__REACT_DEVTOOLS_GLOBAL_HOOK__;
 const renderers = findRenderers();
 
-function findRenderers(): $ReadOnlyArray<ReactRenderer> {
+function findRenderers() {
   const allRenderers = Array.from(hook.renderers.values());
   invariant(
     allRenderers.length >= 1,
@@ -42,10 +26,10 @@ function findRenderers(): $ReadOnlyArray<ReactRenderer> {
 }
 
 module.exports = function getInspectorDataForViewAtPoint(
-  inspectedView: ?HostRef,
-  locationX: number,
-  locationY: number,
-  callback: (viewData: TouchedViewDataAtPoint) => boolean,
+  inspectedView,
+  locationX,
+  locationY,
+  callback,
 ) {
   let shouldBreak = false;
   // Check all renderers for inspector data.

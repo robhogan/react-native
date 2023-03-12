@@ -5,25 +5,23 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict
+ *  strict
  */
 
-import typeof {enable} from 'promise/setimmediate/rejection-tracking';
 
-type ExtractOptionsType = <P>(((options?: ?P) => void)) => P;
 
-let rejectionTrackingOptions: $Call<ExtractOptionsType, enable> = {
+let rejectionTrackingOptions = {
   allRejections: true,
   onUnhandled: (id, rejection = {}) => {
-    let message: string;
-    let stack: ?string;
+    let message;
+    let stack;
 
     // $FlowFixMe[method-unbinding] added when improving typing for this parameters
     const stringValue = Object.prototype.toString.call(rejection);
     if (stringValue === '[object Error]') {
       // $FlowFixMe[method-unbinding] added when improving typing for this parameters
       message = Error.prototype.toString.call(rejection);
-      const error: Error = (rejection: $FlowFixMe);
+      const error = (rejection);
       stack = error.stack;
     } else {
       try {
@@ -32,7 +30,7 @@ let rejectionTrackingOptions: $Call<ExtractOptionsType, enable> = {
         message =
           typeof rejection === 'string'
             ? rejection
-            : JSON.stringify((rejection: $FlowFixMe));
+            : JSON.stringify((rejection));
       }
     }
 

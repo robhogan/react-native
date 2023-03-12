@@ -5,50 +5,32 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  */
 
-import type {RootTag} from './RootTag';
 
 import View from '../Components/View/View';
 import RCTDeviceEventEmitter from '../EventEmitter/RCTDeviceEventEmitter';
 import StyleSheet from '../StyleSheet/StyleSheet';
-import {type EventSubscription} from '../vendor/emitter/EventEmitter';
+import {} from '../vendor/emitter/EventEmitter';
 import {RootTagContext, createRootTag} from './RootTag';
 import * as React from 'react';
 
-type Props = $ReadOnly<{|
-  children?: React.Node,
-  fabric?: boolean,
-  useConcurrentRoot?: boolean,
-  rootTag: number | RootTag,
-  initialProps?: {...},
-  showArchitectureIndicator?: boolean,
-  WrapperComponent?: ?React.ComponentType<any>,
-  internal_excludeLogBox?: ?boolean,
-  internal_excludeInspector?: ?boolean,
-|}>;
 
-type State = {|
-  inspector: ?React.Node,
-  devtoolsOverlay: ?React.Node,
-  mainKey: number,
-  hasError: boolean,
-|};
 
-class AppContainer extends React.Component<Props, State> {
-  state: State = {
+class AppContainer extends React.Component {
+  state = {
     inspector: null,
     devtoolsOverlay: null,
     mainKey: 1,
     hasError: false,
   };
-  _mainRef: ?React.ElementRef<typeof View>;
-  _subscription: ?EventSubscription = null;
+  _mainRef;
+  _subscription = null;
 
-  static getDerivedStateFromError: any = undefined;
+  static getDerivedStateFromError = undefined;
 
-  componentDidMount(): void {
+  componentDidMount() {
     if (__DEV__) {
       if (!this.props.internal_excludeInspector) {
         this._subscription = RCTDeviceEventEmitter.addListener(
@@ -81,13 +63,13 @@ class AppContainer extends React.Component<Props, State> {
     }
   }
 
-  componentWillUnmount(): void {
+  componentWillUnmount() {
     if (this._subscription != null) {
       this._subscription.remove();
     }
   }
 
-  render(): React.Node {
+  render() {
     let logBox = null;
     if (__DEV__) {
       if (!this.props.internal_excludeLogBox) {
@@ -97,7 +79,7 @@ class AppContainer extends React.Component<Props, State> {
       }
     }
 
-    let innerView: React.Node = (
+    let innerView = (
       <View
         collapsable={!this.state.inspector && !this.state.devtoolsOverlay}
         key={this.state.mainKey}

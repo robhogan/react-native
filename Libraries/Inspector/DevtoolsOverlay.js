@@ -5,11 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  */
 
-import type {PressEvent} from '../Types/CoreEventTypes';
-import type {HostRef} from './getInspectorDataForViewAtPoint';
 
 import View from '../Components/View/View';
 import ReactNativeFeatureFlags from '../ReactNative/ReactNativeFeatureFlags';
@@ -27,12 +25,8 @@ const hook = window.__REACT_DEVTOOLS_GLOBAL_HOOK__;
 
 export default function DevtoolsOverlay({
   inspectedView,
-}: {
-  inspectedView: ?HostRef,
-}): React.Node {
-  const [inspected, setInspected] = useState<null | {
-    frame: {+height: any, +left: any, +top: any, +width: any},
-  }>(null);
+}) {
+  const [inspected, setInspected] = useState(null);
   const [isInspecting, setIsInspecting] = useState(false);
   const devToolsAgentRef = useRef(null);
 
@@ -48,7 +42,7 @@ export default function DevtoolsOverlay({
       }, 100);
     }
 
-    function onAgentShowNativeHighlight(node: any) {
+    function onAgentShowNativeHighlight(node) {
       clearTimeout(hideTimeoutId);
       // Shape of `node` is different in Fabric.
       const component = node.canonical ?? node;
@@ -96,7 +90,7 @@ export default function DevtoolsOverlay({
       setIsInspecting(false);
     }
 
-    function _attachToDevtools(agent: Object) {
+    function _attachToDevtools(agent) {
       devToolsAgent = agent;
       devToolsAgentRef.current = agent;
       agent.addListener('hideNativeHighlight', onAgentHideNativeHighlight);
@@ -117,7 +111,7 @@ export default function DevtoolsOverlay({
   }, []);
 
   const findViewForLocation = useCallback(
-    (x: number, y: number) => {
+    (x, y) => {
       const agent = devToolsAgentRef.current;
       if (agent == null) {
         return;
@@ -170,7 +164,7 @@ export default function DevtoolsOverlay({
   );
 
   const shouldSetResponser = useCallback(
-    (e: PressEvent): boolean => {
+    (e) => {
       onResponderMove(e);
       return true;
     },

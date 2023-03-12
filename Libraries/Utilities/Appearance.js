@@ -5,40 +5,31 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
 import NativeEventEmitter from '../EventEmitter/NativeEventEmitter';
 import Platform from '../Utilities/Platform';
 import EventEmitter, {
-  type EventSubscription,
 } from '../vendor/emitter/EventEmitter';
 import {isAsyncDebugging} from './DebugEnvironment';
 import NativeAppearance, {
-  type AppearancePreferences,
-  type ColorSchemeName,
 } from './NativeAppearance';
 import invariant from 'invariant';
 
-type AppearanceListener = (preferences: AppearancePreferences) => void;
-const eventEmitter = new EventEmitter<{
-  change: [AppearancePreferences],
-}>();
+const eventEmitter = new EventEmitter();
 
-type NativeAppearanceEventDefinitions = {
-  appearanceChanged: [AppearancePreferences],
-};
 
 if (NativeAppearance) {
   const nativeEventEmitter =
-    new NativeEventEmitter<NativeAppearanceEventDefinitions>(
+    new NativeEventEmitter(
       // T88715063: NativeEventEmitter only used this parameter on iOS. Now it uses it on all platforms, so this code was modified automatically to preserve its behavior
       // If you want to use the native module on other platforms, please remove this condition and test its behavior
       Platform.OS !== 'ios' ? null : NativeAppearance,
     );
   nativeEventEmitter.addListener(
     'appearanceChanged',
-    (newAppearance: AppearancePreferences) => {
+    (newAppearance) => {
       const {colorScheme} = newAppearance;
       invariant(
         colorScheme === 'dark' ||
@@ -62,7 +53,7 @@ module.exports = {
    *
    * @returns {?ColorSchemeName} Value for the color scheme preference.
    */
-  getColorScheme(): ?ColorSchemeName {
+  getColorScheme() {
     if (__DEV__) {
       if (isAsyncDebugging) {
         // Hard code light theme when using the async debugger as
@@ -72,7 +63,7 @@ module.exports = {
     }
 
     // TODO: (hramos) T52919652 Use ?ColorSchemeName once codegen supports union
-    const nativeColorScheme: ?string =
+    const nativeColorScheme =
       NativeAppearance == null
         ? null
         : NativeAppearance.getColorScheme() || null;
@@ -88,7 +79,7 @@ module.exports = {
   /**
    * Add an event handler that is fired when appearance preferences change.
    */
-  addChangeListener(listener: AppearanceListener): EventSubscription {
+  addChangeListener(listener) {
     return eventEmitter.addListener('change', listener);
   },
 };

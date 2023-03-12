@@ -4,23 +4,18 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict
+ *  strict
  * @format
  */
 
 import invariant from 'invariant';
 
-export type CellRegion = {
-  first: number,
-  last: number,
-  isSpacer: boolean,
-};
 
 export class CellRenderMask {
-  _numCells: number;
-  _regions: Array<CellRegion>;
+  _numCells;
+  _regions;
 
-  constructor(numCells: number) {
+  constructor(numCells) {
     invariant(
       numCells >= 0,
       'CellRenderMask must contain a non-negative number os cells',
@@ -41,11 +36,11 @@ export class CellRenderMask {
     }
   }
 
-  enumerateRegions(): $ReadOnlyArray<CellRegion> {
+  enumerateRegions() {
     return this._regions;
   }
 
-  addCells(cells: {first: number, last: number}): void {
+  addCells(cells) {
     invariant(
       cells.first >= 0 &&
         cells.first < this._numCells &&
@@ -72,9 +67,9 @@ export class CellRenderMask {
 
     // We need to replace the existing covered regions with 1-3 new regions
     // depending whether we need to split spacers out of overlapping regions.
-    const newLeadRegion: Array<CellRegion> = [];
-    const newTailRegion: Array<CellRegion> = [];
-    const newMainRegion: CellRegion = {
+    const newLeadRegion = [];
+    const newTailRegion = [];
+    const newMainRegion = {
       ...cells,
       isSpacer: false,
     };
@@ -103,7 +98,7 @@ export class CellRenderMask {
       }
     }
 
-    const replacementRegions: Array<CellRegion> = [
+    const replacementRegions = [
       ...newLeadRegion,
       newMainRegion,
       ...newTailRegion,
@@ -116,11 +111,11 @@ export class CellRenderMask {
     );
   }
 
-  numCells(): number {
+  numCells() {
     return this._numCells;
   }
 
-  equals(other: CellRenderMask): boolean {
+  equals(other) {
     return (
       this._numCells === other._numCells &&
       this._regions.length === other._regions.length &&
@@ -133,7 +128,7 @@ export class CellRenderMask {
     );
   }
 
-  _findRegion(cellIdx: number): [CellRegion, number] {
+  _findRegion(cellIdx) {
     let firstIdx = 0;
     let lastIdx = this._regions.length - 1;
 

@@ -5,17 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
 'use strict';
 
-import type {ColorSchemeName} from './NativeAppearance';
 
 import Appearance from './Appearance';
 import {useSyncExternalStore} from 'use-sync-external-store/shim';
 
-export default function useColorScheme(): ?ColorSchemeName {
+export default function useColorScheme() {
   return useSyncExternalStore(
     callback => {
       const appearanceSubscription = Appearance.addChangeListener(callback);

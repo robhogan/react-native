@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
@@ -13,7 +13,6 @@ import RCTDeviceEventEmitter from '../EventEmitter/RCTDeviceEventEmitter';
 
 const DEVICE_BACK_EVENT = 'hardwareBackPress';
 
-type BackPressEventName = 'backPress' | 'hardwareBackPress';
 
 const _backPressSubscriptions = [];
 
@@ -53,19 +52,8 @@ RCTDeviceEventEmitter.addListener(DEVICE_BACK_EVENT, function () {
  * });
  * ```
  */
-type TBackHandler = {|
-  +exitApp: () => void,
-  +addEventListener: (
-    eventName: BackPressEventName,
-    handler: () => ?boolean,
-  ) => {remove: () => void, ...},
-  +removeEventListener: (
-    eventName: BackPressEventName,
-    handler: () => ?boolean,
-  ) => void,
-|};
-const BackHandler: TBackHandler = {
-  exitApp: function (): void {
+const BackHandler = {
+  exitApp: function () {
     if (!NativeDeviceEventManager) {
       return;
     }
@@ -79,14 +67,14 @@ const BackHandler: TBackHandler = {
    * - `hardwareBackPress`: Fires when the Android hardware back button is pressed.
    */
   addEventListener: function (
-    eventName: BackPressEventName,
-    handler: () => ?boolean,
-  ): {remove: () => void, ...} {
+    eventName,
+    handler,
+  ) {
     if (_backPressSubscriptions.indexOf(handler) === -1) {
       _backPressSubscriptions.push(handler);
     }
     return {
-      remove: (): void => BackHandler.removeEventListener(eventName, handler),
+      remove: () => BackHandler.removeEventListener(eventName, handler),
     };
   },
 
@@ -94,9 +82,9 @@ const BackHandler: TBackHandler = {
    * Removes the event handler.
    */
   removeEventListener: function (
-    eventName: BackPressEventName,
-    handler: () => ?boolean,
-  ): void {
+    eventName,
+    handler,
+  ) {
     const index = _backPressSubscriptions.indexOf(handler);
     if (index !== -1) {
       _backPressSubscriptions.splice(index, 1);

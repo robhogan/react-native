@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @noflow
+ * 
  */
 
 'use strict';
@@ -222,7 +222,7 @@ const MatrixMath = {
     out[15] = b0 * a03 + b1 * a13 + b2 * a23 + b3 * a33;
   },
 
-  determinant(matrix: Array<number>): number {
+  determinant(matrix) {
     const [
       m00,
       m01,
@@ -276,7 +276,7 @@ const MatrixMath = {
    * Formula from:
    * http://www.euclideanspace.com/maths/algebra/matrix/functions/inverse/fourD/index.htm
    */
-  inverse(matrix: Array<number>): Array<number> {
+  inverse(matrix) {
     const det = MatrixMath.determinant(matrix);
     if (!det) {
       return matrix;
@@ -418,7 +418,7 @@ const MatrixMath = {
   /**
    * Turns columns into rows and rows into columns.
    */
-  transpose(m: Array<number>): Array<number> {
+  transpose(m) {
     return [
       m[0],
       m[4],
@@ -442,7 +442,7 @@ const MatrixMath = {
   /**
    * Based on: http://tog.acm.org/resources/GraphicsGems/gemsii/unmatrix.c
    */
-  multiplyVectorByMatrix(v: Array<number>, m: Array<number>): Array<number> {
+  multiplyVectorByMatrix(v, m) {
     const [vx, vy, vz, vw] = v;
     return [
       vx * m[0] + vy * m[4] + vz * m[8] + vw * m[12],
@@ -455,14 +455,14 @@ const MatrixMath = {
   /**
    * From: https://code.google.com/p/webgl-mjs/source/browse/mjs.js
    */
-  v3Length(a: Array<number>): number {
+  v3Length(a) {
     return Math.sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
   },
 
   /**
    * Based on: https://code.google.com/p/webgl-mjs/source/browse/mjs.js
    */
-  v3Normalize(vector: Array<number>, v3Length: number): Array<number> {
+  v3Normalize(vector, v3Length) {
     const im = 1 / (v3Length || MatrixMath.v3Length(vector));
     return [vector[0] * im, vector[1] * im, vector[2] * im];
   },
@@ -480,11 +480,11 @@ const MatrixMath = {
    * http://www.opensource.apple.com/source/WebCore/WebCore-514/platform/graphics/transforms/TransformationMatrix.cpp
    */
   v3Combine(
-    a: Array<number>,
-    b: Array<number>,
-    aScale: number,
-    bScale: number,
-  ): Array<number> {
+    a,
+    b,
+    aScale,
+    bScale,
+  ) {
     return [
       aScale * a[0] + bScale * b[0],
       aScale * a[1] + bScale * b[1],
@@ -496,7 +496,7 @@ const MatrixMath = {
    * From:
    * http://www.opensource.apple.com/source/WebCore/WebCore-514/platform/graphics/transforms/TransformationMatrix.cpp
    */
-  v3Cross(a: Array<number>, b: Array<number>): Array<number> {
+  v3Cross(a, b) {
     return [
       a[1] * b[2] - a[2] * b[1],
       a[2] * b[0] - a[0] * b[2],
@@ -520,7 +520,7 @@ const MatrixMath = {
    * pitch === elevation/attitude === y-axis
    * roll  === bank               === x-axis
    */
-  quaternionToDegreesXYZ(q: Array<number>, matrix, row): Array<number> {
+  quaternionToDegreesXYZ(q, matrix, row) {
     const [qx, qy, qz, qw] = q;
     const qw2 = qw * qw;
     const qx2 = qx * qx;
@@ -552,7 +552,7 @@ const MatrixMath = {
    * Based on:
    * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/round
    */
-  roundTo3Places(n: number): number {
+  roundTo3Places(n) {
     const arr = n.toString().split('e');
     return Math.round(arr[0] + 'e' + (arr[1] ? +arr[1] - 3 : 3)) * 0.001;
   },
@@ -568,7 +568,7 @@ const MatrixMath = {
    * which was based on
    * http://tog.acm.org/resources/GraphicsGems/gemsii/unmatrix.c
    */
-  decomposeMatrix(transformMatrix: Array<number>): ?Object {
+  decomposeMatrix(transformMatrix) {
     invariant(
       transformMatrix.length === 16,
       'Matrix decomposition needs a list of 3d matrix values, received %s',

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @noformat
- * @flow strict-local
+ *  strict-local
  * @generated SignedSource<<7d3d4090dadea2daa09d92e5e66f6e5d>>
  *
  * This file was sync'd from the facebook/react repository.
@@ -14,7 +14,7 @@
 'use strict';
 
 import {ReactNativeViewConfigRegistry} from 'react-native/Libraries/ReactPrivate/ReactNativePrivateInterface';
-import {type ViewConfig} from './ReactNativeTypes';
+import {} from './ReactNativeTypes';
 
 const {register} = ReactNativeViewConfigRegistry;
 
@@ -27,9 +27,9 @@ const {register} = ReactNativeViewConfigRegistry;
  * @private
  */
 const createReactNativeComponentClass = function(
-  name: string,
-  callback: () => ViewConfig,
-): string {
+  name,
+  callback,
+) {
   return register(name, callback);
 };
 

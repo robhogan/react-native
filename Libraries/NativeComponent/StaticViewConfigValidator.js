@@ -4,50 +4,25 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict
+ *  strict
  * @format
  */
 
-import {type ViewConfig} from '../Renderer/shims/ReactNativeTypes';
+import {} from '../Renderer/shims/ReactNativeTypes';
 import {isIgnored} from './ViewConfigIgnore';
 
-export type Difference =
-  | {
-      type: 'missing',
-      path: Array<string>,
-      nativeValue: mixed,
-    }
-  | {
-      type: 'unequal',
-      path: Array<string>,
-      nativeValue: mixed,
-      staticValue: mixed,
-    }
-  | {
-      type: 'unexpected',
-      path: Array<string>,
-      staticValue: mixed,
-    };
 
-export type ValidationResult = ValidResult | InvalidResult;
-type ValidResult = {
-  type: 'valid',
-};
-type InvalidResult = {
-  type: 'invalid',
-  differences: Array<Difference>,
-};
 
 /**
  * During the migration from native view configs to static view configs, this is
  * used to validate that the two are equivalent.
  */
 export function validate(
-  name: string,
-  nativeViewConfig: ViewConfig,
-  staticViewConfig: ViewConfig,
-): ValidationResult {
-  const differences: Array<Difference> = [];
+  name,
+  nativeViewConfig,
+  staticViewConfig,
+) {
+  const differences = [];
   accumulateDifferences(
     differences,
     [],
@@ -76,9 +51,9 @@ export function validate(
 }
 
 export function stringifyValidationResult(
-  name: string,
-  validationResult: InvalidResult,
-): string {
+  name,
+  validationResult,
+) {
   const {differences} = validationResult;
   return [
     `StaticViewConfigValidator: Invalid static view config for '${name}'.`,
@@ -99,11 +74,11 @@ export function stringifyValidationResult(
 }
 
 function accumulateDifferences(
-  differences: Array<Difference>,
-  path: Array<string>,
-  nativeObject: {...},
-  staticObject: {...},
-): void {
+  differences,
+  path,
+  nativeObject,
+  staticObject,
+) {
   for (const nativeKey in nativeObject) {
     const nativeValue = nativeObject[nativeKey];
 
@@ -158,6 +133,6 @@ function accumulateDifferences(
   }
 }
 
-function ifObject(value: mixed): ?{...} {
+function ifObject(value) {
   return typeof value === 'object' && !Array.isArray(value) ? value : null;
 }

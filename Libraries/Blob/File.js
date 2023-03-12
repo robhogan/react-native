@@ -4,13 +4,12 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
 'use strict';
 
-import type {BlobOptions} from './BlobTypes';
 
 const Blob = require('./Blob');
 const invariant = require('invariant');
@@ -23,9 +22,9 @@ class File extends Blob {
    * Constructor for JS consumers.
    */
   constructor(
-    parts: Array<Blob | string>,
-    name: string,
-    options?: BlobOptions,
+    parts,
+    name,
+    options,
   ) {
     invariant(
       parts != null && name != null,
@@ -39,7 +38,7 @@ class File extends Blob {
   /**
    * Name of the file.
    */
-  get name(): string {
+  get name() {
     invariant(this.data.name != null, 'Files must have a name set.');
     return this.data.name;
   }
@@ -47,7 +46,7 @@ class File extends Blob {
   /*
    * Last modified time of the file.
    */
-  get lastModified(): number {
+  get lastModified() {
     return this.data.lastModified || 0;
   }
 }

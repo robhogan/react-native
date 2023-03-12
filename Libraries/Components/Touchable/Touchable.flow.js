@@ -4,13 +4,10 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
-import type {EdgeInsetsProp} from '../../StyleSheet/EdgeInsetsPropType';
-import type {ColorValue} from '../../StyleSheet/StyleSheet';
-import type {PressEvent} from '../../Types/CoreEventTypes';
 
 import * as React from 'react';
 
@@ -165,94 +162,4 @@ import * as React from 'react';
  *
  * @lends Touchable.prototype
  */
-interface TouchableMixinType {
-  /**
-   * Invoked when the item receives focus. Mixers might override this to
-   * visually distinguish the `VisualRect` so that the user knows that it
-   * currently has the focus. Most platforms only support a single element being
-   * focused at a time, in which case there may have been a previously focused
-   * element that was blurred just prior to this. This can be overridden when
-   * using `Touchable.Mixin.withoutDefaultFocusAndBlur`.
-   */
-  touchableHandleFocus: (e: Event) => void;
 
-  /**
-   * Invoked when the item loses focus. Mixers might override this to
-   * visually distinguish the `VisualRect` so that the user knows that it
-   * no longer has focus. Most platforms only support a single element being
-   * focused at a time, in which case the focus may have moved to another.
-   * This can be overridden when using
-   * `Touchable.Mixin.withoutDefaultFocusAndBlur`.
-   */
-  touchableHandleBlur: (e: Event) => void;
-
-  componentDidMount: () => void;
-
-  /**
-   * Clear all timeouts on unmount
-   */
-  componentWillUnmount: () => void;
-
-  /**
-   * It's prefer that mixins determine state in this way, having the class
-   * explicitly mix the state in the one and only `getInitialState` method.
-   *
-   * @return {object} State object to be placed inside of
-   * `this.state.touchable`.
-   */
-  touchableGetInitialState: () => $TEMPORARY$object<{|
-    touchable: $TEMPORARY$object<{|responderID: null, touchState: void|}>,
-  |}>;
-
-  // ==== Hooks to Gesture Responder system ====
-  /**
-   * Must return true if embedded in a native platform scroll view.
-   */
-  touchableHandleResponderTerminationRequest: () => any;
-
-  /**
-   * Must return true to start the process of `Touchable`.
-   */
-  touchableHandleStartShouldSetResponder: () => any;
-
-  /**
-   * Return true to cancel press on long press.
-   */
-  touchableLongPressCancelsPress: () => boolean;
-
-  /**
-   * Place as callback for a DOM element's `onResponderGrant` event.
-   * @param {SyntheticEvent} e Synthetic event from event system.
-   *
-   */
-  touchableHandleResponderGrant: (e: PressEvent) => void;
-
-  /**
-   * Place as callback for a DOM element's `onResponderRelease` event.
-   */
-  touchableHandleResponderRelease: (e: PressEvent) => void;
-
-  /**
-   * Place as callback for a DOM element's `onResponderTerminate` event.
-   */
-  touchableHandleResponderTerminate: (e: PressEvent) => void;
-
-  /**
-   * Place as callback for a DOM element's `onResponderMove` event.
-   */
-  touchableHandleResponderMove: (e: PressEvent) => void;
-
-  withoutDefaultFocusAndBlur: {...};
-}
-
-export type TouchableType = {
-  Mixin: TouchableMixinType,
-  /**
-   * Renders a debugging overlay to visualize touch target with hitSlop (might not work on Android).
-   */
-  renderDebugView: ({
-    color: ColorValue,
-    hitSlop: EdgeInsetsProp,
-    ...
-  }) => null | React.Node,
-};

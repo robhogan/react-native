@@ -5,22 +5,21 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  */
 
 'use strict';
 
-import type {____FontVariantArray_Internal} from './StyleSheetTypes';
 
 function processFontVariant(
-  fontVariant: ____FontVariantArray_Internal | string,
-): ?____FontVariantArray_Internal {
+  fontVariant,
+) {
   if (Array.isArray(fontVariant)) {
     return fontVariant;
   }
 
   // $FlowFixMe[incompatible-type]
-  const match: ?____FontVariantArray_Internal = fontVariant
+  const match = fontVariant
     .split(' ')
     .filter(Boolean);
 

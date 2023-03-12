@@ -4,39 +4,31 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
 'use strict';
 
-import type {FrameMetricProps} from './VirtualizedListProps';
 
-export type FillRateInfo = Info;
 
 class Info {
-  any_blank_count: number = 0;
-  any_blank_ms: number = 0;
-  any_blank_speed_sum: number = 0;
-  mostly_blank_count: number = 0;
-  mostly_blank_ms: number = 0;
-  pixels_blank: number = 0;
-  pixels_sampled: number = 0;
-  pixels_scrolled: number = 0;
-  total_time_spent: number = 0;
-  sample_count: number = 0;
+  any_blank_count = 0;
+  any_blank_ms = 0;
+  any_blank_speed_sum = 0;
+  mostly_blank_count = 0;
+  mostly_blank_ms = 0;
+  pixels_blank = 0;
+  pixels_sampled = 0;
+  pixels_scrolled = 0;
+  total_time_spent = 0;
+  sample_count = 0;
 }
 
-type FrameMetrics = {
-  inLayout?: boolean,
-  length: number,
-  offset: number,
-  ...
-};
 
 const DEBUG = false;
 
-let _listeners: Array<(Info) => void> = [];
+let _listeners = [];
 let _minSampleCount = 10;
 let _sampleRate = DEBUG ? 1 : null;
 
@@ -49,17 +41,14 @@ let _sampleRate = DEBUG ? 1 : null;
  * `SceneTracker.getActiveScene` to determine the context of the events.
  */
 class FillRateHelper {
-  _anyBlankStartTime: ?number = null;
+  _anyBlankStartTime = null;
   _enabled = false;
-  _getFrameMetrics: (index: number, props: FrameMetricProps) => ?FrameMetrics;
-  _info: Info = new Info();
-  _mostlyBlankStartTime: ?number = null;
-  _samplesStartTime: ?number = null;
+  _getFrameMetrics;
+  _info = new Info();
+  _mostlyBlankStartTime = null;
+  _samplesStartTime = null;
 
-  static addListener(callback: FillRateInfo => void): {
-    remove: () => void,
-    ...
-  } {
+  static addListener(callback) {
     if (_sampleRate === null) {
       console.warn('Call `FillRateHelper.setSampleRate` before `addListener`.');
     }
@@ -71,16 +60,16 @@ class FillRateHelper {
     };
   }
 
-  static setSampleRate(sampleRate: number) {
+  static setSampleRate(sampleRate) {
     _sampleRate = sampleRate;
   }
 
-  static setMinSampleCount(minSampleCount: number) {
+  static setMinSampleCount(minSampleCount) {
     _minSampleCount = minSampleCount;
   }
 
   constructor(
-    getFrameMetrics: (index: number, props: FrameMetricProps) => ?FrameMetrics,
+    getFrameMetrics,
   ) {
     this._getFrameMetrics = getFrameMetrics;
     this._enabled = (_sampleRate || 0) > Math.random();
@@ -110,7 +99,7 @@ class FillRateHelper {
       return;
     }
     const total_time_spent = global.performance.now() - start;
-    const info: any = {
+    const info = {
       ...this._info,
       total_time_spent,
     };
@@ -138,24 +127,10 @@ class FillRateHelper {
   }
 
   computeBlankness(
-    props: {
-      ...FrameMetricProps,
-      initialNumToRender?: ?number,
-      ...
-    },
-    cellsAroundViewport: {
-      first: number,
-      last: number,
-      ...
-    },
-    scrollMetrics: {
-      dOffset: number,
-      offset: number,
-      velocity: number,
-      visibleLength: number,
-      ...
-    },
-  ): number {
+    props,
+    cellsAroundViewport,
+    scrollMetrics,
+  ) {
     if (
       !this._enabled ||
       props.getItemCount(props.data) === 0 ||
@@ -238,7 +213,7 @@ class FillRateHelper {
     return blankness;
   }
 
-  enabled(): boolean {
+  enabled() {
     return this._enabled;
   }
 

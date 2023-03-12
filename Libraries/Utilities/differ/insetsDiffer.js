@@ -5,18 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  */
 
 'use strict';
 
-type Inset = {
-  top: ?number,
-  left: ?number,
-  right: ?number,
-  bottom: ?number,
-  ...
-};
 
 const dummyInsets = {
   top: undefined,
@@ -25,7 +18,7 @@ const dummyInsets = {
   bottom: undefined,
 };
 
-const insetsDiffer = function (one: Inset, two: Inset): boolean {
+const insetsDiffer = function (one, two) {
   one = one || dummyInsets;
   two = two || dummyInsets;
   return (

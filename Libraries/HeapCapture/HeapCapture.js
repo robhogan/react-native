@@ -5,13 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict
+ *  strict
  */
 
 import NativeJSCHeapCapture from './NativeJSCHeapCapture';
 
 const HeapCapture = {
-  captureHeap: function (path: string) {
+  captureHeap: function (path) {
     let error = null;
     try {
       global.nativeCaptureHeap(path);

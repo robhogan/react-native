@@ -4,16 +4,15 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict
+ *  strict
  * @format
  */
 
 'use strict';
 
 const dummySize = {width: undefined, height: undefined};
-type Size = {width: ?number, height: ?number};
 
-const sizesDiffer = function (one: Size, two: Size): boolean {
+const sizesDiffer = function (one, two) {
   const defaultedOne = one || dummySize;
   const defaultedTwo = two || dummySize;
   return (

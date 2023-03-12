@@ -4,14 +4,10 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
-import type {ImageStyleProp} from '../StyleSheet/StyleSheet';
-import type {RootTag} from '../Types/RootTagTypes';
-import type {ImageIOS} from './Image.flow';
-import type {ImageProps as ImagePropsType} from './ImageProps';
 
 import flattenStyle from '../StyleSheet/flattenStyle';
 import StyleSheet from '../StyleSheet/StyleSheet';
@@ -25,9 +21,9 @@ import resolveAssetSource from './resolveAssetSource';
 import * as React from 'react';
 
 function getSize(
-  uri: string,
-  success: (width: number, height: number) => void,
-  failure?: (error: any) => void,
+  uri,
+  success,
+  failure,
 ) {
   NativeImageLoaderIOS.getSize(uri)
     .then(([width, height]) => success(width, height))
@@ -40,11 +36,11 @@ function getSize(
 }
 
 function getSizeWithHeaders(
-  uri: string,
-  headers: {[string]: string, ...},
-  success: (width: number, height: number) => void,
-  failure?: (error: any) => void,
-): any {
+  uri,
+  headers,
+  success,
+  failure,
+) {
   return NativeImageLoaderIOS.getSizeWithHeaders(uri, headers)
     .then(function (sizes) {
       success(sizes.width, sizes.height);
@@ -58,10 +54,10 @@ function getSizeWithHeaders(
 }
 
 function prefetchWithMetadata(
-  url: string,
-  queryRootName: string,
-  rootTag?: ?RootTag,
-): any {
+  url,
+  queryRootName,
+  rootTag,
+) {
   if (NativeImageLoaderIOS.prefetchImageWithMetadata) {
     // number params like rootTag cannot be nullable before TurboModules is available
     return NativeImageLoaderIOS.prefetchImageWithMetadata(
@@ -76,24 +72,16 @@ function prefetchWithMetadata(
   }
 }
 
-function prefetch(url: string): any {
+function prefetch(url) {
   return NativeImageLoaderIOS.prefetchImage(url);
 }
 
 async function queryCache(
-  urls: Array<string>,
-): Promise<{[string]: 'memory' | 'disk' | 'disk/memory', ...}> {
+  urls,
+) {
   return await NativeImageLoaderIOS.queryCache(urls);
 }
 
-export type ImageComponentStatics = $ReadOnly<{|
-  getSize: typeof getSize,
-  getSizeWithHeaders: typeof getSizeWithHeaders,
-  prefetch: typeof prefetch,
-  prefetchWithMetadata: typeof prefetchWithMetadata,
-  queryCache: typeof queryCache,
-  resolveAssetSource: typeof resolveAssetSource,
-|}>;
 
 /**
  * A React component for displaying different types of images,
@@ -104,7 +92,7 @@ export type ImageComponentStatics = $ReadOnly<{|
  */
 /* $FlowFixMe[missing-local-annot] The type annotation(s) required by Flow's
  * LTI update could not be added via codemod */
-const BaseImage = (props: ImagePropsType, forwardedRef) => {
+const BaseImage = (props, forwardedRef) => {
   const source = getImageSourcesFromImageProps(props) || {
     uri: undefined,
     width: undefined,
@@ -112,7 +100,7 @@ const BaseImage = (props: ImagePropsType, forwardedRef) => {
   };
 
   let sources;
-  let style: ImageStyleProp;
+  let style;
   if (Array.isArray(source)) {
     style = flattenStyle([styles.base, props.style]) || {};
     sources = source;
@@ -185,10 +173,7 @@ const BaseImage = (props: ImagePropsType, forwardedRef) => {
   );
 };
 
-const ImageForwardRef = React.forwardRef<
-  ImagePropsType,
-  React.ElementRef<typeof ImageViewNativeComponent>,
->(BaseImage);
+const ImageForwardRef = React.forwardRef(BaseImage);
 
 let Image = ImageForwardRef;
 if (ImageInjection.unstable_createImageComponent != null) {
@@ -272,4 +257,4 @@ const styles = StyleSheet.create({
   },
 });
 
-module.exports = ((Image: any): ImageIOS);
+module.exports = ((Image));

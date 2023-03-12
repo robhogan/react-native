@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
 'use strict';
 
 module.exports = {
-  showMessage(message: string, type: 'load' | 'refresh') {},
+  showMessage(message, type) {},
   hide() {},
 };

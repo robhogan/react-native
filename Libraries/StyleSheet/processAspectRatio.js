@@ -5,14 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  */
 
 'use strict';
 
 const invariant = require('invariant');
 
-function processAspectRatio(aspectRatio?: number | string): ?number {
+function processAspectRatio(aspectRatio) {
   if (typeof aspectRatio === 'number') {
     return aspectRatio;
   }

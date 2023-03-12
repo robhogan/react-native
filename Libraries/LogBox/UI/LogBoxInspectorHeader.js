@@ -4,12 +4,10 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
-import type {ImageSource} from '../../Image/ImageSource';
-import type {LogLevel} from '../Data/LogBoxLog';
 
 import StatusBar from '../../Components/StatusBar/StatusBar';
 import View from '../../Components/View/View';
@@ -20,14 +18,8 @@ import Platform from '../../Utilities/Platform';
 import LogBoxButton from './LogBoxButton';
 import * as LogBoxStyle from './LogBoxStyle';
 import * as React from 'react';
-type Props = $ReadOnly<{|
-  onSelectIndex: (selectedIndex: number) => void,
-  selectedIndex: number,
-  total: number,
-  level: LogLevel,
-|}>;
 
-function LogBoxInspectorHeader(props: Props): React.Node {
+function LogBoxInspectorHeader(props) {
   if (props.level === 'syntax') {
     return (
       <View style={[styles.safeArea, styles[props.level]]}>
@@ -70,7 +62,7 @@ function LogBoxInspectorHeader(props: Props): React.Node {
   );
 }
 
-const backgroundForLevel = (level: LogLevel) =>
+const backgroundForLevel = (level) =>
   ({
     warn: {
       default: 'transparent',
@@ -91,13 +83,8 @@ const backgroundForLevel = (level: LogLevel) =>
   }[level]);
 
 function LogBoxInspectorHeaderButton(
-  props: $ReadOnly<{|
-    disabled: boolean,
-    image: ImageSource,
-    level: LogLevel,
-    onPress?: ?() => void,
-  |}>,
-): React.Node {
+  props,
+) {
   return (
     <LogBoxButton
       backgroundColor={backgroundForLevel(props.level)}

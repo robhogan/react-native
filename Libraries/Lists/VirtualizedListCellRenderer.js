@@ -4,14 +4,10 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
-import type {ViewStyleProp} from '../StyleSheet/StyleSheet';
-import type {FocusEvent, LayoutEvent} from '../Types/CoreEventTypes';
-import type FillRateHelper from './FillRateHelper';
-import type {RenderItemType} from './VirtualizedListProps';
 
 import View from '../Components/View/View';
 import StyleSheet from '../StyleSheet/StyleSheet';
@@ -19,55 +15,11 @@ import {VirtualizedListCellContextProvider} from './VirtualizedListContext.js';
 import invariant from 'invariant';
 import * as React from 'react';
 
-export type Props<ItemT> = {
-  CellRendererComponent?: ?React.ComponentType<any>,
-  ItemSeparatorComponent: ?React.ComponentType<
-    any | {highlighted: boolean, leadingItem: ?ItemT},
-  >,
-  ListItemComponent?: ?(React.ComponentType<any> | React.Element<any>),
-  cellKey: string,
-  debug?: ?boolean,
-  fillRateHelper: FillRateHelper,
-  getItemLayout?: (
-    data: any,
-    index: number,
-  ) => {
-    length: number,
-    offset: number,
-    index: number,
-    ...
-  },
-  horizontal: ?boolean,
-  index: number,
-  inversionStyle: ViewStyleProp,
-  item: ItemT,
-  onCellLayout: (event: LayoutEvent, cellKey: string, index: number) => void,
-  onCellFocusCapture?: (event: FocusEvent) => void,
-  onUnmount: (cellKey: string) => void,
-  onUpdateSeparators: (
-    cellKeys: Array<?string>,
-    props: $Shape<SeparatorProps<ItemT>>,
-  ) => void,
-  prevCellKey: ?string,
-  renderItem?: ?RenderItemType<ItemT>,
-  ...
-};
 
-type SeparatorProps<ItemT> = $ReadOnly<{|
-  highlighted: boolean,
-  leadingItem: ?ItemT,
-|}>;
 
-type State<ItemT> = {
-  separatorProps: SeparatorProps<ItemT>,
-  ...
-};
 
-export default class CellRenderer<ItemT> extends React.Component<
-  Props<ItemT>,
-  State<ItemT>,
-> {
-  state: State<ItemT> = {
+export default class CellRenderer extends React.Component {
+  state = {
     separatorProps: {
       highlighted: false,
       leadingItem: this.props.item,
@@ -75,9 +27,9 @@ export default class CellRenderer<ItemT> extends React.Component<
   };
 
   static getDerivedStateFromProps(
-    props: Props<ItemT>,
-    prevState: State<ItemT>,
-  ): ?State<ItemT> {
+    props,
+    prevState,
+  ) {
     return {
       separatorProps: {
         ...prevState.separatorProps,
@@ -103,8 +55,8 @@ export default class CellRenderer<ItemT> extends React.Component<
       });
     },
     updateProps: (
-      select: 'leading' | 'trailing',
-      newProps: SeparatorProps<ItemT>,
+      select,
+      newProps,
     ) => {
       const {cellKey, prevCellKey} = this.props;
       this.props.onUpdateSeparators(
@@ -114,7 +66,7 @@ export default class CellRenderer<ItemT> extends React.Component<
     },
   };
 
-  updateSeparatorProps(newProps: SeparatorProps<ItemT>) {
+  updateSeparatorProps(newProps) {
     this.setState(state => ({
       separatorProps: {...state.separatorProps, ...newProps},
     }));
@@ -124,7 +76,7 @@ export default class CellRenderer<ItemT> extends React.Component<
     this.props.onUnmount(this.props.cellKey);
   }
 
-  _onLayout = (nativeEvent: LayoutEvent): void => {
+  _onLayout = (nativeEvent) => {
     this.props.onCellLayout &&
       this.props.onCellLayout(
         nativeEvent,
@@ -134,11 +86,11 @@ export default class CellRenderer<ItemT> extends React.Component<
   };
 
   _renderElement(
-    renderItem: ?RenderItemType<ItemT>,
-    ListItemComponent: any,
-    item: ItemT,
-    index: number,
-  ): React.Node {
+    renderItem,
+    ListItemComponent,
+    item,
+    index,
+  ) {
     if (renderItem && ListItemComponent) {
       console.warn(
         'VirtualizedList: Both ListItemComponent and renderItem props are present. ListItemComponent will take' +
@@ -174,7 +126,7 @@ export default class CellRenderer<ItemT> extends React.Component<
     );
   }
 
-  render(): React.Node {
+  render() {
     const {
       CellRendererComponent,
       ItemSeparatorComponent,

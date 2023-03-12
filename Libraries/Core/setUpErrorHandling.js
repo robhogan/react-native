@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
@@ -19,7 +19,7 @@ ExceptionsManager.installConsoleErrorReporter();
 
 // Set up error handler
 if (!global.__fbDisableExceptionsManager) {
-  const handleError = (e: mixed, isFatal: boolean) => {
+  const handleError = (e, isFatal) => {
     try {
       ExceptionsManager.handleException(e, isFatal);
     } catch (ee) {

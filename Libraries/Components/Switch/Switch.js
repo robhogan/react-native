@@ -4,14 +4,11 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  * @generate-docs
  */
 
-import type {ColorValue} from '../../StyleSheet/StyleSheet';
-import type {SyntheticEvent} from '../../Types/CoreEventTypes';
-import type {ViewProps} from '../View/ViewPropTypes';
 
 import StyleSheet from '../../StyleSheet/StyleSheet';
 import Platform from '../../Utilities/Platform';
@@ -24,68 +21,7 @@ import SwitchNativeComponent, {
 } from './SwitchNativeComponent';
 import * as React from 'react';
 
-type SwitchChangeEvent = SyntheticEvent<
-  $ReadOnly<{|
-    value: boolean,
-    target: number,
-  |}>,
->;
 
-export type Props = $ReadOnly<{|
-  ...ViewProps,
-
-  /**
-    If true the user won't be able to toggle the switch.
-
-    @default false
-   */
-  disabled?: ?boolean,
-
-  /**
-    The value of the switch. If true the switch will be turned on.
-
-    @default false
-   */
-  value?: ?boolean,
-
-  /**
-    Color of the foreground switch grip. If this is set on iOS, the switch grip will lose its drop shadow.
-   */
-  thumbColor?: ?ColorValue,
-
-  /**
-    Custom colors for the switch track.
-
-    _iOS_: When the switch value is false, the track shrinks into the border. If you want to change the
-    color of the background exposed by the shrunken track, use
-     [`ios_backgroundColor`](https://reactnative.dev/docs/switch#ios_backgroundColor).
-   */
-  trackColor?: ?$ReadOnly<{|
-    false?: ?ColorValue,
-    true?: ?ColorValue,
-  |}>,
-
-  /**
-    On iOS, custom color for the background. This background color can be
-    seen either when the switch value is false or when the switch is
-    disabled (and the switch is translucent).
-   */
-  ios_backgroundColor?: ?ColorValue,
-
-  /**
-    Invoked when the user tries to change the value of the switch. Receives
-    the change event as an argument. If you want to only receive the new
-    value, use `onValueChange` instead.
-   */
-  onChange?: ?(event: SwitchChangeEvent) => Promise<void> | void,
-
-  /**
-    Invoked when the user tries to change the value of the switch. Receives
-    the new value as an argument. If you want to instead receive an event,
-    use `onChange`.
-   */
-  onValueChange?: ?(value: boolean) => Promise<void> | void,
-|}>;
 const returnsFalse = () => false;
 const returnsTrue = () => true;
 
@@ -131,12 +67,7 @@ const returnsTrue = () => true;
   ```
  */
 
-const SwitchWithForwardedRef: React.AbstractComponent<
-  Props,
-  React.ElementRef<
-    typeof SwitchNativeComponent | typeof AndroidSwitchNativeComponent,
-  >,
-> = React.forwardRef(function Switch(props, forwardedRef): React.Node {
+const SwitchWithForwardedRef = React.forwardRef(function Switch(props, forwardedRef) {
   const {
     disabled,
     ios_backgroundColor,
@@ -151,15 +82,13 @@ const SwitchWithForwardedRef: React.AbstractComponent<
   const trackColorForFalse = trackColor?.false;
   const trackColorForTrue = trackColor?.true;
 
-  const nativeSwitchRef = React.useRef<React.ElementRef<
-    typeof SwitchNativeComponent | typeof AndroidSwitchNativeComponent,
-  > | null>(null);
+  const nativeSwitchRef = React.useRef(null);
 
   const ref = useMergeRefs(nativeSwitchRef, forwardedRef);
 
   const [native, setNative] = React.useState({value: null});
 
-  const handleChange = (event: SwitchChangeEvent) => {
+  const handleChange = (event) => {
     onChange?.(event);
     onValueChange?.(event.nativeEvent.value);
     setNative({value: event.nativeEvent.value});

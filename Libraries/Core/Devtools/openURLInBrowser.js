@@ -5,14 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict
+ *  strict
  */
 
 'use strict';
 
 const getDevServer = require('./getDevServer');
 
-function openURLInBrowser(url: string) {
+function openURLInBrowser(url) {
   fetch(getDevServer().url + 'open-url', {
     method: 'POST',
     body: JSON.stringify({url}),

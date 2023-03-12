@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict
+ *  strict
  */
 
 'use strict';
@@ -18,8 +18,7 @@
 
 /* eslint-disable no-unused-vars */
 
-declare var __DEV__: boolean;
 
-declare var __REACT_DEVTOOLS_GLOBAL_HOOK__: any; /*?{
+ /*?{
   inject: ?((stuff: Object) => void)
 };*/

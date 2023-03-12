@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
@@ -13,7 +13,7 @@ import PixelRatio from '../Utilities/PixelRatio';
 let cacheBreaker;
 let warnIfCacheBreakerUnset = true;
 
-export function pickScale(scales: Array<number>, deviceScale?: number): number {
+export function pickScale(scales, deviceScale) {
   if (deviceScale == null) {
     deviceScale = PixelRatio.get();
   }
@@ -30,11 +30,11 @@ export function pickScale(scales: Array<number>, deviceScale?: number): number {
   return scales[scales.length - 1] || 1;
 }
 
-export function setUrlCacheBreaker(appendage: string) {
+export function setUrlCacheBreaker(appendage) {
   cacheBreaker = appendage;
 }
 
-export function getUrlCacheBreaker(): string {
+export function getUrlCacheBreaker() {
   if (cacheBreaker == null) {
     if (__DEV__ && warnIfCacheBreakerUnset) {
       warnIfCacheBreakerUnset = false;

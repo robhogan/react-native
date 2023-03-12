@@ -5,15 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  */
 
-import type {IPerformanceLogger} from '../Utilities/createPerformanceLogger';
 
 import GlobalPerformanceLogger from '../Utilities/GlobalPerformanceLogger';
 import PerformanceLoggerContext from '../Utilities/PerformanceLoggerContext';
 import AppContainer from './AppContainer';
-import DisplayMode, {type DisplayModeType} from './DisplayMode';
+import DisplayMode, {} from './DisplayMode';
 import getCachedComponentWithDebugName from './getCachedComponentWithDebugName';
 import * as Renderer from './RendererProxy';
 import invariant from 'invariant';
@@ -22,30 +21,26 @@ import * as React from 'react';
 // require BackHandler so it sets the default handler that exits the app if no listeners respond
 import '../Utilities/BackHandler';
 
-type OffscreenType = React.AbstractComponent<{
-  mode: 'visible' | 'hidden',
-  children: React.Node,
-}>;
 
-export default function renderApplication<Props: Object>(
-  RootComponent: React.ComponentType<Props>,
-  initialProps: Props,
-  rootTag: any,
-  WrapperComponent?: ?React.ComponentType<any>,
-  fabric?: boolean,
-  showArchitectureIndicator?: boolean,
-  scopedPerformanceLogger?: IPerformanceLogger,
-  isLogBox?: boolean,
-  debugName?: string,
-  displayMode?: ?DisplayModeType,
-  useConcurrentRoot?: boolean,
-  useOffscreen?: boolean,
+export default function renderApplication(
+  RootComponent,
+  initialProps,
+  rootTag,
+  WrapperComponent,
+  fabric,
+  showArchitectureIndicator,
+  scopedPerformanceLogger,
+  isLogBox,
+  debugName,
+  displayMode,
+  useConcurrentRoot,
+  useOffscreen,
 ) {
   invariant(rootTag, 'Expect to have a valid rootTag, instead got ', rootTag);
 
   const performanceLogger = scopedPerformanceLogger ?? GlobalPerformanceLogger;
 
-  let renderable: React.MixedElement = (
+  let renderable = (
     <PerformanceLoggerContext.Provider value={performanceLogger}>
       <AppContainer
         rootTag={rootTag}
@@ -73,7 +68,7 @@ export default function renderApplication<Props: Object>(
   if (useOffscreen && displayMode != null) {
     // $FlowFixMe[incompatible-type]
     // $FlowFixMe[prop-missing]
-    const Offscreen: OffscreenType = React.unstable_Offscreen;
+    const Offscreen = React.unstable_Offscreen;
 
     renderable = (
       <Offscreen

@@ -5,17 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  */
 
 'use strict';
 
-import type {ElementRef, Ref} from 'react';
 
-type Args = $ReadOnly<{|
-  getForwardedRef: () => ?Ref<any>,
-  setLocalRef: (ref: ElementRef<any>) => mixed,
-|}>;
 
 /**
  * This is a helper function for when a component needs to be able to forward a ref
@@ -51,8 +46,8 @@ type Args = $ReadOnly<{|
 function setAndForwardRef({
   getForwardedRef,
   setLocalRef,
-}: Args): (ref: ElementRef<any>) => void {
-  return function forwardRef(ref: ElementRef<any>) {
+}) {
+  return function forwardRef(ref) {
     const forwardedRef = getForwardedRef();
 
     setLocalRef(ref);

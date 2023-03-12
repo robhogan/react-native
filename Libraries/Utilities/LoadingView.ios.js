@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
 import processColor from '../StyleSheet/processColor';
@@ -13,7 +13,7 @@ import Appearance from './Appearance';
 import NativeDevLoadingView from './NativeDevLoadingView';
 
 module.exports = {
-  showMessage(message: string, type: 'load' | 'refresh') {
+  showMessage(message, type) {
     if (NativeDevLoadingView) {
       if (type === 'refresh') {
         const backgroundColor = processColor('#2584e8');

@@ -4,30 +4,17 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict
+ *  strict
  * @format
  */
 
-import type {IgnorePattern, LogData} from './Data/LogBoxData';
-import type {ExtendedExceptionData} from './Data/parseLogBoxLog';
 
 import Platform from '../Utilities/Platform';
 import RCTLog from '../Utilities/RCTLog';
 
-export type {LogData, ExtendedExceptionData, IgnorePattern};
 
 let LogBox;
 
-interface ILogBox {
-  install(): void;
-  uninstall(): void;
-  isInstalled(): boolean;
-  ignoreLogs($ReadOnlyArray<IgnorePattern>): void;
-  ignoreAllLogs(?boolean): void;
-  clearAllLogs(): void;
-  addLog(log: LogData): void;
-  addException(error: ExtendedExceptionData): void;
-}
 
 /**
  * LogBox displays logs in the app.
@@ -39,12 +26,12 @@ if (__DEV__) {
   let originalConsoleError;
   let originalConsoleWarn;
   let consoleErrorImpl;
-  let consoleWarnImpl: (...args: Array<mixed>) => void;
+  let consoleWarnImpl;
 
-  let isLogBoxInstalled: boolean = false;
+  let isLogBoxInstalled = false;
 
   LogBox = {
-    install(): void {
+    install() {
       if (isLogBoxInstalled) {
         return;
       }
@@ -84,7 +71,7 @@ if (__DEV__) {
       });
     },
 
-    uninstall(): void {
+    uninstall() {
       if (!isLogBoxInstalled) {
         return;
       }
@@ -99,46 +86,46 @@ if (__DEV__) {
       consoleWarnImpl = originalConsoleWarn;
     },
 
-    isInstalled(): boolean {
+    isInstalled() {
       return isLogBoxInstalled;
     },
 
-    ignoreLogs(patterns: $ReadOnlyArray<IgnorePattern>): void {
+    ignoreLogs(patterns) {
       LogBoxData.addIgnorePatterns(patterns);
     },
 
-    ignoreAllLogs(value?: ?boolean): void {
+    ignoreAllLogs(value) {
       LogBoxData.setDisabled(value == null ? true : value);
     },
 
-    clearAllLogs(): void {
+    clearAllLogs() {
       LogBoxData.clear();
     },
 
-    addLog(log: LogData): void {
+    addLog(log) {
       if (isLogBoxInstalled) {
         LogBoxData.addLog(log);
       }
     },
 
-    addException(error: ExtendedExceptionData): void {
+    addException(error) {
       if (isLogBoxInstalled) {
         LogBoxData.addException(error);
       }
     },
   };
 
-  const isRCTLogAdviceWarning = (...args: Array<mixed>) => {
+  const isRCTLogAdviceWarning = (...args) => {
     // RCTLogAdvice is a native logging function designed to show users
     // a message in the console, but not show it to them in Logbox.
     return typeof args[0] === 'string' && args[0].startsWith('(ADVICE)');
   };
 
-  const isWarningModuleWarning = (...args: Array<mixed>) => {
+  const isWarningModuleWarning = (...args) => {
     return typeof args[0] === 'string' && args[0].startsWith('Warning: ');
   };
 
-  const registerWarning = (...args: Array<mixed>): void => {
+  const registerWarning = (...args) => {
     // Let warnings within LogBox itself fall through.
     if (LogBoxData.isLogBoxErrorMessage(String(args[0]))) {
       originalConsoleError(...args);
@@ -168,7 +155,7 @@ if (__DEV__) {
 
   /* $FlowFixMe[missing-local-annot] The type annotation(s) required by Flow's
    * LTI update could not be added via codemod */
-  const registerError = (...args): void => {
+  const registerError = (...args) => {
     // Let errors within LogBox itself fall through.
     if (LogBoxData.isLogBoxErrorMessage(args[0])) {
       originalConsoleError(...args);
@@ -224,38 +211,38 @@ if (__DEV__) {
   };
 } else {
   LogBox = {
-    install(): void {
+    install() {
       // Do nothing.
     },
 
-    uninstall(): void {
+    uninstall() {
       // Do nothing.
     },
 
-    isInstalled(): boolean {
+    isInstalled() {
       return false;
     },
 
-    ignoreLogs(patterns: $ReadOnlyArray<IgnorePattern>): void {
+    ignoreLogs(patterns) {
       // Do nothing.
     },
 
-    ignoreAllLogs(value?: ?boolean): void {
+    ignoreAllLogs(value) {
       // Do nothing.
     },
 
-    clearAllLogs(): void {
+    clearAllLogs() {
       // Do nothing.
     },
 
-    addLog(log: LogData): void {
+    addLog(log) {
       // Do nothing.
     },
 
-    addException(error: ExtendedExceptionData): void {
+    addException(error) {
       // Do nothing.
     },
   };
 }
 
-module.exports = (LogBox: ILogBox);
+module.exports = (LogBox);

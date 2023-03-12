@@ -5,10 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  */
 
-import type Blob from './Blob';
 
 import NativeBlobModule from './NativeBlobModule';
 
@@ -54,39 +53,39 @@ if (
 // Small subset from whatwg-url: https://github.com/jsdom/whatwg-url/tree/master/src
 // The reference code bloat comes from Unicode issues with URLs, so those won't work here.
 export class URLSearchParams {
-  _searchParams: Array<Array<string>> = [];
+  _searchParams = [];
 
-  constructor(params: any) {
+  constructor(params) {
     if (typeof params === 'object') {
       Object.keys(params).forEach(key => this.append(key, params[key]));
     }
   }
 
-  append(key: string, value: string): void {
+  append(key, value) {
     this._searchParams.push([key, value]);
   }
 
-  delete(name: string): void {
+  delete(name) {
     throw new Error('URLSearchParams.delete is not implemented');
   }
 
-  get(name: string): void {
+  get(name) {
     throw new Error('URLSearchParams.get is not implemented');
   }
 
-  getAll(name: string): void {
+  getAll(name) {
     throw new Error('URLSearchParams.getAll is not implemented');
   }
 
-  has(name: string): void {
+  has(name) {
     throw new Error('URLSearchParams.has is not implemented');
   }
 
-  set(name: string, value: string): void {
+  set(name, value) {
     throw new Error('URLSearchParams.set is not implemented');
   }
 
-  sort(): void {
+  sort() {
     throw new Error('URLSearchParams.sort is not implemented');
   }
 
@@ -96,7 +95,7 @@ export class URLSearchParams {
     return this._searchParams[Symbol.iterator]();
   }
 
-  toString(): string {
+  toString() {
     if (this._searchParams.length === 0) {
       return '';
     }
@@ -113,7 +112,7 @@ export class URLSearchParams {
   }
 }
 
-function validateBaseUrl(url: string) {
+function validateBaseUrl(url) {
   // from this MIT-licensed gist: https://gist.github.com/dperini/729294
   return /^(?:(?:(?:https?|ftp):)?\/\/)(?:(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z0-9\u00a1-\uffff][a-z0-9\u00a1-\uffff_-]{0,62})?[a-z0-9\u00a1-\uffff]\.)*(?:[a-z\u00a1-\uffff]{2,}\.?))(?::\d{2,5})?(?:[/?#]\S*)?$/.test(
     url,
@@ -121,22 +120,22 @@ function validateBaseUrl(url: string) {
 }
 
 export class URL {
-  _url: string;
+  _url;
   _searchParamsInstance = null;
 
-  static createObjectURL(blob: Blob): string {
+  static createObjectURL(blob) {
     if (BLOB_URL_PREFIX === null) {
       throw new Error('Cannot create URL for blob!');
     }
     return `${BLOB_URL_PREFIX}${blob.data.blobId}?offset=${blob.data.offset}&size=${blob.size}`;
   }
 
-  static revokeObjectURL(url: string) {
+  static revokeObjectURL(url) {
     // Do nothing.
   }
 
   // $FlowFixMe[missing-local-annot]
-  constructor(url: string, base: string | URL) {
+  constructor(url, base) {
     let baseUrl = null;
     if (!base || validateBaseUrl(url)) {
       this._url = url;
@@ -165,58 +164,58 @@ export class URL {
     }
   }
 
-  get hash(): string {
+  get hash() {
     throw new Error('URL.hash is not implemented');
   }
 
-  get host(): string {
+  get host() {
     throw new Error('URL.host is not implemented');
   }
 
-  get hostname(): string {
+  get hostname() {
     throw new Error('URL.hostname is not implemented');
   }
 
-  get href(): string {
+  get href() {
     return this.toString();
   }
 
-  get origin(): string {
+  get origin() {
     throw new Error('URL.origin is not implemented');
   }
 
-  get password(): string {
+  get password() {
     throw new Error('URL.password is not implemented');
   }
 
-  get pathname(): string {
+  get pathname() {
     throw new Error('URL.pathname not implemented');
   }
 
-  get port(): string {
+  get port() {
     throw new Error('URL.port is not implemented');
   }
 
-  get protocol(): string {
+  get protocol() {
     throw new Error('URL.protocol is not implemented');
   }
 
-  get search(): string {
+  get search() {
     throw new Error('URL.search is not implemented');
   }
 
-  get searchParams(): URLSearchParams {
+  get searchParams() {
     if (this._searchParamsInstance == null) {
       this._searchParamsInstance = new URLSearchParams();
     }
     return this._searchParamsInstance;
   }
 
-  toJSON(): string {
+  toJSON() {
     return this.toString();
   }
 
-  toString(): string {
+  toString() {
     if (this._searchParamsInstance === null) {
       return this._url;
     }
@@ -225,7 +224,7 @@ export class URL {
     return this._url + separator + instanceString;
   }
 
-  get username(): string {
+  get username() {
     throw new Error('URL.username is not implemented');
   }
 }

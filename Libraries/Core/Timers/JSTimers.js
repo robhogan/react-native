@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  */
 
 import NativeTiming from './NativeTiming';
@@ -20,12 +20,6 @@ const invariant = require('invariant');
  * callback.
  */
 
-export type JSTimerType =
-  | 'setTimeout'
-  | 'setInterval'
-  | 'requestAnimationFrame'
-  | 'queueReactNativeMicrotask'
-  | 'requestIdleCallback';
 
 // These timing constants should be kept in sync with the ones in native ios and
 // android `RCTTiming` module.
@@ -33,20 +27,20 @@ const FRAME_DURATION = 1000 / 60;
 const IDLE_CALLBACK_FRAME_DEADLINE = 1;
 
 // Parallel arrays
-const callbacks: Array<?Function> = [];
-const types: Array<?JSTimerType> = [];
-const timerIDs: Array<?number> = [];
-let reactNativeMicrotasks: Array<number> = [];
-let requestIdleCallbacks: Array<number> = [];
-const requestIdleCallbackTimeouts: {[number]: number, ...} = {};
+const callbacks = [];
+const types = [];
+const timerIDs = [];
+let reactNativeMicrotasks = [];
+let requestIdleCallbacks = [];
+const requestIdleCallbackTimeouts = {};
 
 let GUID = 1;
-const errors: Array<Error> = [];
+const errors = [];
 
 let hasEmittedTimeDriftWarning = false;
 
 // Returns a free index if one is available, and the next consecutive index otherwise.
-function _getFreeIndex(): number {
+function _getFreeIndex() {
   let freeIndex = timerIDs.indexOf(null);
   if (freeIndex === -1) {
     freeIndex = timerIDs.length;
@@ -54,7 +48,7 @@ function _getFreeIndex(): number {
   return freeIndex;
 }
 
-function _allocateCallback(func: Function, type: JSTimerType): number {
+function _allocateCallback(func, type) {
   const id = GUID++;
   const freeIndex = _getFreeIndex();
   timerIDs[freeIndex] = id;
@@ -68,7 +62,7 @@ function _allocateCallback(func: Function, type: JSTimerType): number {
  * if it was a one time timer (setTimeout), and not unregister it if it was
  * recurring (setInterval).
  */
-function _callTimer(timerID: number, frameTime: number, didTimeout: ?boolean) {
+function _callTimer(timerID, frameTime, didTimeout) {
   if (timerID > GUID) {
     console.warn(
       'Tried to call timer with ID %s but no such timer exists.',
@@ -167,13 +161,13 @@ function _callReactNativeMicrotasksPass() {
   return reactNativeMicrotasks.length > 0;
 }
 
-function _clearIndex(i: number) {
+function _clearIndex(i) {
   timerIDs[i] = null;
   callbacks[i] = null;
   types[i] = null;
 }
 
-function _freeCallback(timerID: number) {
+function _freeCallback(timerID) {
   // timerIDs contains nulls after timers have been removed;
   // ignore nulls upfront so indexOf doesn't find them
   if (timerID == null) {
@@ -205,10 +199,10 @@ const JSTimers = {
    * @param {number} duration Number of milliseconds.
    */
   setTimeout: function (
-    func: Function,
-    duration: number,
-    ...args: any
-  ): number {
+    func,
+    duration,
+    ...args
+  ) {
     const id = _allocateCallback(
       () => func.apply(undefined, args),
       'setTimeout',
@@ -222,10 +216,10 @@ const JSTimers = {
    * @param {number} duration Number of milliseconds.
    */
   setInterval: function (
-    func: Function,
-    duration: number,
-    ...args: any
-  ): number {
+    func,
+    duration,
+    ...args
+  ) {
     const id = _allocateCallback(
       () => func.apply(undefined, args),
       'setInterval',
@@ -242,7 +236,7 @@ const JSTimers = {
    * @param {function} func Callback to be invoked before the end of the
    * current JavaScript execution loop.
    */
-  queueReactNativeMicrotask: function (func: Function, ...args: any): number {
+  queueReactNativeMicrotask: function (func, ...args) {
     const id = _allocateCallback(
       () => func.apply(undefined, args),
       'queueReactNativeMicrotask',
@@ -254,7 +248,7 @@ const JSTimers = {
   /**
    * @param {function} func Callback to be invoked every frame.
    */
-  requestAnimationFrame: function (func: Function): any | number {
+  requestAnimationFrame: function (func) {
     const id = _allocateCallback(func, 'requestAnimationFrame');
     createTimer(id, 1, Date.now(), /* recurring */ false);
     return id;
@@ -266,18 +260,18 @@ const JSTimers = {
    * @param {?object} options
    */
   requestIdleCallback: function (
-    func: Function,
-    options: ?Object,
-  ): any | number {
+    func,
+    options,
+  ) {
     if (requestIdleCallbacks.length === 0) {
       setSendIdleEvents(true);
     }
 
     const timeout = options && options.timeout;
-    const id: number = _allocateCallback(
+    const id = _allocateCallback(
       timeout != null
-        ? (deadline: any) => {
-            const timeoutId: number = requestIdleCallbackTimeouts[id];
+        ? (deadline) => {
+            const timeoutId = requestIdleCallbackTimeouts[id];
             if (timeoutId) {
               JSTimers.clearTimeout(timeoutId);
               delete requestIdleCallbackTimeouts[id];
@@ -290,8 +284,8 @@ const JSTimers = {
     requestIdleCallbacks.push(id);
 
     if (timeout != null) {
-      const timeoutId: number = JSTimers.setTimeout(() => {
-        const index: number = requestIdleCallbacks.indexOf(id);
+      const timeoutId = JSTimers.setTimeout(() => {
+        const index = requestIdleCallbacks.indexOf(id);
         if (index > -1) {
           requestIdleCallbacks.splice(index, 1);
           _callTimer(id, global.performance.now(), true);
@@ -306,7 +300,7 @@ const JSTimers = {
     return id;
   },
 
-  cancelIdleCallback: function (timerID: number) {
+  cancelIdleCallback: function (timerID) {
     _freeCallback(timerID);
     const index = requestIdleCallbacks.indexOf(timerID);
     if (index !== -1) {
@@ -324,15 +318,15 @@ const JSTimers = {
     }
   },
 
-  clearTimeout: function (timerID: number) {
+  clearTimeout: function (timerID) {
     _freeCallback(timerID);
   },
 
-  clearInterval: function (timerID: number) {
+  clearInterval: function (timerID) {
     _freeCallback(timerID);
   },
 
-  clearReactNativeMicrotask: function (timerID: number) {
+  clearReactNativeMicrotask: function (timerID) {
     _freeCallback(timerID);
     const index = reactNativeMicrotasks.indexOf(timerID);
     if (index !== -1) {
@@ -340,7 +334,7 @@ const JSTimers = {
     }
   },
 
-  cancelAnimationFrame: function (timerID: number) {
+  cancelAnimationFrame: function (timerID) {
     _freeCallback(timerID);
   },
 
@@ -348,7 +342,7 @@ const JSTimers = {
    * This is called from the native side. We are passed an array of timerIDs,
    * and
    */
-  callTimers: function (timersToCall: Array<number>): any | void {
+  callTimers: function (timersToCall) {
     invariant(
       timersToCall.length !== 0,
       'Cannot call `callTimers` with an empty list of IDs.',
@@ -366,7 +360,7 @@ const JSTimers = {
         // error one at a time
         for (let ii = 1; ii < errorCount; ii++) {
           JSTimers.setTimeout(
-            ((error: Error) => {
+            ((error) => {
               throw error;
             }).bind(null, errors[ii]),
             0,
@@ -377,7 +371,7 @@ const JSTimers = {
     }
   },
 
-  callIdleCallbacks: function (frameTime: number) {
+  callIdleCallbacks: function (frameTime) {
     if (
       FRAME_DURATION - (global.performance.now() - frameTime) <
       IDLE_CALLBACK_FRAME_DEADLINE
@@ -423,7 +417,7 @@ const JSTimers = {
   /**
    * Called from native (in development) when environment times are out-of-sync.
    */
-  emitTimeDriftWarning(warningMessage: string) {
+  emitTimeDriftWarning(warningMessage) {
     if (hasEmittedTimeDriftWarning) {
       return;
     }
@@ -433,41 +427,26 @@ const JSTimers = {
 };
 
 function createTimer(
-  callbackID: number,
-  duration: number,
-  jsSchedulingTime: number,
-  repeats: boolean,
-): void {
+  callbackID,
+  duration,
+  jsSchedulingTime,
+  repeats,
+) {
   invariant(NativeTiming, 'NativeTiming is available');
   NativeTiming.createTimer(callbackID, duration, jsSchedulingTime, repeats);
 }
 
-function deleteTimer(timerID: number): void {
+function deleteTimer(timerID) {
   invariant(NativeTiming, 'NativeTiming is available');
   NativeTiming.deleteTimer(timerID);
 }
 
-function setSendIdleEvents(sendIdleEvents: boolean): void {
+function setSendIdleEvents(sendIdleEvents) {
   invariant(NativeTiming, 'NativeTiming is available');
   NativeTiming.setSendIdleEvents(sendIdleEvents);
 }
 
-let ExportedJSTimers: {|
-  callIdleCallbacks: (frameTime: number) => any | void,
-  callReactNativeMicrotasks: () => void,
-  callTimers: (timersToCall: Array<number>) => any | void,
-  cancelAnimationFrame: (timerID: number) => void,
-  cancelIdleCallback: (timerID: number) => void,
-  clearReactNativeMicrotask: (timerID: number) => void,
-  clearInterval: (timerID: number) => void,
-  clearTimeout: (timerID: number) => void,
-  emitTimeDriftWarning: (warningMessage: string) => any | void,
-  requestAnimationFrame: (func: any) => any | number,
-  requestIdleCallback: (func: any, options: ?any) => any | number,
-  queueReactNativeMicrotask: (func: any, ...args: any) => number,
-  setInterval: (func: any, duration: number, ...args: any) => number,
-  setTimeout: (func: any, duration: number, ...args: any) => number,
-|};
+let ExportedJSTimers;
 
 if (!NativeTiming) {
   console.warn("Timing native module is not available, can't set timers.");
@@ -475,7 +454,7 @@ if (!NativeTiming) {
   ExportedJSTimers = ({
     callReactNativeMicrotasks: JSTimers.callReactNativeMicrotasks,
     queueReactNativeMicrotask: JSTimers.queueReactNativeMicrotask,
-  }: typeof JSTimers);
+  });
 } else {
   ExportedJSTimers = JSTimers;
 }

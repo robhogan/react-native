@@ -4,14 +4,10 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
-import type {
-  HostComponent,
-  PartialViewConfig,
-} from '../Renderer/shims/ReactNativeTypes';
 
 import getNativeComponentAttributes from '../ReactNative/getNativeComponentAttributes';
 import UIManager from '../ReactNative/UIManager';
@@ -32,12 +28,8 @@ let getRuntimeConfig;
  * the current environment.
  */
 export function setRuntimeConfigProvider(
-  runtimeConfigProvider: (name: string) => ?{
-    native: boolean,
-    strict: boolean,
-    verify: boolean,
-  },
-): void {
+  runtimeConfigProvider,
+) {
   invariant(
     getRuntimeConfig == null,
     'NativeComponentRegistry.setRuntimeConfigProvider() called more than once.',
@@ -51,10 +43,10 @@ export function setRuntimeConfigProvider(
  * The supplied `viewConfigProvider` may or may not be invoked and utilized,
  * depending on how `setRuntimeConfigProvider` is configured.
  */
-export function get<Config>(
-  name: string,
-  viewConfigProvider: () => PartialViewConfig,
-): HostComponent<Config> {
+export function get(
+  name,
+  viewConfigProvider,
+) {
   ReactNativeViewConfigRegistry.register(name, () => {
     const {native, strict, verify} = getRuntimeConfig?.(name) ?? {
       native: true,
@@ -110,31 +102,31 @@ export function get<Config>(
  * that the return value of this is not `HostComponent` because the returned
  * component instance is not guaranteed to have native methods.
  */
-export function getWithFallback_DEPRECATED<Config>(
-  name: string,
-  viewConfigProvider: () => PartialViewConfig,
-): React.AbstractComponent<Config> {
+export function getWithFallback_DEPRECATED(
+  name,
+  viewConfigProvider,
+) {
   if (getRuntimeConfig == null) {
     // `getRuntimeConfig == null` when static view configs are disabled
     // If `setRuntimeConfigProvider` is not configured, use native reflection.
     if (hasNativeViewConfig(name)) {
-      return get<Config>(name, viewConfigProvider);
+      return get(name, viewConfigProvider);
     }
   } else {
     // If there is no runtime config, then the native component is unavailable.
     if (getRuntimeConfig(name) != null) {
-      return get<Config>(name, viewConfigProvider);
+      return get(name, viewConfigProvider);
     }
   }
 
-  const FallbackNativeComponent = function (props: Config): React.Node {
+  const FallbackNativeComponent = function (props) {
     return null;
   };
   FallbackNativeComponent.displayName = `Fallback(${name})`;
   return FallbackNativeComponent;
 }
 
-function hasNativeViewConfig(name: string): boolean {
+function hasNativeViewConfig(name) {
   invariant(getRuntimeConfig == null, 'Unexpected invocation!');
   return UIManager.getViewManagerConfig(name) != null;
 }
@@ -145,7 +137,7 @@ function hasNativeViewConfig(name: string): boolean {
  * This method returns if there is a StaticViewConfig registered for the
  * component name received as a parameter.
  */
-export function unstable_hasStaticViewConfig(name: string): boolean {
+export function unstable_hasStaticViewConfig(name) {
   const {native} = getRuntimeConfig?.(name) ?? {
     native: true,
   };

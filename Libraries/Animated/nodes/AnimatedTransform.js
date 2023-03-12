@@ -4,27 +4,26 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
 'use strict';
 
-import type {PlatformConfig} from '../AnimatedPlatformConfig';
 
 import NativeAnimatedHelper from '../NativeAnimatedHelper';
 import AnimatedNode from './AnimatedNode';
 import AnimatedWithChildren from './AnimatedWithChildren';
 
 export default class AnimatedTransform extends AnimatedWithChildren {
-  _transforms: $ReadOnlyArray<Object>;
+  _transforms;
 
-  constructor(transforms: $ReadOnlyArray<Object>) {
+  constructor(transforms) {
     super();
     this._transforms = transforms;
   }
 
-  __makeNative(platformConfig: ?PlatformConfig) {
+  __makeNative(platformConfig) {
     this._transforms.forEach(transform => {
       for (const key in transform) {
         const value = transform[key];
@@ -36,15 +35,15 @@ export default class AnimatedTransform extends AnimatedWithChildren {
     super.__makeNative(platformConfig);
   }
 
-  __getValue(): $ReadOnlyArray<Object> {
+  __getValue() {
     return this._get(animatedNode => animatedNode.__getValue());
   }
 
-  __getAnimatedValue(): $ReadOnlyArray<Object> {
+  __getAnimatedValue() {
     return this._get(animatedNode => animatedNode.__getAnimatedValue());
   }
 
-  __attach(): void {
+  __attach() {
     this._transforms.forEach(transform => {
       for (const key in transform) {
         const value = transform[key];
@@ -55,7 +54,7 @@ export default class AnimatedTransform extends AnimatedWithChildren {
     });
   }
 
-  __detach(): void {
+  __detach() {
     this._transforms.forEach(transform => {
       for (const key in transform) {
         const value = transform[key];
@@ -67,7 +66,7 @@ export default class AnimatedTransform extends AnimatedWithChildren {
     super.__detach();
   }
 
-  __getNativeConfig(): any {
+  __getNativeConfig() {
     const transConfigs = [];
 
     this._transforms.forEach(transform => {
@@ -96,9 +95,9 @@ export default class AnimatedTransform extends AnimatedWithChildren {
     };
   }
 
-  _get(getter: AnimatedNode => any): $ReadOnlyArray<Object> {
+  _get(getter) {
     return this._transforms.map(transform => {
-      const result: {[string]: any} = {};
+      const result = {};
       for (const key in transform) {
         const value = transform[key];
         if (value instanceof AnimatedNode) {

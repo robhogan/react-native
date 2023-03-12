@@ -4,11 +4,10 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict
+ *  strict
  * @format
  */
 
-import type {IPerformanceLogger} from './createPerformanceLogger';
 
 import createPerformanceLogger from './createPerformanceLogger';
 
@@ -19,6 +18,6 @@ import createPerformanceLogger from './createPerformanceLogger';
  * that are logged during loading bundle. If you want to log something from your
  * React component you should use PerformanceLoggerContext instead.
  */
-const GlobalPerformanceLogger: IPerformanceLogger = createPerformanceLogger();
+const GlobalPerformanceLogger = createPerformanceLogger();
 
 module.exports = GlobalPerformanceLogger;

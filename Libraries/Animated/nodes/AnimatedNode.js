@@ -4,13 +4,12 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
 'use strict';
 
-import type {PlatformConfig} from '../AnimatedPlatformConfig';
 
 import ReactNativeFeatureFlags from '../../ReactNative/ReactNativeFeatureFlags';
 import NativeAnimatedHelper from '../NativeAnimatedHelper';
@@ -18,18 +17,17 @@ import invariant from 'invariant';
 
 const NativeAnimatedAPI = NativeAnimatedHelper.API;
 
-type ValueListenerCallback = (state: {value: number, ...}) => mixed;
 
 let _uniqueId = 1;
 
 // Note(vjeux): this would be better as an interface but flow doesn't
 // support them yet
 export default class AnimatedNode {
-  _listeners: {[key: string]: ValueListenerCallback, ...};
-  _platformConfig: ?PlatformConfig;
-  __nativeAnimatedValueListener: ?any;
-  __attach(): void {}
-  __detach(): void {
+  _listeners;
+  _platformConfig;
+  __nativeAnimatedValueListener;
+  __attach() {}
+  __detach() {
     if (ReactNativeFeatureFlags.removeListenersOnDetach()) {
       this.removeAllListeners();
     }
@@ -38,26 +36,26 @@ export default class AnimatedNode {
       this.__nativeTag = undefined;
     }
   }
-  __getValue(): any {}
-  __getAnimatedValue(): any {
+  __getValue() {}
+  __getAnimatedValue() {
     return this.__getValue();
   }
-  __addChild(child: AnimatedNode) {}
-  __removeChild(child: AnimatedNode) {}
-  __getChildren(): Array<AnimatedNode> {
+  __addChild(child) {}
+  __removeChild(child) {}
+  __getChildren() {
     return [];
   }
 
   /* Methods and props used by native Animated impl */
-  __isNative: boolean;
-  __nativeTag: ?number;
-  __shouldUpdateListenersForNewNativeTag: boolean;
+  __isNative;
+  __nativeTag;
+  __shouldUpdateListenersForNewNativeTag;
 
   constructor() {
     this._listeners = {};
   }
 
-  __makeNative(platformConfig: ?PlatformConfig): void {
+  __makeNative(platformConfig) {
     if (!this.__isNative) {
       throw new Error('This node cannot be made a "native" animated node');
     }
@@ -75,7 +73,7 @@ export default class AnimatedNode {
    *
    * See https://reactnative.dev/docs/animatedvalue#addlistener
    */
-  addListener(callback: (value: any) => mixed): string {
+  addListener(callback) {
     const id = String(_uniqueId++);
     this._listeners[id] = callback;
     if (this.__isNative) {
@@ -90,7 +88,7 @@ export default class AnimatedNode {
    *
    * See https://reactnative.dev/docs/animatedvalue#removelistener
    */
-  removeListener(id: string): void {
+  removeListener(id) {
     delete this._listeners[id];
     if (this.__isNative && !this.hasListeners()) {
       this._stopListeningForNativeValueUpdates();
@@ -102,14 +100,14 @@ export default class AnimatedNode {
    *
    * See https://reactnative.dev/docs/animatedvalue#removealllisteners
    */
-  removeAllListeners(): void {
+  removeAllListeners() {
     this._listeners = {};
     if (this.__isNative) {
       this._stopListeningForNativeValueUpdates();
     }
   }
 
-  hasListeners(): boolean {
+  hasListeners() {
     return !!Object.keys(this._listeners).length;
   }
 
@@ -139,11 +137,11 @@ export default class AnimatedNode {
       );
   }
 
-  __onAnimatedValueUpdateReceived(value: number) {
+  __onAnimatedValueUpdateReceived(value) {
     this.__callListeners(value);
   }
 
-  __callListeners(value: number): void {
+  __callListeners(value) {
     for (const key in this._listeners) {
       this._listeners[key]({value});
     }
@@ -159,7 +157,7 @@ export default class AnimatedNode {
     NativeAnimatedAPI.stopListeningToAnimatedNodeValue(this.__getNativeTag());
   }
 
-  __getNativeTag(): number {
+  __getNativeTag() {
     NativeAnimatedHelper.assertNativeAnimatedModule();
     invariant(
       this.__isNative,
@@ -181,19 +179,19 @@ export default class AnimatedNode {
 
     return nativeTag;
   }
-  __getNativeConfig(): Object {
+  __getNativeConfig() {
     throw new Error(
       'This JS animated node type cannot be used as native animated node',
     );
   }
-  toJSON(): any {
+  toJSON() {
     return this.__getValue();
   }
 
-  __getPlatformConfig(): ?PlatformConfig {
+  __getPlatformConfig() {
     return this._platformConfig;
   }
-  __setPlatformConfig(platformConfig: ?PlatformConfig) {
+  __setPlatformConfig(platformConfig) {
     this._platformConfig = platformConfig;
   }
 }

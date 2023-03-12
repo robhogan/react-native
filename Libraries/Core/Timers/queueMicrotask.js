@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  */
 
 'use strict';
@@ -19,7 +19,7 @@ let resolvedPromise;
  * The method must queue a microtask to invoke @param {function} callback, and
  * if the callback throws an exception, report the exception.
  */
-export default function queueMicrotask(callback: Function) {
+export default function queueMicrotask(callback) {
   if (arguments.length < 1) {
     throw new TypeError(
       'queueMicrotask must be called with at least one argument (a function to call)',

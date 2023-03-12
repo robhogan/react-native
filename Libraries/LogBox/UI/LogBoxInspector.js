@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
@@ -13,7 +13,7 @@ import ScrollView from '../../Components/ScrollView/ScrollView';
 import View from '../../Components/View/View';
 import StyleSheet from '../../StyleSheet/StyleSheet';
 import * as LogBoxData from '../Data/LogBoxData';
-import LogBoxLog, {type LogLevel} from '../Data/LogBoxLog';
+import LogBoxLog, {} from '../Data/LogBoxLog';
 import LogBoxInspectorCodeFrame from './LogBoxInspectorCodeFrame';
 import LogBoxInspectorFooter from './LogBoxInspectorFooter';
 import LogBoxInspectorHeader from './LogBoxInspectorHeader';
@@ -23,16 +23,8 @@ import LogBoxInspectorStackFrames from './LogBoxInspectorStackFrames';
 import * as LogBoxStyle from './LogBoxStyle';
 import * as React from 'react';
 
-type Props = $ReadOnly<{|
-  onDismiss: () => void,
-  onChangeSelectedIndex: (index: number) => void,
-  onMinimize: () => void,
-  logs: $ReadOnlyArray<LogBoxLog>,
-  selectedIndex: number,
-  fatalType?: ?LogLevel,
-|}>;
 
-function LogBoxInspector(props: Props): React.Node {
+function LogBoxInspector(props) {
   const {logs, selectedIndex} = props;
   let log = logs[selectedIndex];
 
@@ -93,7 +85,7 @@ const headerTitleMap = {
 };
 
 function LogBoxInspectorBody(
-  props: $TEMPORARY$object<{log: LogBoxLog, onRetry: () => void}>,
+  props,
 ) {
   const [collapsed, setCollapsed] = React.useState(true);
 

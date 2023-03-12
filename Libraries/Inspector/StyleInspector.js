@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
 'use strict';
@@ -15,8 +15,8 @@ const StyleSheet = require('../StyleSheet/StyleSheet');
 const Text = require('../Text/Text');
 const React = require('react');
 
-class StyleInspector extends React.Component<$FlowFixMeProps> {
-  render(): React.Node {
+class StyleInspector extends React.Component {
+  render() {
     if (!this.props.style) {
       return <Text style={styles.noStyle}>No style</Text>;
     }

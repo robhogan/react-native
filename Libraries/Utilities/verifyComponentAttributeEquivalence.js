@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  */
 
 import PlatformBaseViewConfig from '../NativeComponent/PlatformBaseViewConfig';
-import {type ViewConfig} from '../Renderer/shims/ReactNativeTypes';
+import {} from '../Renderer/shims/ReactNativeTypes';
 
 const IGNORED_KEYS = ['transform', 'hitSlop'];
 
@@ -37,8 +37,8 @@ const IGNORED_KEYS = ['transform', 'hitSlop'];
  * years from now...
  */
 export default function verifyComponentAttributeEquivalence(
-  nativeViewConfig: ViewConfig,
-  staticViewConfig: ViewConfig,
+  nativeViewConfig,
+  staticViewConfig,
 ) {
   for (const prop of [
     'validAttributes',
@@ -62,10 +62,10 @@ export default function verifyComponentAttributeEquivalence(
 
 // Return the different key-value pairs of the right object, by iterating through the keys in the left object
 // Note it won't return a difference where a key is missing in the left but exists the right.
-function lefthandObjectDiff(leftObj: Object, rightObj: Object): Object {
-  const differentKeys: {[string]: any | {...}} = {};
+function lefthandObjectDiff(leftObj, rightObj) {
+  const differentKeys = {};
 
-  function compare(leftItem: any, rightItem: any, key: string) {
+  function compare(leftItem, rightItem, key) {
     if (typeof leftItem !== typeof rightItem && leftItem != null) {
       differentKeys[key] = rightItem;
       return;
@@ -101,22 +101,22 @@ function lefthandObjectDiff(leftObj: Object, rightObj: Object): Object {
 }
 
 export function getConfigWithoutViewProps(
-  viewConfig: ViewConfig,
-  propName: string,
-): {...} {
+  viewConfig,
+  propName,
+) {
   if (!viewConfig[propName]) {
     return {};
   }
 
   return Object.keys(viewConfig[propName])
     .filter(prop => !PlatformBaseViewConfig[propName][prop])
-    .reduce<{[string]: any}>((obj, prop) => {
+    .reduce((obj, prop) => {
       obj[prop] = viewConfig[propName][prop];
       return obj;
     }, {});
 }
 
-export function stringifyViewConfig(viewConfig: any): string {
+export function stringifyViewConfig(viewConfig) {
   return JSON.stringify(
     viewConfig,
     (key, val) => {

@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict
+ *  strict
  */
 
 'use strict';
 
-function clamp(min: number, value: number, max: number): number {
+function clamp(min, value, max) {
   if (value < min) {
     return min;
   }

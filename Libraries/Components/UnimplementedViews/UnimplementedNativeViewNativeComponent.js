@@ -5,22 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
-import type {HostComponent} from '../../Renderer/shims/ReactNativeTypes';
-import type {WithDefault} from '../../Types/CodegenTypes';
-import type {ViewProps} from '../View/ViewPropTypes';
 
 import codegenNativeComponent from '../../Utilities/codegenNativeComponent';
 
-type NativeProps = $ReadOnly<{|
-  ...ViewProps,
-  name?: WithDefault<string, ''>,
-|}>;
 
 // NOTE: This component is not implemented in paper
 // Do not require this file in paper builds
-export default (codegenNativeComponent<NativeProps>(
+export default (codegenNativeComponent(
   'UnimplementedNativeView',
-): HostComponent<NativeProps>);
+));

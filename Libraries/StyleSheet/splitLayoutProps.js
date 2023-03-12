@@ -4,18 +4,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
-import type {____ViewStyle_Internal} from './StyleSheetTypes';
 
-export default function splitLayoutProps(props: ?____ViewStyle_Internal): {
-  outer: ?____ViewStyle_Internal,
-  inner: ?____ViewStyle_Internal,
-} {
-  let outer: ?____ViewStyle_Internal = null;
-  let inner: ?____ViewStyle_Internal = null;
+export default function splitLayoutProps(props) {
+  let outer = null;
+  let inner = null;
 
   if (props != null) {
     // $FlowIgnore[incompatible-exact] Will contain a subset of keys from `props`.

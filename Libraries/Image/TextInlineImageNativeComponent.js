@@ -5,30 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
 'use strict';
 
-import type {ViewProps} from '../Components/View/ViewPropTypes';
-import type {
-  HostComponent,
-  PartialViewConfig,
-} from '../Renderer/shims/ReactNativeTypes';
-import type {ColorValue} from '../StyleSheet/StyleSheet';
-import type {ImageResizeMode} from './ImageResizeMode';
 
 import * as NativeComponentRegistry from '../NativeComponent/NativeComponentRegistry';
 
-type NativeProps = $ReadOnly<{
-  ...ViewProps,
-  resizeMode?: ?ImageResizeMode,
-  src?: ?$ReadOnlyArray<?$ReadOnly<{uri?: ?string, ...}>>,
-  tintColor?: ?ColorValue,
-  headers?: ?{[string]: string},
-}>;
 
-export const __INTERNAL_VIEW_CONFIG: PartialViewConfig = {
+export const __INTERNAL_VIEW_CONFIG = {
   uiViewClassName: 'RCTTextInlineImage',
   bubblingEventTypes: {},
   directEventTypes: {},
@@ -42,8 +28,8 @@ export const __INTERNAL_VIEW_CONFIG: PartialViewConfig = {
   },
 };
 
-const TextInlineImage: HostComponent<NativeProps> =
-  NativeComponentRegistry.get<NativeProps>(
+const TextInlineImage =
+  NativeComponentRegistry.get(
     'RCTTextInlineImage',
     () => __INTERNAL_VIEW_CONFIG,
   );

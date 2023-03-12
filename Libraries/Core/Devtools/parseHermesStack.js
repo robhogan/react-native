@@ -5,51 +5,18 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict
+ *  strict
  */
 
 'use strict';
 
-type HermesStackLocationNative = {|
-  +type: 'NATIVE',
-|};
 
-type HermesStackLocationSource = {|
-  +type: 'SOURCE',
-  +sourceUrl: string,
-  +line1Based: number,
-  +column1Based: number,
-|};
 
-type HermesStackLocationBytecode = {|
-  +type: 'BYTECODE',
-  +sourceUrl: string,
-  +line1Based: number,
-  +virtualOffset0Based: number,
-|};
 
-type HermesStackLocation =
-  | HermesStackLocationNative
-  | HermesStackLocationSource
-  | HermesStackLocationBytecode;
 
-type HermesStackEntryFrame = {|
-  +type: 'FRAME',
-  +location: HermesStackLocation,
-  +functionName: string,
-|};
 
-type HermesStackEntrySkipped = {|
-  +type: 'SKIPPED',
-  +count: number,
-|};
 
-type HermesStackEntry = HermesStackEntryFrame | HermesStackEntrySkipped;
 
-export type HermesParsedStack = {|
-  +message: string,
-  +entries: $ReadOnlyArray<HermesStackEntry>,
-|};
 
 // Capturing groups:
 // 1. function name
@@ -65,7 +32,7 @@ const RE_FRAME =
 // 1. count of skipped frames
 const RE_SKIPPED = /^ {4}... skipping (\d+) frames$/;
 
-function parseLine(line: string): ?HermesStackEntry {
+function parseLine(line) {
   const asFrame = line.match(RE_FRAME);
   if (asFrame) {
     return {
@@ -98,9 +65,9 @@ function parseLine(line: string): ?HermesStackEntry {
   }
 }
 
-module.exports = function parseHermesStack(stack: string): HermesParsedStack {
+module.exports = function parseHermesStack(stack) {
   const lines = stack.split(/\n/);
-  let entries: Array<HermesStackEntryFrame | HermesStackEntrySkipped> = [];
+  let entries = [];
   let lastMessageLine = -1;
   for (let i = 0; i < lines.length; ++i) {
     const line = lines[i];

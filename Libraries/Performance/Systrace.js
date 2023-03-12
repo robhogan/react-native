@@ -4,18 +4,15 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict
+ *  strict
  * @format
  */
 
-import typeof * as SystraceModule from './Systrace';
 
 const TRACE_TAG_REACT_APPS = 1 << 17; // eslint-disable-line no-bitwise
 
 let _asyncCookie = 0;
 
-type EventName = string | (() => string);
-type EventArgs = ?{[string]: string};
 
 /**
  * Indicates if the application is currently being traced.
@@ -30,7 +27,7 @@ type EventArgs = ?{[string]: string};
  *   Systrace.beginEvent('myEvent', expensiveArgs);
  * }
  */
-export function isEnabled(): boolean {
+export function isEnabled() {
   return global.nativeTraceIsTracing
     ? global.nativeTraceIsTracing(TRACE_TAG_REACT_APPS)
     : Boolean(global.__RCTProfileIsProfiling);
@@ -42,13 +39,13 @@ export function isEnabled(): boolean {
  * profiling or not. This is necessary because we don't have callbacks to know
  * when profiling has started/stopped on Android APIs.
  */
-export function setEnabled(_doEnable: boolean): void {}
+export function setEnabled(_doEnable) {}
 
 /**
  * Marks the start of a synchronous event that should end in the same stack
  * frame. The end of this event should be marked using the `endEvent` function.
  */
-export function beginEvent(eventName: EventName, args?: EventArgs): void {
+export function beginEvent(eventName, args) {
   if (isEnabled()) {
     const eventNameString =
       typeof eventName === 'function' ? eventName() : eventName;
@@ -59,7 +56,7 @@ export function beginEvent(eventName: EventName, args?: EventArgs): void {
 /**
  * Marks the end of a synchronous event started in the same stack frame.
  */
-export function endEvent(args?: EventArgs): void {
+export function endEvent(args) {
   if (isEnabled()) {
     global.nativeTraceEndSection(TRACE_TAG_REACT_APPS, args);
   }
@@ -71,9 +68,9 @@ export function endEvent(args?: EventArgs): void {
  * returned by this function.
  */
 export function beginAsyncEvent(
-  eventName: EventName,
-  args?: EventArgs,
-): number {
+  eventName,
+  args,
+) {
   const cookie = _asyncCookie;
   if (isEnabled()) {
     _asyncCookie++;
@@ -94,10 +91,10 @@ export function beginAsyncEvent(
  * the given cookie.
  */
 export function endAsyncEvent(
-  eventName: EventName,
-  cookie: number,
-  args?: EventArgs,
-): void {
+  eventName,
+  cookie,
+  args,
+) {
   if (isEnabled()) {
     const eventNameString =
       typeof eventName === 'function' ? eventName() : eventName;
@@ -113,7 +110,7 @@ export function endAsyncEvent(
 /**
  * Registers a new value for a counter event.
  */
-export function counterEvent(eventName: EventName, value: number): void {
+export function counterEvent(eventName, value) {
   if (isEnabled()) {
     const eventNameString =
       typeof eventName === 'function' ? eventName() : eventName;
@@ -123,7 +120,7 @@ export function counterEvent(eventName: EventName, value: number): void {
 }
 
 if (__DEV__) {
-  const Systrace: SystraceModule = {
+  const Systrace = {
     isEnabled,
     setEnabled,
     beginEvent,

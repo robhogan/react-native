@@ -4,73 +4,38 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict
+ *  strict
  * @format
  */
 
 const Systrace = require('../Performance/Systrace');
 const infoLog = require('./infoLog');
 
-export type Timespan = {
-  startTime: number,
-  endTime?: number,
-  totalTime?: number,
-  startExtras?: Extras,
-  endExtras?: Extras,
-};
 
 // Extra values should be serializable primitives
-export type ExtraValue = number | string | boolean;
 
-export type Extras = {[key: string]: ExtraValue};
 
-export interface IPerformanceLogger {
-  addTimespan(
-    key: string,
-    startTime: number,
-    endTime: number,
-    startExtras?: Extras,
-    endExtras?: Extras,
-  ): void;
-  append(logger: IPerformanceLogger): void;
-  clear(): void;
-  clearCompleted(): void;
-  close(): void;
-  currentTimestamp(): number;
-  getExtras(): $ReadOnly<{[key: string]: ?ExtraValue, ...}>;
-  getPoints(): $ReadOnly<{[key: string]: ?number, ...}>;
-  getPointExtras(): $ReadOnly<{[key: string]: ?Extras, ...}>;
-  getTimespans(): $ReadOnly<{[key: string]: ?Timespan, ...}>;
-  hasTimespan(key: string): boolean;
-  isClosed(): boolean;
-  logEverything(): void;
-  markPoint(key: string, timestamp?: number, extras?: Extras): void;
-  removeExtra(key: string): ?ExtraValue;
-  setExtra(key: string, value: ExtraValue): void;
-  startTimespan(key: string, timestamp?: number, extras?: Extras): void;
-  stopTimespan(key: string, timestamp?: number, extras?: Extras): void;
-}
 
-const _cookies: {[key: string]: number, ...} = {};
+const _cookies = {};
 
-const PRINT_TO_CONSOLE: false = false; // Type as false to prevent accidentally committing `true`;
+const PRINT_TO_CONSOLE = false; // Type as false to prevent accidentally committing `true`;
 
-export const getCurrentTimestamp: () => number =
+export const getCurrentTimestamp =
   global.nativeQPLTimestamp ?? global.performance.now.bind(global.performance);
 
-class PerformanceLogger implements IPerformanceLogger {
-  _timespans: {[key: string]: ?Timespan} = {};
-  _extras: {[key: string]: ?ExtraValue} = {};
-  _points: {[key: string]: ?number} = {};
-  _pointExtras: {[key: string]: ?Extras, ...} = {};
-  _closed: boolean = false;
+class PerformanceLogger {
+  _timespans = {};
+  _extras = {};
+  _points = {};
+  _pointExtras = {};
+  _closed = false;
 
   addTimespan(
-    key: string,
-    startTime: number,
-    endTime: number,
-    startExtras?: Extras,
-    endExtras?: Extras,
+    key,
+    startTime,
+    endTime,
+    startExtras,
+    endExtras,
   ) {
     if (this._closed) {
       if (PRINT_TO_CONSOLE && __DEV__) {
@@ -97,7 +62,7 @@ class PerformanceLogger implements IPerformanceLogger {
     };
   }
 
-  append(performanceLogger: IPerformanceLogger) {
+  append(performanceLogger) {
     this._timespans = {
       ...performanceLogger.getTimespans(),
       ...this._timespans,
@@ -136,31 +101,31 @@ class PerformanceLogger implements IPerformanceLogger {
     this._closed = true;
   }
 
-  currentTimestamp(): number {
+  currentTimestamp() {
     return getCurrentTimestamp();
   }
 
-  getExtras(): {[key: string]: ?ExtraValue} {
+  getExtras() {
     return this._extras;
   }
 
-  getPoints(): {[key: string]: ?number} {
+  getPoints() {
     return this._points;
   }
 
-  getPointExtras(): {[key: string]: ?Extras} {
+  getPointExtras() {
     return this._pointExtras;
   }
 
-  getTimespans(): {[key: string]: ?Timespan} {
+  getTimespans() {
     return this._timespans;
   }
 
-  hasTimespan(key: string): boolean {
+  hasTimespan(key) {
     return !!this._timespans[key];
   }
 
-  isClosed(): boolean {
+  isClosed() {
     return this._closed;
   }
 
@@ -186,9 +151,9 @@ class PerformanceLogger implements IPerformanceLogger {
   }
 
   markPoint(
-    key: string,
-    timestamp?: number = getCurrentTimestamp(),
-    extras?: Extras,
+    key,
+    timestamp = getCurrentTimestamp(),
+    extras,
   ) {
     if (this._closed) {
       if (PRINT_TO_CONSOLE && __DEV__) {
@@ -211,13 +176,13 @@ class PerformanceLogger implements IPerformanceLogger {
     }
   }
 
-  removeExtra(key: string): ?ExtraValue {
+  removeExtra(key) {
     const value = this._extras[key];
     delete this._extras[key];
     return value;
   }
 
-  setExtra(key: string, value: ExtraValue) {
+  setExtra(key, value) {
     if (this._closed) {
       if (PRINT_TO_CONSOLE && __DEV__) {
         infoLog('PerformanceLogger: setExtra - has closed ignoring: ', key);
@@ -238,9 +203,9 @@ class PerformanceLogger implements IPerformanceLogger {
   }
 
   startTimespan(
-    key: string,
-    timestamp?: number = getCurrentTimestamp(),
-    extras?: Extras,
+    key,
+    timestamp = getCurrentTimestamp(),
+    extras,
   ) {
     if (this._closed) {
       if (PRINT_TO_CONSOLE && __DEV__) {
@@ -273,9 +238,9 @@ class PerformanceLogger implements IPerformanceLogger {
   }
 
   stopTimespan(
-    key: string,
-    timestamp?: number = getCurrentTimestamp(),
-    extras?: Extras,
+    key,
+    timestamp = getCurrentTimestamp(),
+    extras,
   ) {
     if (this._closed) {
       if (PRINT_TO_CONSOLE && __DEV__) {
@@ -323,6 +288,6 @@ class PerformanceLogger implements IPerformanceLogger {
  * various performance data such as timespans, points and extras.
  * The loggers need to have minimal overhead since they're used in production.
  */
-export default function createPerformanceLogger(): IPerformanceLogger {
+export default function createPerformanceLogger() {
   return new PerformanceLogger();
 }

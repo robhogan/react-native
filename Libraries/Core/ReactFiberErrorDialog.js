@@ -5,42 +5,35 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
-import type {ExtendedError} from './ExtendedError';
 
 import {SyntheticError, handleException} from './ExceptionsManager';
 
-export type CapturedError = {
-  +componentStack: string,
-  +error: mixed,
-  +errorBoundary: ?{...},
-  ...
-};
 
 const ReactFiberErrorDialog = {
   /**
    * Intercept lifecycle errors and ensure they are shown with the correct stack
    * trace within the native redbox component.
    */
-  showErrorDialog({componentStack, error: errorValue}: CapturedError): boolean {
-    let error: ?ExtendedError;
+  showErrorDialog({componentStack, error: errorValue}) {
+    let error;
 
     // Typically, `errorValue` should be an error. However, other values such as
     // strings (or even null) are sometimes thrown.
     if (errorValue instanceof Error) {
       /* $FlowFixMe[class-object-subtyping] added when improving typing for
        * this parameters */
-      error = (errorValue: ExtendedError);
+      error = (errorValue);
     } else if (typeof errorValue === 'string') {
       /* $FlowFixMe[class-object-subtyping] added when improving typing for
        * this parameters */
-      error = (new SyntheticError(errorValue): ExtendedError);
+      error = (new SyntheticError(errorValue));
     } else {
       /* $FlowFixMe[class-object-subtyping] added when improving typing for
        * this parameters */
-      error = (new SyntheticError('Unspecified error'): ExtendedError);
+      error = (new SyntheticError('Unspecified error'));
     }
     try {
       error.componentStack = componentStack;

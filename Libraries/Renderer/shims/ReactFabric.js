@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @noformat
- * @flow
+ * 
  * @generated SignedSource<<ef2742380b2b2c69cea8618289eea086>>
  *
  * This file was sync'd from the facebook/react repository.
@@ -15,7 +15,6 @@
 
 import {BatchedBridge} from 'react-native/Libraries/ReactPrivate/ReactNativePrivateInterface';
 
-import type {ReactFabricType} from './ReactNativeTypes';
 
 let ReactFabric;
 
@@ -31,4 +30,4 @@ if (global.RN$Bridgeless) {
   BatchedBridge.registerCallableModule('ReactFabric', ReactFabric);
 }
 
-module.exports = (ReactFabric: ReactFabricType);
+module.exports = (ReactFabric);

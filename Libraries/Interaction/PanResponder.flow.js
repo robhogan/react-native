@@ -4,13 +4,12 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
 'use strict';
 
-import type {PressEvent} from '../Types/CoreEventTypes';
 
 /**
  * `PanResponder` reconciles several touches into a single gesture. It makes
@@ -110,148 +109,8 @@ import type {PressEvent} from '../Types/CoreEventTypes';
  * [PanResponder example in RNTester](https://github.com/facebook/react-native/blob/HEAD/packages/rn-tester/js/examples/PanResponder/PanResponderExample.js)
  */
 
-export type GestureState = {|
-  /**
-   * ID of the gestureState - persisted as long as there at least one touch on screen
-   */
-  stateID: number,
 
-  /**
-   * The latest screen coordinates of the recently-moved touch
-   */
-  moveX: number,
 
-  /**
-   * The latest screen coordinates of the recently-moved touch
-   */
-  moveY: number,
 
-  /**
-   * The screen coordinates of the responder grant
-   */
-  x0: number,
 
-  /**
-   * The screen coordinates of the responder grant
-   */
-  y0: number,
 
-  /**
-   * Accumulated distance of the gesture since the touch started
-   */
-  dx: number,
-
-  /**
-   * Accumulated distance of the gesture since the touch started
-   */
-  dy: number,
-
-  /**
-   * Current velocity of the gesture
-   */
-  vx: number,
-
-  /**
-   * Current velocity of the gesture
-   */
-  vy: number,
-
-  /**
-   * Number of touches currently on screen
-   */
-  numberActiveTouches: number,
-
-  /**
-   * All `gestureState` accounts for timeStamps up until this value
-   *
-   * @private
-   */
-  _accountsForMovesUpTo: number,
-|};
-
-type ActiveCallback = (
-  event: PressEvent,
-  gestureState: GestureState,
-) => boolean;
-
-type PassiveCallback = (event: PressEvent, gestureState: GestureState) => mixed;
-
-type PanHandlers = {|
-  onMoveShouldSetResponder: (event: PressEvent) => boolean,
-  onMoveShouldSetResponderCapture: (event: PressEvent) => boolean,
-  onResponderEnd: (event: PressEvent) => void,
-  onResponderGrant: (event: PressEvent) => boolean,
-  onResponderMove: (event: PressEvent) => void,
-  onResponderReject: (event: PressEvent) => void,
-  onResponderRelease: (event: PressEvent) => void,
-  onResponderStart: (event: PressEvent) => void,
-  onResponderTerminate: (event: PressEvent) => void,
-  onResponderTerminationRequest: (event: PressEvent) => boolean,
-  onStartShouldSetResponder: (event: PressEvent) => boolean,
-  onStartShouldSetResponderCapture: (event: PressEvent) => boolean,
-|};
-
-type PanResponderConfig = $ReadOnly<{|
-  onMoveShouldSetPanResponder?: ?ActiveCallback,
-  onMoveShouldSetPanResponderCapture?: ?ActiveCallback,
-  onStartShouldSetPanResponder?: ?ActiveCallback,
-  onStartShouldSetPanResponderCapture?: ?ActiveCallback,
-  /**
-   * The body of `onResponderGrant` returns a bool, but the vast majority of
-   * callsites return void and this TODO notice is found in it:
-   *   TODO: t7467124 investigate if this can be removed
-   */
-  onPanResponderGrant?: ?(PassiveCallback | ActiveCallback),
-  onPanResponderReject?: ?PassiveCallback,
-  onPanResponderStart?: ?PassiveCallback,
-  onPanResponderEnd?: ?PassiveCallback,
-  onPanResponderRelease?: ?PassiveCallback,
-  onPanResponderMove?: ?PassiveCallback,
-  onPanResponderTerminate?: ?PassiveCallback,
-  onPanResponderTerminationRequest?: ?ActiveCallback,
-  onShouldBlockNativeResponder?: ?ActiveCallback,
-|}>;
-
-export type PanResponderType = {
-  _initializeGestureState: (gestureState: GestureState) => void,
-  _updateGestureStateOnMove: (
-    gestureState: GestureState,
-    touchHistory: $PropertyType<PressEvent, 'touchHistory'>,
-  ) => void,
-  /**
-   * @param {object} config Enhanced versions of all of the responder callbacks
-   * that provide not only the typical `ResponderSyntheticEvent`, but also the
-   * `PanResponder` gesture state.  Simply replace the word `Responder` with
-   * `PanResponder` in each of the typical `onResponder*` callbacks. For
-   * example, the `config` object would look like:
-   *
-   *  - `onMoveShouldSetPanResponder: (e, gestureState) => {...}`
-   *  - `onMoveShouldSetPanResponderCapture: (e, gestureState) => {...}`
-   *  - `onStartShouldSetPanResponder: (e, gestureState) => {...}`
-   *  - `onStartShouldSetPanResponderCapture: (e, gestureState) => {...}`
-   *  - `onPanResponderReject: (e, gestureState) => {...}`
-   *  - `onPanResponderGrant: (e, gestureState) => {...}`
-   *  - `onPanResponderStart: (e, gestureState) => {...}`
-   *  - `onPanResponderEnd: (e, gestureState) => {...}`
-   *  - `onPanResponderRelease: (e, gestureState) => {...}`
-   *  - `onPanResponderMove: (e, gestureState) => {...}`
-   *  - `onPanResponderTerminate: (e, gestureState) => {...}`
-   *  - `onPanResponderTerminationRequest: (e, gestureState) => {...}`
-   *  - `onShouldBlockNativeResponder: (e, gestureState) => {...}`
-   *
-   *  In general, for events that have capture equivalents, we update the
-   *  gestureState once in the capture phase and can use it in the bubble phase
-   *  as well.
-   *
-   *  Be careful with onStartShould* callbacks. They only reflect updated
-   *  `gestureState` for start/end events that bubble/capture to the Node.
-   *  Once the node is the responder, you can rely on every start/end event
-   *  being processed by the gesture and `gestureState` being updated
-   *  accordingly. (numberActiveTouches) may not be totally accurate unless you
-   *  are the responder.
-   */
-  create: (config: PanResponderConfig) => {
-    getInteractionHandle: () => ?number,
-    panHandlers: PanHandlers,
-  },
-};

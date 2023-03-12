@@ -5,21 +5,18 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
 'use strict';
 
-import type {NativeColorValue} from './PlatformColorValueTypes';
-import type {ColorValue} from './StyleSheet';
 
 const Platform = require('../Utilities/Platform');
 const normalizeColor = require('./normalizeColor');
 
-export type ProcessedColorValue = number | NativeColorValue;
 
 /* eslint no-bitwise: 0 */
-function processColor(color?: ?(number | ColorValue)): ?ProcessedColorValue {
+function processColor(color) {
   if (color === undefined || color === null) {
     return color;
   }

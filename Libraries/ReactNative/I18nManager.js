@@ -4,17 +4,13 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
 import NativeI18nManager from './NativeI18nManager';
 
-const i18nConstants: {|
-  doLeftAndRightSwapInRTL: boolean,
-  isRTL: boolean,
-  localeIdentifier?: ?string,
-|} = getI18nManagerConstants();
+const i18nConstants = getI18nManagerConstants();
 
 function getI18nManagerConstants() {
   if (NativeI18nManager) {
@@ -30,15 +26,11 @@ function getI18nManagerConstants() {
 }
 
 module.exports = {
-  getConstants: (): {|
-    doLeftAndRightSwapInRTL: boolean,
-    isRTL: boolean,
-    localeIdentifier: ?string,
-  |} => {
+  getConstants: () => {
     return i18nConstants;
   },
 
-  allowRTL: (shouldAllow: boolean) => {
+  allowRTL: (shouldAllow) => {
     if (!NativeI18nManager) {
       return;
     }
@@ -46,7 +38,7 @@ module.exports = {
     NativeI18nManager.allowRTL(shouldAllow);
   },
 
-  forceRTL: (shouldForce: boolean) => {
+  forceRTL: (shouldForce) => {
     if (!NativeI18nManager) {
       return;
     }
@@ -54,7 +46,7 @@ module.exports = {
     NativeI18nManager.forceRTL(shouldForce);
   },
 
-  swapLeftAndRightInRTL: (flipStyles: boolean) => {
+  swapLeftAndRightInRTL: (flipStyles) => {
     if (!NativeI18nManager) {
       return;
     }

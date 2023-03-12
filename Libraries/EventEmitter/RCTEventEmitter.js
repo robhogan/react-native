@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  */
 
 'use strict';
@@ -13,7 +13,7 @@
 const BatchedBridge = require('../BatchedBridge/BatchedBridge');
 
 const RCTEventEmitter = {
-  register(eventEmitter: any) {
+  register(eventEmitter) {
     if (global.RN$Bridgeless) {
       global.RN$registerCallableModule('RCTEventEmitter', () => eventEmitter);
     } else {

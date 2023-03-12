@@ -5,40 +5,22 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict
+ *  strict
  */
 
 import NativePlatformConstantsIOS from './NativePlatformConstantsIOS';
 
-export type PlatformSelectSpec<T> = {
-  default?: T,
-  native?: T,
-  ios?: T,
-  ...
-};
 
 const Platform = {
   __constants: null,
   OS: 'ios',
   // $FlowFixMe[unsafe-getters-setters]
-  get Version(): string {
+  get Version() {
     // $FlowFixMe[object-this-reference]
     return this.constants.osVersion;
   },
   // $FlowFixMe[unsafe-getters-setters]
-  get constants(): {|
-    forceTouchAvailable: boolean,
-    interfaceIdiom: string,
-    isTesting: boolean,
-    osVersion: string,
-    reactNativeVersion: {|
-      major: number,
-      minor: number,
-      patch: number,
-      prerelease: ?number,
-    |},
-    systemName: string,
-  |} {
+  get constants() {
     // $FlowFixMe[object-this-reference]
     if (this.__constants == null) {
       // $FlowFixMe[object-this-reference]
@@ -48,24 +30,24 @@ const Platform = {
     return this.__constants;
   },
   // $FlowFixMe[unsafe-getters-setters]
-  get isPad(): boolean {
+  get isPad() {
     // $FlowFixMe[object-this-reference]
     return this.constants.interfaceIdiom === 'pad';
   },
   // $FlowFixMe[unsafe-getters-setters]
-  get isTV(): boolean {
+  get isTV() {
     // $FlowFixMe[object-this-reference]
     return this.constants.interfaceIdiom === 'tv';
   },
   // $FlowFixMe[unsafe-getters-setters]
-  get isTesting(): boolean {
+  get isTesting() {
     if (__DEV__) {
       // $FlowFixMe[object-this-reference]
       return this.constants.isTesting;
     }
     return false;
   },
-  select: <T>(spec: PlatformSelectSpec<T>): T =>
+  select:(spec) =>
     // $FlowFixMe[incompatible-return]
     'ios' in spec ? spec.ios : 'native' in spec ? spec.native : spec.default,
 };

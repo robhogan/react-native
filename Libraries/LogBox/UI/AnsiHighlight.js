@@ -4,11 +4,10 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
-import type {TextStyleProp} from '../../StyleSheet/StyleSheet';
 
 import View from '../../Components/View/View';
 import StyleSheet from '../../StyleSheet/StyleSheet';
@@ -40,11 +39,7 @@ const COLORS = {
 export default function Ansi({
   text,
   style,
-}: {
-  text: string,
-  style: TextStyleProp,
-  ...
-}): React.Node {
+}) {
   let commonWhitespaceLength = Infinity;
   const parsedLines = text.split(/\n/).map(line =>
     ansiToJson(line, {

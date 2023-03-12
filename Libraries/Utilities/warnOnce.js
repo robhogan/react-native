@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict
+ *  strict
  */
 
 'use strict';
 
-const warnedKeys: {[string]: boolean, ...} = {};
+const warnedKeys = {};
 
 /**
  * A simple function that prints a warning message once per session.
@@ -19,7 +19,7 @@ const warnedKeys: {[string]: boolean, ...} = {};
  *                       This should be unique to the callsite.
  * @param {string} message - The message to print
  */
-function warnOnce(key: string, message: string) {
+function warnOnce(key, message) {
   if (warnedKeys[key]) {
     return;
   }

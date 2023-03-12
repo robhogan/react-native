@@ -5,27 +5,21 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict
+ *  strict
  */
 
 import NativeSourceCode from '../../NativeModules/specs/NativeSourceCode';
 
-let _cachedDevServerURL: ?string;
-let _cachedFullBundleURL: ?string;
+let _cachedDevServerURL;
+let _cachedFullBundleURL;
 const FALLBACK = 'http://localhost:8081/';
 
-type DevServerInfo = {
-  url: string,
-  fullBundleUrl: ?string,
-  bundleLoadedFromServer: boolean,
-  ...
-};
 
 /**
  * Many RN development tools rely on the development server (packager) running
  * @return URL to packager with trailing slash
  */
-function getDevServer(): DevServerInfo {
+function getDevServer() {
   if (_cachedDevServerURL === undefined) {
     const scriptUrl = NativeSourceCode.getConstants().scriptURL;
     const match = scriptUrl.match(/^https?:\/\/.*?\//);

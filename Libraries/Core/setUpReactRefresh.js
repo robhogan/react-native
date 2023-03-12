@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
@@ -22,7 +22,7 @@ if (__DEV__) {
   ReactRefreshRuntime.injectIntoGlobalHook(global);
 
   const Refresh = {
-    performFullRefresh(reason: string) {
+    performFullRefresh(reason) {
       DevSettings.reload(reason);
     },
 

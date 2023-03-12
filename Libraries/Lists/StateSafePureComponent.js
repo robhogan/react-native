@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict
+ *  strict
  * @format
  */
 
@@ -20,21 +20,18 @@ import * as React from 'react';
  * variables are read in a state updater function, instead of the ones passed
  * in.
  */
-export default class StateSafePureComponent<
-  Props,
-  State: interface {},
-> extends React.PureComponent<Props, State> {
+export default class StateSafePureComponent extends React.PureComponent {
   _inAsyncStateUpdate = false;
 
-  constructor(props: Props) {
+  constructor(props) {
     super(props);
     this._installSetStateHooks();
   }
 
   setState(
-    partialState: ?($Shape<State> | ((State, Props) => ?$Shape<State>)),
-    callback?: () => mixed,
-  ): void {
+    partialState,
+    callback,
+  ) {
     if (typeof partialState === 'function') {
       super.setState((state, props) => {
         this._inAsyncStateUpdate = true;
@@ -65,7 +62,7 @@ export default class StateSafePureComponent<
         );
         return props;
       },
-      set(newProps: Props) {
+      set(newProps) {
         props = newProps;
       },
     });
@@ -77,7 +74,7 @@ export default class StateSafePureComponent<
         );
         return state;
       },
-      set(newState: State) {
+      set(newState) {
         state = newState;
       },
     });

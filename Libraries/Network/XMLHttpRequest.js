@@ -5,14 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  */
 
 'use strict';
 
-import type {IPerformanceLogger} from '../Utilities/createPerformanceLogger';
 
-import {type EventSubscription} from '../vendor/emitter/EventEmitter';
+import {} from '../vendor/emitter/EventEmitter';
 
 const BlobManager = require('../Blob/BlobManager');
 const GlobalPerformanceLogger = require('../Utilities/GlobalPerformanceLogger');
@@ -21,30 +20,9 @@ const base64 = require('base64-js');
 const EventTarget = require('event-target-shim');
 const invariant = require('invariant');
 
-const DEBUG_NETWORK_SEND_DELAY: false = false; // Set to a number of milliseconds when debugging
+const DEBUG_NETWORK_SEND_DELAY = false; // Set to a number of milliseconds when debugging
 
-export type NativeResponseType = 'base64' | 'blob' | 'text';
-export type ResponseType =
-  | ''
-  | 'arraybuffer'
-  | 'blob'
-  | 'document'
-  | 'json'
-  | 'text';
-export type Response = ?Object | string;
 
-type XHRInterceptor = interface {
-  requestSent(id: number, url: string, method: string, headers: Object): void,
-  responseReceived(
-    id: number,
-    url: string,
-    status: number,
-    headers: Object,
-  ): void,
-  dataReceived(id: number, data: string): void,
-  loadingFinished(id: number, encodedDataLength: number): void,
-  loadingFailed(id: number, error: string): void,
-};
 
 // The native blob module is optional so inject it here if available.
 if (BlobManager.isAvailable) {
@@ -78,73 +56,73 @@ const REQUEST_EVENTS = [
 
 const XHR_EVENTS = REQUEST_EVENTS.concat('readystatechange');
 
-class XMLHttpRequestEventTarget extends (EventTarget(...REQUEST_EVENTS): any) {
-  onload: ?Function;
-  onloadstart: ?Function;
-  onprogress: ?Function;
-  ontimeout: ?Function;
-  onerror: ?Function;
-  onabort: ?Function;
-  onloadend: ?Function;
+class XMLHttpRequestEventTarget extends (EventTarget(...REQUEST_EVENTS)) {
+  onload;
+  onloadstart;
+  onprogress;
+  ontimeout;
+  onerror;
+  onabort;
+  onloadend;
 }
 
 /**
  * Shared base for platform-specific XMLHttpRequest implementations.
  */
-class XMLHttpRequest extends (EventTarget(...XHR_EVENTS): any) {
-  static UNSENT: number = UNSENT;
-  static OPENED: number = OPENED;
-  static HEADERS_RECEIVED: number = HEADERS_RECEIVED;
-  static LOADING: number = LOADING;
-  static DONE: number = DONE;
+class XMLHttpRequest extends (EventTarget(...XHR_EVENTS)) {
+  static UNSENT = UNSENT;
+  static OPENED = OPENED;
+  static HEADERS_RECEIVED = HEADERS_RECEIVED;
+  static LOADING = LOADING;
+  static DONE = DONE;
 
-  static _interceptor: ?XHRInterceptor = null;
+  static _interceptor = null;
 
-  UNSENT: number = UNSENT;
-  OPENED: number = OPENED;
-  HEADERS_RECEIVED: number = HEADERS_RECEIVED;
-  LOADING: number = LOADING;
-  DONE: number = DONE;
+  UNSENT = UNSENT;
+  OPENED = OPENED;
+  HEADERS_RECEIVED = HEADERS_RECEIVED;
+  LOADING = LOADING;
+  DONE = DONE;
 
   // EventTarget automatically initializes these to `null`.
-  onload: ?Function;
-  onloadstart: ?Function;
-  onprogress: ?Function;
-  ontimeout: ?Function;
-  onerror: ?Function;
-  onabort: ?Function;
-  onloadend: ?Function;
-  onreadystatechange: ?Function;
+  onload;
+  onloadstart;
+  onprogress;
+  ontimeout;
+  onerror;
+  onabort;
+  onloadend;
+  onreadystatechange;
 
-  readyState: number = UNSENT;
-  responseHeaders: ?Object;
-  status: number = 0;
-  timeout: number = 0;
-  responseURL: ?string;
-  withCredentials: boolean = true;
+  readyState = UNSENT;
+  responseHeaders;
+  status = 0;
+  timeout = 0;
+  responseURL;
+  withCredentials = true;
 
-  upload: XMLHttpRequestEventTarget = new XMLHttpRequestEventTarget();
+  upload = new XMLHttpRequestEventTarget();
 
-  _requestId: ?number;
-  _subscriptions: Array<EventSubscription>;
+  _requestId;
+  _subscriptions;
 
-  _aborted: boolean = false;
-  _cachedResponse: Response;
-  _hasError: boolean = false;
-  _headers: Object;
-  _lowerCaseResponseHeaders: Object;
-  _method: ?string = null;
-  _perfKey: ?string = null;
-  _responseType: ResponseType;
-  _response: string = '';
-  _sent: boolean;
-  _url: ?string = null;
-  _timedOut: boolean = false;
-  _trackingName: string = 'unknown';
-  _incrementalEvents: boolean = false;
-  _performanceLogger: IPerformanceLogger = GlobalPerformanceLogger;
+  _aborted = false;
+  _cachedResponse;
+  _hasError = false;
+  _headers;
+  _lowerCaseResponseHeaders;
+  _method = null;
+  _perfKey = null;
+  _responseType;
+  _response = '';
+  _sent;
+  _url = null;
+  _timedOut = false;
+  _trackingName = 'unknown';
+  _incrementalEvents = false;
+  _performanceLogger = GlobalPerformanceLogger;
 
-  static setInterceptor(interceptor: ?XHRInterceptor) {
+  static setInterceptor(interceptor) {
     XMLHttpRequest._interceptor = interceptor;
   }
 
@@ -153,7 +131,7 @@ class XMLHttpRequest extends (EventTarget(...XHR_EVENTS): any) {
     this._reset();
   }
 
-  _reset(): void {
+  _reset() {
     this.readyState = this.UNSENT;
     this.responseHeaders = undefined;
     this.status = 0;
@@ -173,11 +151,11 @@ class XMLHttpRequest extends (EventTarget(...XHR_EVENTS): any) {
     this._timedOut = false;
   }
 
-  get responseType(): ResponseType {
+  get responseType() {
     return this._responseType;
   }
 
-  set responseType(responseType: ResponseType): void {
+  set responseType(responseType) {
     if (this._sent) {
       throw new Error(
         "Failed to set the 'responseType' property on 'XMLHttpRequest': The " +
@@ -206,7 +184,7 @@ class XMLHttpRequest extends (EventTarget(...XHR_EVENTS): any) {
     this._responseType = responseType;
   }
 
-  get responseText(): string {
+  get responseText() {
     if (this._responseType !== '' && this._responseType !== 'text') {
       throw new Error(
         "The 'responseText' property is only available if 'responseType' " +
@@ -219,7 +197,7 @@ class XMLHttpRequest extends (EventTarget(...XHR_EVENTS): any) {
     return this._response;
   }
 
-  get response(): Response {
+  get response() {
     const {responseType} = this;
     if (responseType === '' || responseType === 'text') {
       return this.readyState < LOADING || this._hasError ? '' : this._response;
@@ -268,7 +246,7 @@ class XMLHttpRequest extends (EventTarget(...XHR_EVENTS): any) {
   }
 
   // exposed for testing
-  __didCreateRequest(requestId: number): void {
+  __didCreateRequest(requestId) {
     this._requestId = requestId;
 
     XMLHttpRequest._interceptor &&
@@ -282,10 +260,10 @@ class XMLHttpRequest extends (EventTarget(...XHR_EVENTS): any) {
 
   // exposed for testing
   __didUploadProgress(
-    requestId: number,
-    progress: number,
-    total: number,
-  ): void {
+    requestId,
+    progress,
+    total,
+  ) {
     if (requestId === this._requestId) {
       this.upload.dispatchEvent({
         type: 'progress',
@@ -297,11 +275,11 @@ class XMLHttpRequest extends (EventTarget(...XHR_EVENTS): any) {
   }
 
   __didReceiveResponse(
-    requestId: number,
-    status: number,
-    responseHeaders: ?Object,
-    responseURL: ?string,
-  ): void {
+    requestId,
+    status,
+    responseHeaders,
+    responseURL,
+  ) {
     if (requestId === this._requestId) {
       this._perfKey != null &&
         this._performanceLogger.stopTimespan(this._perfKey);
@@ -324,7 +302,7 @@ class XMLHttpRequest extends (EventTarget(...XHR_EVENTS): any) {
     }
   }
 
-  __didReceiveData(requestId: number, response: string): void {
+  __didReceiveData(requestId, response) {
     if (requestId !== this._requestId) {
       return;
     }
@@ -337,10 +315,10 @@ class XMLHttpRequest extends (EventTarget(...XHR_EVENTS): any) {
   }
 
   __didReceiveIncrementalData(
-    requestId: number,
-    responseText: string,
-    progress: number,
-    total: number,
+    requestId,
+    responseText,
+    progress,
+    total,
   ) {
     if (requestId !== this._requestId) {
       return;
@@ -359,10 +337,10 @@ class XMLHttpRequest extends (EventTarget(...XHR_EVENTS): any) {
   }
 
   __didReceiveDataProgress(
-    requestId: number,
-    loaded: number,
-    total: number,
-  ): void {
+    requestId,
+    loaded,
+    total,
+  ) {
     if (requestId !== this._requestId) {
       return;
     }
@@ -376,10 +354,10 @@ class XMLHttpRequest extends (EventTarget(...XHR_EVENTS): any) {
 
   // exposed for testing
   __didCompleteResponse(
-    requestId: number,
-    error: string,
-    timeOutError: boolean,
-  ): void {
+    requestId,
+    error,
+    timeOutError,
+  ) {
     if (requestId === this._requestId) {
       if (error) {
         if (this._responseType === '' || this._responseType === 'text') {
@@ -407,7 +385,7 @@ class XMLHttpRequest extends (EventTarget(...XHR_EVENTS): any) {
     }
   }
 
-  _clearSubscriptions(): void {
+  _clearSubscriptions() {
     (this._subscriptions || []).forEach(sub => {
       if (sub) {
         sub.remove();
@@ -416,7 +394,7 @@ class XMLHttpRequest extends (EventTarget(...XHR_EVENTS): any) {
     this._subscriptions = [];
   }
 
-  getAllResponseHeaders(): ?string {
+  getAllResponseHeaders() {
     if (!this.responseHeaders) {
       // according to the spec, return null if no response has been received
       return null;
@@ -425,10 +403,7 @@ class XMLHttpRequest extends (EventTarget(...XHR_EVENTS): any) {
     // Assign to non-nullable local variable.
     const responseHeaders = this.responseHeaders;
 
-    const unsortedHeaders: Map<
-      string,
-      {lowerHeaderName: string, upperHeaderName: string, headerValue: string},
-    > = new Map();
+    const unsortedHeaders = new Map();
     for (const rawHeaderName of Object.keys(responseHeaders)) {
       const headerValue = responseHeaders[rawHeaderName];
       const lowerHeaderName = rawHeaderName.toLowerCase();
@@ -466,12 +441,12 @@ class XMLHttpRequest extends (EventTarget(...XHR_EVENTS): any) {
     );
   }
 
-  getResponseHeader(header: string): ?string {
+  getResponseHeader(header) {
     const value = this._lowerCaseResponseHeaders[header.toLowerCase()];
     return value !== undefined ? value : null;
   }
 
-  setRequestHeader(header: string, value: any): void {
+  setRequestHeader(header, value) {
     if (this.readyState !== this.OPENED) {
       throw new Error('Request has not been opened');
     }
@@ -481,7 +456,7 @@ class XMLHttpRequest extends (EventTarget(...XHR_EVENTS): any) {
   /**
    * Custom extension for tracking origins of request.
    */
-  setTrackingName(trackingName: string): XMLHttpRequest {
+  setTrackingName(trackingName) {
     this._trackingName = trackingName;
     return this;
   }
@@ -489,12 +464,12 @@ class XMLHttpRequest extends (EventTarget(...XHR_EVENTS): any) {
   /**
    * Custom extension for setting a custom performance logger
    */
-  setPerformanceLogger(performanceLogger: IPerformanceLogger): XMLHttpRequest {
+  setPerformanceLogger(performanceLogger) {
     this._performanceLogger = performanceLogger;
     return this;
   }
 
-  open(method: string, url: string, async: ?boolean): void {
+  open(method, url, async) {
     /* Other optional arguments are not supported yet */
     if (this.readyState !== this.UNSENT) {
       throw new Error('Cannot open, already sending');
@@ -512,7 +487,7 @@ class XMLHttpRequest extends (EventTarget(...XHR_EVENTS): any) {
     this.setReadyState(this.OPENED);
   }
 
-  send(data: any): void {
+  send(data) {
     if (this.readyState !== this.OPENED) {
       throw new Error('Request has not been opened');
     }
@@ -554,7 +529,7 @@ class XMLHttpRequest extends (EventTarget(...XHR_EVENTS): any) {
       ),
     );
 
-    let nativeResponseType: NativeResponseType = 'text';
+    let nativeResponseType = 'text';
     if (this._responseType === 'arraybuffer') {
       nativeResponseType = 'base64';
     }
@@ -600,7 +575,7 @@ class XMLHttpRequest extends (EventTarget(...XHR_EVENTS): any) {
     }
   }
 
-  abort(): void {
+  abort() {
     this._aborted = true;
     if (this._requestId) {
       RCTNetworking.abortRequest(this._requestId);
@@ -621,18 +596,16 @@ class XMLHttpRequest extends (EventTarget(...XHR_EVENTS): any) {
     this._reset();
   }
 
-  setResponseHeaders(responseHeaders: ?Object): void {
+  setResponseHeaders(responseHeaders) {
     this.responseHeaders = responseHeaders || null;
     const headers = responseHeaders || {};
-    this._lowerCaseResponseHeaders = Object.keys(headers).reduce<{
-      [string]: any,
-    }>((lcaseHeaders, headerName) => {
+    this._lowerCaseResponseHeaders = Object.keys(headers).reduce((lcaseHeaders, headerName) => {
       lcaseHeaders[headerName.toLowerCase()] = headers[headerName];
       return lcaseHeaders;
     }, {});
   }
 
-  setReadyState(newState: number): void {
+  setReadyState(newState) {
     this.readyState = newState;
     this.dispatchEvent({type: 'readystatechange'});
     if (newState === this.DONE) {
@@ -652,7 +625,7 @@ class XMLHttpRequest extends (EventTarget(...XHR_EVENTS): any) {
   }
 
   /* global EventListener */
-  addEventListener(type: string, listener: EventListener): void {
+  addEventListener(type, listener) {
     // If we dont' have a 'readystatechange' event handler, we don't
     // have to send repeated LOADING events with incremental updates
     // to responseText, which will avoid a bunch of native -> JS

@@ -5,31 +5,20 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
 'use strict';
 
 const React = require('react');
 
-type Props = $ReadOnly<{|
-  /**
-   * Indicates whether the render function needs to be called again
-   */
-  shouldUpdate: boolean,
-  /**
-   * () => renderable
-   * A function that returns a renderable component
-   */
-  render: () => React.Node,
-|}>;
 
-class StaticRenderer extends React.Component<Props> {
-  shouldComponentUpdate(nextProps: Props): boolean {
+class StaticRenderer extends React.Component {
+  shouldComponentUpdate(nextProps) {
     return nextProps.shouldUpdate;
   }
 
-  render(): React.Node {
+  render() {
     return this.props.render();
   }
 }

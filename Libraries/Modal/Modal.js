@@ -5,16 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
-import type {ViewProps} from '../Components/View/ViewPropTypes';
-import type {RootTag} from '../ReactNative/RootTag';
-import type {DirectEventHandler} from '../Types/CodegenTypes';
 
 import NativeEventEmitter from '../EventEmitter/NativeEventEmitter';
 import {VirtualizedListContextResetter} from '../Lists/VirtualizedListContext.js';
-import {type EventSubscription} from '../vendor/emitter/EventEmitter';
+import {} from '../vendor/emitter/EventEmitter';
 import ModalInjection from './ModalInjection';
 import NativeModalManager from './NativeModalManager';
 import RCTModalHostView from './RCTModalHostViewNativeComponent';
@@ -28,13 +25,10 @@ const StyleSheet = require('../StyleSheet/StyleSheet');
 const Platform = require('../Utilities/Platform');
 const React = require('react');
 
-type ModalEventDefinitions = {
-  modalDismissed: [{modalID: number}],
-};
 
 const ModalEventEmitter =
   Platform.OS === 'ios' && NativeModalManager != null
-    ? new NativeEventEmitter<ModalEventDefinitions>(
+    ? new NativeEventEmitter(
         // T88715063: NativeEventEmitter only used this parameter on iOS. Now it uses it on all platforms, so this code was modified automatically to preserve its behavior
         // If you want to use the native module on other platforms, please remove this condition and test its behavior
         Platform.OS !== 'ios' ? null : NativeModalManager,
@@ -53,113 +47,9 @@ const ModalEventEmitter =
 // destroyed before the callback is fired.
 let uniqueModalIdentifier = 0;
 
-type OrientationChangeEvent = $ReadOnly<{|
-  orientation: 'portrait' | 'landscape',
-|}>;
 
-export type Props = $ReadOnly<{|
-  ...ViewProps,
 
-  /**
-   * The `animationType` prop controls how the modal animates.
-   *
-   * See https://reactnative.dev/docs/modal#animationtype
-   */
-  animationType?: ?('none' | 'slide' | 'fade'),
-
-  /**
-   * The `presentationStyle` prop controls how the modal appears.
-   *
-   * See https://reactnative.dev/docs/modal#presentationstyle
-   */
-  presentationStyle?: ?(
-    | 'fullScreen'
-    | 'pageSheet'
-    | 'formSheet'
-    | 'overFullScreen'
-  ),
-
-  /**
-   * The `transparent` prop determines whether your modal will fill the
-   * entire view.
-   *
-   * See https://reactnative.dev/docs/modal#transparent
-   */
-  transparent?: ?boolean,
-
-  /**
-   * The `statusBarTranslucent` prop determines whether your modal should go under
-   * the system statusbar.
-   *
-   * See https://reactnative.dev/docs/modal#transparent
-   */
-  statusBarTranslucent?: ?boolean,
-
-  /**
-   * The `hardwareAccelerated` prop controls whether to force hardware
-   * acceleration for the underlying window.
-   *
-   * This prop works only on Android.
-   *
-   * See https://reactnative.dev/docs/modal#hardwareaccelerated
-   */
-  hardwareAccelerated?: ?boolean,
-
-  /**
-   * The `visible` prop determines whether your modal is visible.
-   *
-   * See https://reactnative.dev/docs/modal#visible
-   */
-  visible?: ?boolean,
-
-  /**
-   * The `onRequestClose` callback is called when the user taps the hardware
-   * back button on Android or the menu button on Apple TV.
-   *
-   * This is required on Apple TV and Android.
-   *
-   * See https://reactnative.dev/docs/modal#onrequestclose
-   */
-  onRequestClose?: ?DirectEventHandler<null>,
-
-  /**
-   * The `onShow` prop allows passing a function that will be called once the
-   * modal has been shown.
-   *
-   * See https://reactnative.dev/docs/modal#onshow
-   */
-  onShow?: ?DirectEventHandler<null>,
-
-  /**
-   * The `onDismiss` prop allows passing a function that will be called once
-   * the modal has been dismissed.
-   *
-   * See https://reactnative.dev/docs/modal#ondismiss
-   */
-  onDismiss?: ?() => mixed,
-
-  /**
-   * The `supportedOrientations` prop allows the modal to be rotated to any of the specified orientations.
-   *
-   * See https://reactnative.dev/docs/modal#supportedorientations
-   */
-  supportedOrientations?: ?$ReadOnlyArray<
-    | 'portrait'
-    | 'portrait-upside-down'
-    | 'landscape'
-    | 'landscape-left'
-    | 'landscape-right',
-  >,
-
-  /**
-   * The `onOrientationChange` callback is called when the orientation changes while the modal is being displayed.
-   *
-   * See https://reactnative.dev/docs/modal#onorientationchange
-   */
-  onOrientationChange?: ?DirectEventHandler<OrientationChangeEvent>,
-|}>;
-
-function confirmProps(props: Props) {
+function confirmProps(props) {
   if (__DEV__) {
     if (
       props.presentationStyle &&
@@ -173,18 +63,18 @@ function confirmProps(props: Props) {
   }
 }
 
-class Modal extends React.Component<Props> {
-  static defaultProps: {|hardwareAccelerated: boolean, visible: boolean|} = {
+class Modal extends React.Component {
+  static defaultProps = {
     visible: true,
     hardwareAccelerated: false,
   };
 
-  static contextType: React.Context<RootTag> = RootTagContext;
+  static contextType = RootTagContext;
 
-  _identifier: number;
-  _eventSubscription: ?EventSubscription;
+  _identifier;
+  _eventSubscription;
 
-  constructor(props: Props) {
+  constructor(props) {
     super(props);
     if (__DEV__) {
       confirmProps(props);
@@ -218,7 +108,7 @@ class Modal extends React.Component<Props> {
     }
   }
 
-  render(): React.Node {
+  render() {
     if (this.props.visible !== true) {
       return null;
     }
@@ -280,7 +170,7 @@ class Modal extends React.Component<Props> {
   }
 
   // We don't want any responder events bubbling out of the modal.
-  _shouldSetResponder(): boolean {
+  _shouldSetResponder() {
     return true;
   }
 }
@@ -300,8 +190,6 @@ const styles = StyleSheet.create({
   },
 });
 
-const ExportedModal: React.AbstractComponent<
-  React.ElementConfig<typeof Modal>,
-> = ModalInjection.unstable_Modal ?? Modal;
+const ExportedModal = ModalInjection.unstable_Modal ?? Modal;
 
 module.exports = ExportedModal;

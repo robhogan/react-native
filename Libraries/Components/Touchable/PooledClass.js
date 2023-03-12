@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  */
 
 'use strict';
@@ -20,7 +20,7 @@ import invariant from 'invariant';
  */
 /* $FlowFixMe[missing-this-annot] The 'this' type annotation(s) required by
  * Flow's LTI update could not be added via codemod */
-const oneArgumentPooler = function (copyFieldsFrom: any) {
+const oneArgumentPooler = function (copyFieldsFrom) {
   const Klass = this; // eslint-disable-line consistent-this
   if (Klass.instancePool.length) {
     const instance = Klass.instancePool.pop();
@@ -33,7 +33,7 @@ const oneArgumentPooler = function (copyFieldsFrom: any) {
 
 /* $FlowFixMe[missing-this-annot] The 'this' type annotation(s) required by
  * Flow's LTI update could not be added via codemod */
-const twoArgumentPooler = function (a1: any, a2: any) {
+const twoArgumentPooler = function (a1, a2) {
   const Klass = this; // eslint-disable-line consistent-this
   if (Klass.instancePool.length) {
     const instance = Klass.instancePool.pop();
@@ -46,7 +46,7 @@ const twoArgumentPooler = function (a1: any, a2: any) {
 
 /* $FlowFixMe[missing-this-annot] The 'this' type annotation(s) required by
  * Flow's LTI update could not be added via codemod */
-const threeArgumentPooler = function (a1: any, a2: any, a3: any) {
+const threeArgumentPooler = function (a1, a2, a3) {
   const Klass = this; // eslint-disable-line consistent-this
   if (Klass.instancePool.length) {
     const instance = Klass.instancePool.pop();
@@ -59,7 +59,7 @@ const threeArgumentPooler = function (a1: any, a2: any, a3: any) {
 
 /* $FlowFixMe[missing-this-annot] The 'this' type annotation(s) required by
  * Flow's LTI update could not be added via codemod */
-const fourArgumentPooler = function (a1: any, a2: any, a3: any, a4: any) {
+const fourArgumentPooler = function (a1, a2, a3, a4) {
   const Klass = this; // eslint-disable-line consistent-this
   if (Klass.instancePool.length) {
     const instance = Klass.instancePool.pop();
@@ -89,7 +89,6 @@ const standardReleaser = function (instance) {
 const DEFAULT_POOL_SIZE = 10;
 const DEFAULT_POOLER = oneArgumentPooler;
 
-type Pooler = any;
 
 /**
  * Augments `CopyConstructor` to be a poolable class, augmenting only the class
@@ -100,19 +99,13 @@ type Pooler = any;
  * @param {Function} CopyConstructor Constructor that can be used to reset.
  * @param {Function} pooler Customizable pooler.
  */
-const addPoolingTo = function <T>(
-  CopyConstructor: Class<T>,
-  pooler: Pooler,
-): Class<T> & {
-  getPooled(
-    ...args: $ReadOnlyArray<mixed>
-  ): /* arguments of the constructor */ T,
-  release(instance: mixed): void,
-  ...
-} {
+const addPoolingTo = function(
+  CopyConstructor,
+  pooler,
+) {
   // Casting as any so that flow ignores the actual implementation and trusts
   // it to match the type we declared
-  const NewKlass = (CopyConstructor: any);
+  const NewKlass = (CopyConstructor);
   NewKlass.instancePool = [];
   NewKlass.getPooled = pooler || DEFAULT_POOLER;
   if (!NewKlass.poolSize) {
@@ -124,10 +117,10 @@ const addPoolingTo = function <T>(
 
 const PooledClass = {
   addPoolingTo: addPoolingTo,
-  oneArgumentPooler: (oneArgumentPooler: Pooler),
-  twoArgumentPooler: (twoArgumentPooler: Pooler),
-  threeArgumentPooler: (threeArgumentPooler: Pooler),
-  fourArgumentPooler: (fourArgumentPooler: Pooler),
+  oneArgumentPooler: (oneArgumentPooler),
+  twoArgumentPooler: (twoArgumentPooler),
+  threeArgumentPooler: (threeArgumentPooler),
+  fourArgumentPooler: (fourArgumentPooler),
 };
 
 module.exports = PooledClass;

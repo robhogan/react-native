@@ -4,56 +4,53 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * 
  * @format
  */
 
 'use strict';
 
-import type {PlatformConfig} from '../AnimatedPlatformConfig';
-import type {InterpolationConfigType} from './AnimatedInterpolation';
-import type AnimatedNode from './AnimatedNode';
 
 import AnimatedInterpolation from './AnimatedInterpolation';
 import AnimatedWithChildren from './AnimatedWithChildren';
 
 export default class AnimatedModulo extends AnimatedWithChildren {
-  _a: AnimatedNode;
-  _modulus: number;
+  _a;
+  _modulus;
 
-  constructor(a: AnimatedNode, modulus: number) {
+  constructor(a, modulus) {
     super();
     this._a = a;
     this._modulus = modulus;
   }
 
-  __makeNative(platformConfig: ?PlatformConfig) {
+  __makeNative(platformConfig) {
     this._a.__makeNative(platformConfig);
     super.__makeNative(platformConfig);
   }
 
-  __getValue(): number {
+  __getValue() {
     return (
       ((this._a.__getValue() % this._modulus) + this._modulus) % this._modulus
     );
   }
 
-  interpolate<OutputT: number | string>(
-    config: InterpolationConfigType<OutputT>,
-  ): AnimatedInterpolation<OutputT> {
+  interpolate(
+    config,
+  ) {
     return new AnimatedInterpolation(this, config);
   }
 
-  __attach(): void {
+  __attach() {
     this._a.__addChild(this);
   }
 
-  __detach(): void {
+  __detach() {
     this._a.__removeChild(this);
     super.__detach();
   }
 
-  __getNativeConfig(): any {
+  __getNativeConfig() {
     return {
       type: 'modulus',
       input: this._a.__getNativeTag(),

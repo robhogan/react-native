@@ -4,11 +4,10 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
-import type {Node} from 'react';
 
 import ImageBackground from '../../Image/ImageBackground';
 import StyleSheet from '../../StyleSheet/StyleSheet';
@@ -18,7 +17,7 @@ import Colors from './Colors';
 import HermesBadge from './HermesBadge';
 import React from 'react';
 
-const Header = (): Node => {
+const Header = () => {
   const isDarkMode = useColorScheme() === 'dark';
   return (
     <ImageBackground

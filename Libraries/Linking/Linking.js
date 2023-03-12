@@ -5,10 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
-import type {EventSubscription} from '../vendor/emitter/EventEmitter';
 
 import NativeEventEmitter from '../EventEmitter/NativeEventEmitter';
 import InteractionManager from '../Interaction/InteractionManager';
@@ -18,9 +17,6 @@ import NativeLinkingManager from './NativeLinkingManager';
 import invariant from 'invariant';
 import nullthrows from 'nullthrows';
 
-type LinkingEventDefinitions = {
-  url: [{url: string}],
-};
 
 /**
  * `Linking` gives you a general interface to interact with both incoming
@@ -28,7 +24,7 @@ type LinkingEventDefinitions = {
  *
  * See https://reactnative.dev/docs/linking
  */
-class Linking extends NativeEventEmitter<LinkingEventDefinitions> {
+class Linking extends NativeEventEmitter {
   constructor() {
     super(Platform.OS === 'ios' ? nullthrows(NativeLinkingManager) : undefined);
   }
@@ -39,11 +35,11 @@ class Linking extends NativeEventEmitter<LinkingEventDefinitions> {
    *
    * See https://reactnative.dev/docs/linking#addeventlistener
    */
-  addEventListener<K: $Keys<LinkingEventDefinitions>>(
-    eventType: K,
-    listener: (...$ElementType<LinkingEventDefinitions, K>) => mixed,
-    context: $FlowFixMe,
-  ): EventSubscription {
+  addEventListener(
+    eventType,
+    listener,
+    context,
+  ) {
     return this.addListener(eventType, listener);
   }
 
@@ -52,7 +48,7 @@ class Linking extends NativeEventEmitter<LinkingEventDefinitions> {
    *
    * See https://reactnative.dev/docs/linking#openurl
    */
-  openURL(url: string): Promise<void> {
+  openURL(url) {
     this._validateURL(url);
     if (Platform.OS === 'android') {
       return nullthrows(NativeIntentAndroid).openURL(url);
@@ -66,7 +62,7 @@ class Linking extends NativeEventEmitter<LinkingEventDefinitions> {
    *
    * See https://reactnative.dev/docs/linking#canopenurl
    */
-  canOpenURL(url: string): Promise<boolean> {
+  canOpenURL(url) {
     this._validateURL(url);
     if (Platform.OS === 'android') {
       return nullthrows(NativeIntentAndroid).canOpenURL(url);
@@ -80,7 +76,7 @@ class Linking extends NativeEventEmitter<LinkingEventDefinitions> {
    *
    * See https://reactnative.dev/docs/linking#opensettings
    */
-  openSettings(): Promise<void> {
+  openSettings() {
     if (Platform.OS === 'android') {
       return nullthrows(NativeIntentAndroid).openSettings();
     } else {
@@ -94,7 +90,7 @@ class Linking extends NativeEventEmitter<LinkingEventDefinitions> {
    *
    * See https://reactnative.dev/docs/linking#getinitialurl
    */
-  getInitialURL(): Promise<?string> {
+  getInitialURL() {
     return Platform.OS === 'android'
       ? InteractionManager.runAfterInteractions().then(() =>
           nullthrows(NativeIntentAndroid).getInitialURL(),
@@ -110,13 +106,9 @@ class Linking extends NativeEventEmitter<LinkingEventDefinitions> {
    * See https://reactnative.dev/docs/linking#sendintent
    */
   sendIntent(
-    action: string,
-    extras?: Array<{
-      key: string,
-      value: string | number | boolean,
-      ...
-    }>,
-  ): Promise<void> {
+    action,
+    extras,
+  ) {
     if (Platform.OS === 'android') {
       return nullthrows(NativeIntentAndroid).sendIntent(action, extras);
     } else {
@@ -124,7 +116,7 @@ class Linking extends NativeEventEmitter<LinkingEventDefinitions> {
     }
   }
 
-  _validateURL(url: string): void {
+  _validateURL(url) {
     invariant(
       typeof url === 'string',
       'Invalid URL: should be a string. Was: ' + url,
@@ -133,4 +125,4 @@ class Linking extends NativeEventEmitter<LinkingEventDefinitions> {
   }
 }
 
-module.exports = (new Linking(): Linking);
+module.exports = (new Linking());

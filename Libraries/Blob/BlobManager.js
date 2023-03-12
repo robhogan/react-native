@@ -4,11 +4,10 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
-import type {BlobCollector, BlobData, BlobOptions} from './BlobTypes';
 
 import NativeBlobModule from './NativeBlobModule';
 import invariant from 'invariant';
@@ -23,7 +22,7 @@ const BlobRegistry = require('./BlobRegistry');
  * Based on the rfc4122-compliant solution posted at
  * http://stackoverflow.com/questions/105034
  */
-function uuidv4(): string {
+function uuidv4() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
     const r = (Math.random() * 16) | 0,
       v = c == 'x' ? r : (r & 0x3) | 0x8;
@@ -38,7 +37,7 @@ function uuidv4(): string {
 // underlying native resources. This is a hack to workaround the fact
 // that the current bridge infra doesn't allow to track js objects
 // deallocation. Ideally the whole Blob object should be a jsi::HostObject.
-function createBlobCollector(blobId: string): BlobCollector | null {
+function createBlobCollector(blobId) {
   if (global.__blobCollectorProvider == null) {
     return null;
   } else {
@@ -53,15 +52,15 @@ class BlobManager {
   /**
    * If the native blob module is available.
    */
-  static isAvailable: boolean = !!NativeBlobModule;
+  static isAvailable = !!NativeBlobModule;
 
   /**
    * Create blob from existing array of blobs.
    */
   static createFromParts(
-    parts: Array<Blob | string>,
-    options?: BlobOptions,
-  ): Blob {
+    parts,
+    options,
+  ) {
     invariant(NativeBlobModule, 'NativeBlobModule is available.');
 
     const blobId = uuidv4();
@@ -109,7 +108,7 @@ class BlobManager {
    * Create blob instance from blob data from native.
    * Used internally by modules like XHR, WebSocket, etc.
    */
-  static createFromOptions(options: BlobData): Blob {
+  static createFromOptions(options) {
     BlobRegistry.register(options.blobId);
     // $FlowFixMe[prop-missing]
     return Object.assign(Object.create(Blob.prototype), {
@@ -129,7 +128,7 @@ class BlobManager {
   /**
    * Deallocate resources for a blob.
    */
-  static release(blobId: string): void {
+  static release(blobId) {
     invariant(NativeBlobModule, 'NativeBlobModule is available.');
 
     BlobRegistry.unregister(blobId);
@@ -143,7 +142,7 @@ class BlobManager {
    * Inject the blob content handler in the networking module to support blob
    * requests and responses.
    */
-  static addNetworkingHandler(): void {
+  static addNetworkingHandler() {
     invariant(NativeBlobModule, 'NativeBlobModule is available.');
 
     NativeBlobModule.addNetworkingHandler();
@@ -153,7 +152,7 @@ class BlobManager {
    * Indicate the websocket should return a blob for incoming binary
    * messages.
    */
-  static addWebSocketHandler(socketId: number): void {
+  static addWebSocketHandler(socketId) {
     invariant(NativeBlobModule, 'NativeBlobModule is available.');
 
     NativeBlobModule.addWebSocketHandler(socketId);
@@ -163,7 +162,7 @@ class BlobManager {
    * Indicate the websocket should no longer return a blob for incoming
    * binary messages.
    */
-  static removeWebSocketHandler(socketId: number): void {
+  static removeWebSocketHandler(socketId) {
     invariant(NativeBlobModule, 'NativeBlobModule is available.');
 
     NativeBlobModule.removeWebSocketHandler(socketId);
@@ -172,7 +171,7 @@ class BlobManager {
   /**
    * Send a blob message to a websocket.
    */
-  static sendOverSocket(blob: Blob, socketId: number): void {
+  static sendOverSocket(blob, socketId) {
     invariant(NativeBlobModule, 'NativeBlobModule is available.');
 
     NativeBlobModule.sendOverSocket(blob.data, socketId);

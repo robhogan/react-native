@@ -5,10 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  */
 
-import type {RequestBody} from './convertRequestBody';
 
 // Do not require the native RCTNetworking module directly! Use this wrapper module instead.
 // It will add the necessary requestId, so that you don't have to generate it yourself.
@@ -17,11 +16,10 @@ import Platform from '../Utilities/Platform';
 import convertRequestBody from './convertRequestBody';
 import NativeNetworkingAndroid from './NativeNetworkingAndroid';
 
-type Header = [string, string];
 
 // Convert FormData headers to arrays, which are easier to consume in
 // native on Android.
-function convertHeadersMapToArray(headers: Object): Array<Header> {
+function convertHeadersMapToArray(headers) {
   const headerArray = [];
   for (const name in headers) {
     headerArray.push([name, headers[name]]);
@@ -30,7 +28,7 @@ function convertHeadersMapToArray(headers: Object): Array<Header> {
 }
 
 let _requestId = 1;
-function generateRequestId(): number {
+function generateRequestId() {
   return _requestId++;
 }
 
@@ -39,7 +37,7 @@ function generateRequestId(): number {
  * requestId to each network request that can be used to abort that request later on.
  */
 // FIXME: use typed events
-class RCTNetworking extends NativeEventEmitter<$FlowFixMe> {
+class RCTNetworking extends NativeEventEmitter {
   constructor() {
     super(
       // T88715063: NativeEventEmitter only used this parameter on iOS. Now it uses it on all platforms, so this code was modified automatically to preserve its behavior
@@ -49,16 +47,16 @@ class RCTNetworking extends NativeEventEmitter<$FlowFixMe> {
   }
 
   sendRequest(
-    method: string,
-    trackingName: string,
-    url: string,
-    headers: Object,
-    data: RequestBody,
-    responseType: 'text' | 'base64',
-    incrementalUpdates: boolean,
-    timeout: number,
-    callback: (requestId: number) => mixed,
-    withCredentials: boolean,
+    method,
+    trackingName,
+    url,
+    headers,
+    data,
+    responseType,
+    incrementalUpdates,
+    timeout,
+    callback,
+    withCredentials,
   ) {
     const body = convertRequestBody(data);
     if (body && body.formData) {
@@ -82,13 +80,13 @@ class RCTNetworking extends NativeEventEmitter<$FlowFixMe> {
     callback(requestId);
   }
 
-  abortRequest(requestId: number) {
+  abortRequest(requestId) {
     NativeNetworkingAndroid.abortRequest(requestId);
   }
 
-  clearCookies(callback: (result: boolean) => any) {
+  clearCookies(callback) {
     NativeNetworkingAndroid.clearCookies(callback);
   }
 }
 
-module.exports = (new RCTNetworking(): RCTNetworking);
+module.exports = (new RCTNetworking());

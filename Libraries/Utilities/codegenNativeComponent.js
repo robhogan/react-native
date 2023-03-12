@@ -5,25 +5,17 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ *  strict-local
  */
 
 // TODO: move this file to shims/ReactNative (requires React update and sync)
 
-import type {HostComponent} from '../../Libraries/Renderer/shims/ReactNativeTypes';
 
 import requireNativeComponent from '../../Libraries/ReactNative/requireNativeComponent';
 import UIManager from '../ReactNative/UIManager';
 
 // TODO: import from CodegenSchema once workspaces are enabled
-type Options = $ReadOnly<{|
-  interfaceOnly?: boolean,
-  paperComponentName?: string,
-  paperComponentNameDeprecated?: string,
-  excludedPlatforms?: $ReadOnlyArray<'iOS' | 'android'>,
-|}>;
 
-export type NativeComponentType<T> = HostComponent<T>;
 
 // If this function runs then that means the view configs were not
 // generated at build time using `GenerateViewConfigJs.js`. Thus
@@ -31,10 +23,10 @@ export type NativeComponentType<T> = HostComponent<T>;
 // `requireNativeComponent` is not available in Bridgeless mode.
 // e.g. This function runs at runtime if `codegenNativeComponent` was not called
 // from a file suffixed with NativeComponent.js.
-function codegenNativeComponent<Props>(
-  componentName: string,
-  options?: Options,
-): NativeComponentType<Props> {
+function codegenNativeComponent(
+  componentName,
+  options,
+) {
   if (global.RN$Bridgeless === true) {
     const errorMessage =
       "Native Component '" +
@@ -66,10 +58,10 @@ function codegenNativeComponent<Props>(
     }
   }
 
-  return (requireNativeComponent<Props>(
+  return (requireNativeComponent(
     // $FlowFixMe[incompatible-call]
     componentNameInUse,
-  ): HostComponent<Props>);
+  ));
 }
 
 export default codegenNativeComponent;

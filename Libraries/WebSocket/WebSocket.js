@@ -5,11 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  */
 
-import type {BlobData} from '../Blob/BlobTypes';
-import type {EventSubscription} from '../vendor/emitter/EventEmitter';
 
 import Blob from '../Blob/Blob';
 import BlobManager from '../Blob/BlobManager';
@@ -22,19 +20,7 @@ import base64 from 'base64-js';
 import EventTarget from 'event-target-shim';
 import invariant from 'invariant';
 
-type ArrayBufferView =
-  | Int8Array
-  | Uint8Array
-  | Uint8ClampedArray
-  | Int16Array
-  | Uint16Array
-  | Int32Array
-  | Uint32Array
-  | Float32Array
-  | Float64Array
-  | DataView;
 
-type BinaryType = 'blob' | 'arraybuffer';
 
 const CONNECTING = 0;
 const OPEN = 1;
@@ -51,16 +37,6 @@ const WEBSOCKET_EVENTS = ['close', 'error', 'message', 'open'];
 
 let nextWebSocketId = 0;
 
-type WebSocketEventDefinitions = {
-  websocketOpen: [{id: number, protocol: string}],
-  websocketClosed: [{id: number, code: number, reason: string}],
-  websocketMessage: [
-    | {type: 'binary', id: number, data: string}
-    | {type: 'text', id: number, data: string}
-    | {type: 'blob', id: number, data: BlobData},
-  ],
-  websocketFailed: [{id: number, message: string}],
-};
 
 /**
  * Browser-compatible WebSockets implementation.
@@ -68,37 +44,37 @@ type WebSocketEventDefinitions = {
  * See https://developer.mozilla.org/en-US/docs/Web/API/WebSocket
  * See https://github.com/websockets/ws
  */
-class WebSocket extends (EventTarget(...WEBSOCKET_EVENTS): any) {
-  static CONNECTING: number = CONNECTING;
-  static OPEN: number = OPEN;
-  static CLOSING: number = CLOSING;
-  static CLOSED: number = CLOSED;
+class WebSocket extends (EventTarget(...WEBSOCKET_EVENTS)) {
+  static CONNECTING = CONNECTING;
+  static OPEN = OPEN;
+  static CLOSING = CLOSING;
+  static CLOSED = CLOSED;
 
-  CONNECTING: number = CONNECTING;
-  OPEN: number = OPEN;
-  CLOSING: number = CLOSING;
-  CLOSED: number = CLOSED;
+  CONNECTING = CONNECTING;
+  OPEN = OPEN;
+  CLOSING = CLOSING;
+  CLOSED = CLOSED;
 
-  _socketId: number;
-  _eventEmitter: NativeEventEmitter<WebSocketEventDefinitions>;
-  _subscriptions: Array<EventSubscription>;
-  _binaryType: ?BinaryType;
+  _socketId;
+  _eventEmitter;
+  _subscriptions;
+  _binaryType;
 
-  onclose: ?Function;
-  onerror: ?Function;
-  onmessage: ?Function;
-  onopen: ?Function;
+  onclose;
+  onerror;
+  onmessage;
+  onopen;
 
-  bufferedAmount: number;
-  extension: ?string;
-  protocol: ?string;
-  readyState: number = CONNECTING;
-  url: ?string;
+  bufferedAmount;
+  extension;
+  protocol;
+  readyState = CONNECTING;
+  url;
 
   constructor(
-    url: string,
-    protocols: ?string | ?Array<string>,
-    options: ?{headers?: {origin?: string, ...}, ...},
+    url,
+    protocols,
+    options,
   ) {
     super();
     this.url = url;
@@ -148,11 +124,11 @@ class WebSocket extends (EventTarget(...WEBSOCKET_EVENTS): any) {
     NativeWebSocketModule.connect(url, protocols, {headers}, this._socketId);
   }
 
-  get binaryType(): ?BinaryType {
+  get binaryType() {
     return this._binaryType;
   }
 
-  set binaryType(binaryType: BinaryType): void {
+  set binaryType(binaryType) {
     if (binaryType !== 'blob' && binaryType !== 'arraybuffer') {
       throw new Error("binaryType must be either 'blob' or 'arraybuffer'");
     }
@@ -170,7 +146,7 @@ class WebSocket extends (EventTarget(...WEBSOCKET_EVENTS): any) {
     this._binaryType = binaryType;
   }
 
-  close(code?: number, reason?: string): void {
+  close(code, reason) {
     if (this.readyState === this.CLOSING || this.readyState === this.CLOSED) {
       return;
     }
@@ -179,7 +155,7 @@ class WebSocket extends (EventTarget(...WEBSOCKET_EVENTS): any) {
     this._close(code, reason);
   }
 
-  send(data: string | ArrayBuffer | ArrayBufferView | Blob): void {
+  send(data) {
     if (this.readyState === this.CONNECTING) {
       throw new Error('INVALID_STATE_ERR');
     }
@@ -206,7 +182,7 @@ class WebSocket extends (EventTarget(...WEBSOCKET_EVENTS): any) {
     throw new Error('Unsupported data type');
   }
 
-  ping(): void {
+  ping() {
     if (this.readyState === this.CONNECTING) {
       throw new Error('INVALID_STATE_ERR');
     }
@@ -214,7 +190,7 @@ class WebSocket extends (EventTarget(...WEBSOCKET_EVENTS): any) {
     NativeWebSocketModule.ping(this._socketId);
   }
 
-  _close(code?: number, reason?: string): void {
+  _close(code, reason) {
     // See https://developer.mozilla.org/en-US/docs/Web/API/CloseEvent
     const statusCode = typeof code === 'number' ? code : CLOSE_NORMAL;
     const closeReason = typeof reason === 'string' ? reason : '';
@@ -225,18 +201,18 @@ class WebSocket extends (EventTarget(...WEBSOCKET_EVENTS): any) {
     }
   }
 
-  _unregisterEvents(): void {
+  _unregisterEvents() {
     this._subscriptions.forEach(e => e.remove());
     this._subscriptions = [];
   }
 
-  _registerEvents(): void {
+  _registerEvents() {
     this._subscriptions = [
       this._eventEmitter.addListener('websocketMessage', ev => {
         if (ev.id !== this._socketId) {
           return;
         }
-        let data: Blob | BlobData | ArrayBuffer | string = ev.data;
+        let data = ev.data;
         switch (ev.type) {
           case 'binary':
             data = base64.toByteArray(ev.data).buffer;

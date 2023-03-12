@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
@@ -15,13 +15,8 @@ import LogBoxLog from './Data/LogBoxLog';
 import LogBoxLogNotification from './UI/LogBoxNotification';
 import * as React from 'react';
 
-type Props = $ReadOnly<{|
-  logs: $ReadOnlyArray<LogBoxLog>,
-  selectedLogIndex: number,
-  isDisabled?: ?boolean,
-|}>;
 
-export function _LogBoxNotificationContainer(props: Props): React.Node {
+export function _LogBoxNotificationContainer(props) {
   const {logs} = props;
 
   const onDismissWarns = () => {
@@ -31,11 +26,11 @@ export function _LogBoxNotificationContainer(props: Props): React.Node {
     LogBoxData.clearErrors();
   };
 
-  const setSelectedLog = (index: number): void => {
+  const setSelectedLog = (index) => {
     LogBoxData.setSelectedLog(index);
   };
 
-  function openLog(log: LogBoxLog) {
+  function openLog(log) {
     let index = logs.length - 1;
 
     // Stop at zero because if we don't find any log, we'll open the first log.
@@ -97,4 +92,4 @@ const styles = StyleSheet.create({
 
 export default (LogBoxData.withSubscription(
   _LogBoxNotificationContainer,
-): React.AbstractComponent<{||}>);
+));

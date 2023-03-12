@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  */
 
 'use strict';
@@ -22,11 +22,11 @@ const invariant = require('invariant');
  * interface to native code.
  */
 function processTransform(
-  transform: Array<Object> | string,
-): Array<Object> | Array<number> {
+  transform,
+) {
   if (typeof transform === 'string') {
     const regex = new RegExp(/(\w+)\(([^)]+)\)/g);
-    let transformArray: Array<Object> = [];
+    let transformArray = [];
     let matches;
 
     while ((matches = regex.exec(transform))) {
@@ -49,26 +49,7 @@ function processTransform(
   return transform;
 }
 
-const _getKeyAndValueFromCSSTransform: (
-  key:
-    | string
-    | $TEMPORARY$string<'matrix'>
-    | $TEMPORARY$string<'perspective'>
-    | $TEMPORARY$string<'rotate'>
-    | $TEMPORARY$string<'rotateX'>
-    | $TEMPORARY$string<'rotateY'>
-    | $TEMPORARY$string<'rotateZ'>
-    | $TEMPORARY$string<'scale'>
-    | $TEMPORARY$string<'scaleX'>
-    | $TEMPORARY$string<'scaleY'>
-    | $TEMPORARY$string<'skewX'>
-    | $TEMPORARY$string<'skewY'>
-    | $TEMPORARY$string<'translate'>
-    | $TEMPORARY$string<'translate3d'>
-    | $TEMPORARY$string<'translateX'>
-    | $TEMPORARY$string<'translateY'>,
-  args: string,
-) => {key: string, value?: number[] | number | string} = (key, args) => {
+const _getKeyAndValueFromCSSTransform = (key, args) => {
   const argsWithUnitsRegex = new RegExp(/([+-]?\d+(\.\d+)?)([a-zA-Z]+)?/g);
 
   switch (key) {
@@ -147,7 +128,7 @@ const _getKeyAndValueFromCSSTransform: (
   }
 };
 
-function _validateTransforms(transform: Array<Object>): void {
+function _validateTransforms(transform) {
   transform.forEach(transformation => {
     const keys = Object.keys(transformation);
     invariant(
@@ -162,24 +143,9 @@ function _validateTransforms(transform: Array<Object>): void {
 }
 
 function _validateTransform(
-  key:
-    | string
-    | $TEMPORARY$string<'matrix'>
-    | $TEMPORARY$string<'perspective'>
-    | $TEMPORARY$string<'rotate'>
-    | $TEMPORARY$string<'rotateX'>
-    | $TEMPORARY$string<'rotateY'>
-    | $TEMPORARY$string<'rotateZ'>
-    | $TEMPORARY$string<'scale'>
-    | $TEMPORARY$string<'scaleX'>
-    | $TEMPORARY$string<'scaleY'>
-    | $TEMPORARY$string<'skewX'>
-    | $TEMPORARY$string<'skewY'>
-    | $TEMPORARY$string<'translate'>
-    | $TEMPORARY$string<'translateX'>
-    | $TEMPORARY$string<'translateY'>,
-  value: any | number | string,
-  transformation: any,
+  key,
+  value,
+  transformation,
 ) {
   invariant(
     !value.getValue,

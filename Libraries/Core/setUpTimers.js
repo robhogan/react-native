@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
@@ -34,15 +34,7 @@ if (global.RN$Bridgeless !== true) {
    * You can use this module directly, or just require InitializeCore.
    */
   const defineLazyTimer = (
-    name:
-      | $TEMPORARY$string<'cancelAnimationFrame'>
-      | $TEMPORARY$string<'cancelIdleCallback'>
-      | $TEMPORARY$string<'clearInterval'>
-      | $TEMPORARY$string<'clearTimeout'>
-      | $TEMPORARY$string<'requestAnimationFrame'>
-      | $TEMPORARY$string<'requestIdleCallback'>
-      | $TEMPORARY$string<'setInterval'>
-      | $TEMPORARY$string<'setTimeout'>,
+    name,
   ) => {
     polyfillGlobal(name, () => require('./Timers/JSTimers')[name]);
   };

@@ -4,12 +4,10 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
-import type {____ViewStyle_Internal} from '../../StyleSheet/StyleSheetTypes';
-import type {AnimatedComponentType} from '../createAnimatedComponent';
 
 import RefreshControl from '../../Components/RefreshControl/RefreshControl';
 import ScrollView from '../../Components/ScrollView/ScrollView';
@@ -23,13 +21,11 @@ import useAnimatedProps from '../useAnimatedProps';
 import * as React from 'react';
 import {useMemo} from 'react';
 
-type Props = React.ElementConfig<typeof ScrollView>;
-type Instance = React.ElementRef<typeof ScrollView>;
 
 /**
  * @see https://github.com/facebook/react-native/commit/b8c8562
  */
-const AnimatedScrollView: AnimatedComponentType<Props, Instance> =
+const AnimatedScrollView =
   React.forwardRef((props, forwardedRef) => {
     // (Android only) When a ScrollView has a RefreshControl and
     // any `style` property set with an Animated.Value, the CSS
@@ -62,11 +58,7 @@ const AnimatedScrollView: AnimatedComponentType<Props, Instance> =
 
 const AnimatedScrollViewWithInvertedRefreshControl = React.forwardRef(
   (
-    props: {
-      ...React.ElementConfig<typeof ScrollView>,
-      // $FlowFixMe[unclear-type] Same Flow type as `refreshControl` in ScrollView
-      refreshControl: React.Element<any>,
-    },
+    props,
     forwardedRef,
   ) => {
     // Split `props` into the animate-able props for the parent (RefreshControl)
@@ -81,24 +73,18 @@ const AnimatedScrollViewWithInvertedRefreshControl = React.forwardRef(
       }, [props]);
 
     // Handle animated props on `refreshControl`.
-    const [refreshControlAnimatedProps, refreshControlRef] = useAnimatedProps<
-      {style: ?____ViewStyle_Internal},
-      $FlowFixMe,
-    >(intermediatePropsForRefreshControl);
+    const [refreshControlAnimatedProps, refreshControlRef] = useAnimatedProps(intermediatePropsForRefreshControl);
     // NOTE: Assumes that refreshControl.ref` and `refreshControl.style` can be
     // safely clobbered.
-    const refreshControl: React.Element<typeof RefreshControl> =
+    const refreshControl =
       React.cloneElement(props.refreshControl, {
         ...refreshControlAnimatedProps,
         ref: refreshControlRef,
       });
 
     // Handle animated props on `NativeDirectionalScrollView`.
-    const [scrollViewAnimatedProps, scrollViewRef] = useAnimatedProps<
-      Props,
-      Instance,
-    >(intermediatePropsForScrollView);
-    const ref = useMergeRefs<Instance | null>(scrollViewRef, forwardedRef);
+    const [scrollViewAnimatedProps, scrollViewRef] = useAnimatedProps(intermediatePropsForScrollView);
+    const ref = useMergeRefs(scrollViewRef, forwardedRef);
 
     return (
       // $FlowFixMe[incompatible-use] Investigate useAnimatedProps return value

@@ -5,17 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  */
 
-import type {TurboModule} from '../TurboModule/RCTExport';
 
 import * as TurboModuleRegistry from '../TurboModule/TurboModuleRegistry';
 
-export interface Spec extends TurboModule {
-  +startReportAProblemFlow: () => void;
-  +setExtraData: (extraData: Object, extraFiles: Object) => void;
-  +setCategoryID: (categoryID: string) => void;
-}
 
-export default (TurboModuleRegistry.get<Spec>('BugReporting'): ?Spec);
+export default (TurboModuleRegistry.get('BugReporting'));

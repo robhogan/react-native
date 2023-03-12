@@ -5,45 +5,22 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict
+ *  strict
  */
 
 import NativePlatformConstantsAndroid from './NativePlatformConstantsAndroid';
 
-export type PlatformSelectSpec<T> = {
-  android?: T,
-  native?: T,
-  default?: T,
-  ...
-};
 
 const Platform = {
   __constants: null,
   OS: 'android',
   // $FlowFixMe[unsafe-getters-setters]
-  get Version(): number {
+  get Version() {
     // $FlowFixMe[object-this-reference]
     return this.constants.Version;
   },
   // $FlowFixMe[unsafe-getters-setters]
-  get constants(): {|
-    isTesting: boolean,
-    reactNativeVersion: {|
-      major: number,
-      minor: number,
-      patch: number,
-      prerelease: ?number,
-    |},
-    Version: number,
-    Release: string,
-    Serial: string,
-    Fingerprint: string,
-    Model: string,
-    ServerHost?: string,
-    uiMode: string,
-    Brand: string,
-    Manufacturer: string,
-  |} {
+  get constants() {
     // $FlowFixMe[object-this-reference]
     if (this.__constants == null) {
       // $FlowFixMe[object-this-reference]
@@ -53,7 +30,7 @@ const Platform = {
     return this.__constants;
   },
   // $FlowFixMe[unsafe-getters-setters]
-  get isTesting(): boolean {
+  get isTesting() {
     if (__DEV__) {
       // $FlowFixMe[object-this-reference]
       return this.constants.isTesting;
@@ -61,11 +38,11 @@ const Platform = {
     return false;
   },
   // $FlowFixMe[unsafe-getters-setters]
-  get isTV(): boolean {
+  get isTV() {
     // $FlowFixMe[object-this-reference]
     return this.constants.uiMode === 'tv';
   },
-  select: <T>(spec: PlatformSelectSpec<T>): T =>
+  select:(spec) =>
     'android' in spec
       ? // $FlowFixMe[incompatible-return]
         spec.android

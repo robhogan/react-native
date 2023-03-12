@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict
+ *  strict
  */
 
 'use strict';
@@ -20,11 +20,11 @@ const levelsMap = {
   fatal: 'error',
 };
 
-let warningHandler: ?(...Array<mixed>) => void = null;
+let warningHandler = null;
 
 const RCTLog = {
   // level one of log, info, warn, error, mustfix
-  logIfNoNativeHook(level: string, ...args: Array<mixed>): void {
+  logIfNoNativeHook(level, ...args) {
     // We already printed in the native console, so only log here if using a js debugger
     if (typeof global.nativeLoggingHook === 'undefined') {
       RCTLog.logToConsole(level, ...args);
@@ -37,7 +37,7 @@ const RCTLog = {
   },
 
   // Log to console regardless of nativeLoggingHook
-  logToConsole(level: string, ...args: Array<mixed>): void {
+  logToConsole(level, ...args) {
     const logFn = levelsMap[level];
     invariant(
       logFn,
@@ -47,7 +47,7 @@ const RCTLog = {
     console[logFn](...args);
   },
 
-  setWarningHandler(handler: typeof warningHandler): void {
+  setWarningHandler(handler) {
     warningHandler = handler;
   },
 };

@@ -4,40 +4,32 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ *  strict-local
  * @format
  */
 
-import type {EventSubscription} from '../vendor/emitter/EventEmitter';
 
 import NativeEventEmitter from '../EventEmitter/NativeEventEmitter';
 import NativeDevSettings from '../NativeModules/specs/NativeDevSettings';
 import Platform from '../Utilities/Platform';
 
-let DevSettings: {
-  addMenuItem(title: string, handler: () => mixed): void,
-  reload(reason?: string): void,
-  onFastRefresh(): void,
-} = {
-  addMenuItem(title: string, handler: () => mixed): void {},
-  reload(reason?: string): void {},
-  onFastRefresh(): void {},
+let DevSettings = {
+  addMenuItem(title, handler) {},
+  reload(reason) {},
+  onFastRefresh() {},
 };
 
-type DevSettingsEventDefinitions = {
-  didPressMenuItem: [{title: string}],
-};
 
 if (__DEV__) {
-  const emitter = new NativeEventEmitter<DevSettingsEventDefinitions>(
+  const emitter = new NativeEventEmitter(
     // T88715063: NativeEventEmitter only used this parameter on iOS. Now it uses it on all platforms, so this code was modified automatically to preserve its behavior
     // If you want to use the native module on other platforms, please remove this condition and test its behavior
     Platform.OS !== 'ios' ? null : NativeDevSettings,
   );
-  const subscriptions = new Map<string, EventSubscription>();
+  const subscriptions = new Map();
 
   DevSettings = {
-    addMenuItem(title: string, handler: () => mixed): void {
+    addMenuItem(title, handler) {
       // Make sure items are not added multiple times. This can
       // happen when hot reloading the module that registers the
       // menu items. The title is used as the id which means we
@@ -56,14 +48,14 @@ if (__DEV__) {
       });
       subscriptions.set(title, subscription);
     },
-    reload(reason?: string): void {
+    reload(reason) {
       if (NativeDevSettings.reloadWithReason != null) {
         NativeDevSettings.reloadWithReason(reason ?? 'Uncategorized from JS');
       } else {
         NativeDevSettings.reload();
       }
     },
-    onFastRefresh(): void {
+    onFastRefresh() {
       NativeDevSettings.onFastRefresh?.();
     },
   };

@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict
+ *  strict
  * @format
  */
 
@@ -25,12 +25,12 @@ const defineLazyObjectProperty = require('./defineLazyObjectProperty');
  *
  * @see https://github.com/facebook/react-native/issues/934
  */
-function polyfillObjectProperty<T>(
-  object: {...},
-  name: string,
-  getValue: () => T,
-): void {
-  const descriptor = Object.getOwnPropertyDescriptor<$FlowFixMe>(object, name);
+function polyfillObjectProperty(
+  object,
+  name,
+  getValue,
+) {
+  const descriptor = Object.getOwnPropertyDescriptor(object, name);
   if (__DEV__ && descriptor) {
     const backupName = `original${name[0].toUpperCase()}${name.substr(1)}`;
     Object.defineProperty(object, backupName, descriptor);
@@ -49,7 +49,7 @@ function polyfillObjectProperty<T>(
   });
 }
 
-function polyfillGlobal<T>(name: string, getValue: () => T): void {
+function polyfillGlobal(name, getValue) {
   polyfillObjectProperty(global, name, getValue);
 }
 

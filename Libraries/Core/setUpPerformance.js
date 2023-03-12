@@ -4,14 +4,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict
+ *  strict
  * @format
  */
 
 'use strict';
 
 if (!global.performance) {
-  global.performance = ({}: {now?: () => number});
+  global.performance = ({});
 }
 
 /**

@@ -5,13 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * 
  */
 
 'use strict';
 
-import type {TouchedViewDataAtPoint} from '../Renderer/shims/ReactNativeTypes';
-import type {HostRef} from './getInspectorDataForViewAtPoint';
 
 const ReactNativeStyleAttributes = require('../Components/View/ReactNativeStyleAttributes');
 const View = require('../Components/View/View');
@@ -32,30 +30,12 @@ const hook = window.__REACT_DEVTOOLS_GLOBAL_HOOK__;
 hook.resolveRNStyle = require('../StyleSheet/flattenStyle');
 hook.nativeStyleEditorValidAttributes = Object.keys(ReactNativeStyleAttributes);
 
-class Inspector extends React.Component<
-  {
-    inspectedView: ?HostRef,
-    onRequestRerenderApp: (callback: (instance: ?HostRef) => void) => void,
-    ...
-  },
-  {
-    devtoolsAgent: ?Object,
-    hierarchy: any,
-    panelPos: string,
-    inspecting: boolean,
-    selection: ?number,
-    perfing: boolean,
-    inspected: any,
-    inspectedView: ?HostRef,
-    networking: boolean,
-    ...
-  },
-> {
-  _hideTimeoutID: TimeoutID | null = null;
-  _subs: ?Array<() => void>;
-  _setTouchedViewData: ?(TouchedViewDataAtPoint) => void;
+class Inspector extends React.Component {
+  _hideTimeoutID = null;
+  _subs;
+  _setTouchedViewData;
 
-  constructor(props: Object) {
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -87,11 +67,11 @@ class Inspector extends React.Component<
     this._setTouchedViewData = null;
   }
 
-  UNSAFE_componentWillReceiveProps(newProps: Object) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     this.setState({inspectedView: newProps.inspectedView});
   }
 
-  _attachToDevtools = (agent: Object) => {
+  _attachToDevtools = (agent) => {
     agent.addListener('shutdown', this._onAgentShutdown);
 
     this.setState({
@@ -108,7 +88,7 @@ class Inspector extends React.Component<
     }
   };
 
-  setSelection(i: number) {
+  setSelection(i) {
     const hierarchyItem = this.state.hierarchy[i];
     // we pass in findNodeHandle as the method is injected
     const {measure, props, source} =
@@ -126,7 +106,7 @@ class Inspector extends React.Component<
     });
   }
 
-  onTouchPoint(locationX: number, locationY: number) {
+  onTouchPoint(locationX, locationY) {
     this._setTouchedViewData = viewData => {
       const {
         hierarchy,
@@ -177,7 +157,7 @@ class Inspector extends React.Component<
     );
   }
 
-  setPerfing(val: boolean) {
+  setPerfing(val) {
     this.setState({
       perfing: val,
       inspecting: false,
@@ -186,21 +166,21 @@ class Inspector extends React.Component<
     });
   }
 
-  setInspecting(val: boolean) {
+  setInspecting(val) {
     this.setState({
       inspecting: val,
       inspected: null,
     });
   }
 
-  setTouchTargeting(val: boolean) {
+  setTouchTargeting(val) {
     PressabilityDebug.setEnabled(val);
     this.props.onRequestRerenderApp(inspectedView => {
       this.setState({inspectedView});
     });
   }
 
-  setNetworking(val: boolean) {
+  setNetworking(val) {
     this.setState({
       networking: val,
       perfing: false,
@@ -209,7 +189,7 @@ class Inspector extends React.Component<
     });
   }
 
-  render(): React.Node {
+  render() {
     const panelContainerStyle =
       this.state.panelPos === 'bottom'
         ? {bottom: 0}
