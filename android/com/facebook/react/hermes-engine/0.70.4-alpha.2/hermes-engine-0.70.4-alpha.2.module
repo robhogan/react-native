@@ -1,0 +1,204 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.facebook.react",
+    "module": "hermes-engine",
+    "version": "0.70.4-alpha.2",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "7.5.1"
+    }
+  },
+  "variants": [
+    {
+      "name": "debugVariantDefaultApiPublication",
+      "attributes": {
+        "com.android.build.api.attributes.BuildTypeAttr": "debug",
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-api"
+      },
+      "files": [
+        {
+          "name": "hermes-engine-0.70.4-alpha.2-debug.aar",
+          "url": "hermes-engine-0.70.4-alpha.2-debug.aar",
+          "size": 4033698,
+          "sha512": "e6aeb897f9704edb7558bd05fcb64a89057c0dee51f5cde0b936ccee004b576e33096b77fb07d8701e4308b16539272e0c70eaac7e69154c7a4230e698dfb28d",
+          "sha256": "e831055937a59c2152af2bf4b39257dfafe2a43dad2241c03219d903a66b1d6e",
+          "sha1": "1a45f760026eefb961782e3142f9fbc8e2513d38",
+          "md5": "c6422fafcfec311ab01ecfc4f741cae2"
+        }
+      ]
+    },
+    {
+      "name": "debugVariantDefaultRuntimePublication",
+      "attributes": {
+        "com.android.build.api.attributes.BuildTypeAttr": "debug",
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "com.facebook.fbjni",
+          "module": "fbjni",
+          "version": {
+            "requires": "0.2.2"
+          }
+        },
+        {
+          "group": "com.facebook.soloader",
+          "module": "soloader",
+          "version": {
+            "requires": "0.10.3"
+          }
+        },
+        {
+          "group": "com.facebook.yoga",
+          "module": "proguard-annotations",
+          "version": {
+            "requires": "1.19.0"
+          }
+        },
+        {
+          "group": "androidx.annotation",
+          "module": "annotation",
+          "version": {
+            "requires": "1.3.0"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "hermes-engine-0.70.4-alpha.2-debug.aar",
+          "url": "hermes-engine-0.70.4-alpha.2-debug.aar",
+          "size": 4033698,
+          "sha512": "e6aeb897f9704edb7558bd05fcb64a89057c0dee51f5cde0b936ccee004b576e33096b77fb07d8701e4308b16539272e0c70eaac7e69154c7a4230e698dfb28d",
+          "sha256": "e831055937a59c2152af2bf4b39257dfafe2a43dad2241c03219d903a66b1d6e",
+          "sha1": "1a45f760026eefb961782e3142f9fbc8e2513d38",
+          "md5": "c6422fafcfec311ab01ecfc4f741cae2"
+        }
+      ]
+    },
+    {
+      "name": "debugVariantDefaultSourcePublication",
+      "attributes": {
+        "com.android.build.api.attributes.BuildTypeAttr": "debug",
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "hermes-engine-0.70.4-alpha.2-debug-sources.jar",
+          "url": "hermes-engine-0.70.4-alpha.2-debug-sources.jar",
+          "size": 62707,
+          "sha512": "b6d659b87a103dd21026d8715420d047b70e76219d39121795598811cff2c7bb6cf3a860d8836fe6eeb753f785d7c2f7b961ea48c5cba27626a6e1cb5b07ee62",
+          "sha256": "1fe6791aeefb0391d319d763c655a6f8232676141b886d0a467b8834a0b86497",
+          "sha1": "75340c383a5d55a37d68181f12b1d8d939a3f065",
+          "md5": "7b864274b543d21ee7d7c9c8e7f7b043"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantDefaultApiPublication",
+      "attributes": {
+        "com.android.build.api.attributes.BuildTypeAttr": "release",
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-api"
+      },
+      "files": [
+        {
+          "name": "hermes-engine-0.70.4-alpha.2-release.aar",
+          "url": "hermes-engine-0.70.4-alpha.2-release.aar",
+          "size": 3458316,
+          "sha512": "660a69eba6cb5184719b5ae6d164b2f0aedee5aea0b57445911883aebd90c162bd07c9b680bd62bac587f91bc6f5ae4c8ac514b33e61873fc99dccc5475f982a",
+          "sha256": "01ac7d57b3f6f3dc9cbde39959c1782c455942409293b5a28cbc2f899cb5b559",
+          "sha1": "a606eb71ce93985943d8c21d0f1cd7a872b1f1ca",
+          "md5": "c6094fea8664a2926f4358e50d1b4fc4"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantDefaultRuntimePublication",
+      "attributes": {
+        "com.android.build.api.attributes.BuildTypeAttr": "release",
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "com.facebook.fbjni",
+          "module": "fbjni",
+          "version": {
+            "requires": "0.2.2"
+          }
+        },
+        {
+          "group": "com.facebook.soloader",
+          "module": "soloader",
+          "version": {
+            "requires": "0.10.3"
+          }
+        },
+        {
+          "group": "com.facebook.yoga",
+          "module": "proguard-annotations",
+          "version": {
+            "requires": "1.19.0"
+          }
+        },
+        {
+          "group": "androidx.annotation",
+          "module": "annotation",
+          "version": {
+            "requires": "1.3.0"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "hermes-engine-0.70.4-alpha.2-release.aar",
+          "url": "hermes-engine-0.70.4-alpha.2-release.aar",
+          "size": 3458316,
+          "sha512": "660a69eba6cb5184719b5ae6d164b2f0aedee5aea0b57445911883aebd90c162bd07c9b680bd62bac587f91bc6f5ae4c8ac514b33e61873fc99dccc5475f982a",
+          "sha256": "01ac7d57b3f6f3dc9cbde39959c1782c455942409293b5a28cbc2f899cb5b559",
+          "sha1": "a606eb71ce93985943d8c21d0f1cd7a872b1f1ca",
+          "md5": "c6094fea8664a2926f4358e50d1b4fc4"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantDefaultSourcePublication",
+      "attributes": {
+        "com.android.build.api.attributes.BuildTypeAttr": "release",
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "hermes-engine-0.70.4-alpha.2-release-sources.jar",
+          "url": "hermes-engine-0.70.4-alpha.2-release-sources.jar",
+          "size": 62694,
+          "sha512": "205a0fd395d6d02c27c4611ae1ceca7ccb4f3554f17f44d338f9ffef2e3521e933616e74ac1b17bb7d300891ede5ecf58e966a11becda27f6760f862f2316783",
+          "sha256": "e622d9a7db5ba1a2161785ab8745dda58d1012aad04f7f9489fce207cf567f8a",
+          "sha1": "34cf662170d553da87ddd8ef2213f13212955d1d",
+          "md5": "c8db891c3be1b407d7079c02c303243b"
+        }
+      ]
+    }
+  ]
+}
