@@ -1,0 +1,190 @@
+# Untrusted half of RNTester visual regression testing. Builds RNTester from
+# the pull request, captures the visual flows on one canonical device per
+# platform, and uploads the PNGs plus a manifest as artifacts. It has no
+# secrets and no storage access: comparison and publication happen in
+# visual-compare-rntester.yml, which runs from the default branch.
+name: Visual Capture RNTester
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  MAESTRO_VERSION: 2.6.1
+  VISUAL_FLOWS: packages/rn-tester/visual-tests/flows
+  VISUAL_OUTPUT_DIR: /tmp/visual-capture
+  VISUAL_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+
+jobs:
+  build_android:
+    runs-on: ubuntu-latest
+    container:
+      image: reactnativecommunity/react-native-android:latest
+      env:
+        LC_ALL: C.UTF8
+        TERM: 'dumb'
+        GRADLE_OPTS: '-Dorg.gradle.daemon=false'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Setup git safe folders
+        run: git config --global --add safe.directory '*'
+      - name: Setup node.js
+        uses: ./.github/actions/setup-node
+      - name: Install node dependencies
+        uses: ./.github/actions/yarn-install
+      - name: Setup gradle
+        uses: ./.github/actions/setup-gradle
+      - name: Build RNTester release APK
+        run: |
+          ./gradlew \
+            --init-script "$GITHUB_WORKSPACE/.github/workflow-scripts/legacy-jni-packaging.gradle" \
+            -PreactNativeArchitectures=arm64-v8a \
+            -Preact.internal.useHermesNightly=true \
+            :packages:rn-tester:android:app:assembleRelease
+      - name: Upload RNTester APK
+        uses: ./.github/actions/upload-artifact
+        with:
+          name: visual-rntester-android
+          path: packages/rn-tester/android/app/build/outputs/apk/release/
+          compression-level: 0
+          retention-days: 7
+
+  capture_android:
+    needs: build_android
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          # The manifest records HEAD^1, the commit this capture is based on.
+          fetch-depth: 2
+      - name: Setup node.js
+        uses: ./.github/actions/setup-node
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          java-version: '17'
+          distribution: 'zulu'
+      - name: Install Maestro
+        run: curl -Ls "https://get.maestro.mobile.dev" | bash
+      - name: Enable KVM group perms
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Download RNTester APK
+        uses: actions/download-artifact@v7
+        with:
+          name: visual-rntester-android
+          path: /tmp/rntester-android
+      - name: Capture
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          ram-size: '8192M'
+          heap-size: '4096M'
+          disk-size: '10G'
+          cores: '4'
+          disable-animations: true
+          avd-name: visual_emulator
+          script: |
+            adb shell settings put system font_scale 1.0
+            mkdir -p "$VISUAL_OUTPUT_DIR"
+            node .github/workflow-scripts/maestro-android.js /tmp/rntester-android/app-arm64-v8a-release.apk com.facebook.react.uiapp "$VISUAL_FLOWS" release . /tmp/visual-android-state.json
+            node .github/workflow-scripts/visual/manifest.js android "$VISUAL_OUTPUT_DIR" "$VISUAL_OUTPUT_DIR/manifest.json"
+      - name: Upload captures
+        uses: ./.github/actions/upload-artifact
+        with:
+          name: visual-capture-android
+          path: ${{ env.VISUAL_OUTPUT_DIR }}
+          if-no-files-found: error
+          retention-days: 14
+      - name: Upload Maestro logs
+        if: failure()
+        uses: ./.github/actions/upload-artifact
+        with:
+          name: visual-maestro-logs-android
+          path: /tmp/MaestroLogs
+          if-no-files-found: ignore
+
+  build_ios:
+    runs-on: macos-15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Build RNTester
+        uses: ./.github/actions/test-ios-rntester
+        with:
+          flavor: Release
+          use-prebuilds: false
+
+  capture_ios:
+    needs: build_ios
+    runs-on: macos-26
+    env:
+      DEVICE_MODEL: iPhone-17-Pro
+      DEVICE_OS: iOS-26-2
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          # The manifest records HEAD^1, the commit this capture is based on.
+          fetch-depth: 2
+      - name: Setup node.js
+        uses: ./.github/actions/setup-node
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          java-version: '17'
+          distribution: 'zulu'
+      - name: Install Maestro
+        run: |
+          curl -Ls "https://get.maestro.mobile.dev" | bash
+          brew tap facebook/fb
+          brew install facebook/fb/idb-companion
+      - name: Download RNTester app
+        uses: actions/download-artifact@v7
+        with:
+          name: RNTesterApp-NewArch-Release
+          path: /tmp/RNTesterBuild/RNTester.app
+      - name: Boot and configure simulator
+        id: simulator
+        run: |
+          UDID=$(xcrun simctl list devices available -j | jq -r --arg runtime "com.apple.CoreSimulator.SimRuntime.$DEVICE_OS" --arg name "${DEVICE_MODEL//-/ }" '.devices[$runtime][] | select(.name == $name) | .udid' | head -1)
+          if [[ -z "$UDID" ]]; then
+            echo "::error::No $DEVICE_MODEL simulator on $DEVICE_OS"
+            xcrun simctl list devices available
+            exit 1
+          fi
+          xcrun simctl boot "$UDID"
+          xcrun simctl bootstatus "$UDID"
+          xcrun simctl ui "$UDID" appearance light
+          xcrun simctl ui "$UDID" content_size large
+          xcrun simctl spawn "$UDID" defaults write -g AppleLocale en_US
+          xcrun simctl spawn "$UDID" defaults write -g AppleLanguages -array en
+          echo "udid=$UDID" >> "$GITHUB_OUTPUT"
+      - name: Capture
+        run: |
+          mkdir -p "$VISUAL_OUTPUT_DIR"
+          node .github/workflow-scripts/maestro-ios.js /tmp/RNTesterBuild/RNTester.app com.meta.RNTester.localDevelopment "$VISUAL_FLOWS" Hermes Release . "$DEVICE_MODEL" "$DEVICE_OS"
+          node .github/workflow-scripts/visual/manifest.js ios "$VISUAL_OUTPUT_DIR" "$VISUAL_OUTPUT_DIR/manifest.json" "${{ steps.simulator.outputs.udid }}"
+      - name: Upload captures
+        uses: ./.github/actions/upload-artifact
+        with:
+          name: visual-capture-ios
+          path: ${{ env.VISUAL_OUTPUT_DIR }}
+          if-no-files-found: error
+          retention-days: 14

@@ -131,12 +131,18 @@ function saveState(statePath, state) {
   fs.renameSync(temporaryPath, statePath);
 }
 
+// Visual flows write screenshots under VISUAL_OUTPUT_DIR when it is set.
+function visualOutputArgs() {
+  const outputDir = process.env.VISUAL_OUTPUT_DIR;
+  return outputDir ? ` -e VISUAL_OUTPUT_DIR="${outputDir}"` : '';
+}
+
 function runMaestroFlow(flow, appId) {
   console.info(`Executing flow: ${flow}`);
   const timeout = 1000 * 60 * 10; // 10 minutes
   try {
     childProcess.execSync(
-      `MAESTRO_DRIVER_STARTUP_TIMEOUT=120000 $HOME/.maestro/bin/maestro test "${flow}" --format junit -e APP_ID="${appId}" --debug-output ${MAESTRO_LOG_DIRECTORY}`,
+      `MAESTRO_DRIVER_STARTUP_TIMEOUT=120000 $HOME/.maestro/bin/maestro test "${flow}" --format junit -e APP_ID="${appId}"${visualOutputArgs()} --debug-output ${MAESTRO_LOG_DIRECTORY}`,
       {stdio: 'inherit', timeout},
     );
   } catch (error) {

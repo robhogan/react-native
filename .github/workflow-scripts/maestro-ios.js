@@ -175,6 +175,12 @@ function stopVideoRecording(recordingProcess) {
   });
 }
 
+// Visual flows write screenshots under VISUAL_OUTPUT_DIR when it is set.
+function visualOutputArgs() {
+  const outputDir = process.env.VISUAL_OUTPUT_DIR;
+  return outputDir ? ` -e VISUAL_OUTPUT_DIR="${outputDir}"` : '';
+}
+
 async function executeFlowWithRetries(
   appId,
   udid,
@@ -185,7 +191,7 @@ async function executeFlowWithRetries(
   const recProcess = startVideoRecording(udid, currentAttempt);
   try {
     const timeout = 1000 * 60 * 10; // 10 minutes
-    const command = `$HOME/.maestro/bin/maestro --udid="${udid}" test "${flow}" --format junit -e APP_ID="${appId}"`;
+    const command = `$HOME/.maestro/bin/maestro --udid="${udid}" test "${flow}" --format junit -e APP_ID="${appId}"${visualOutputArgs()}`;
     console.info(`Executing flow: ${flow} (attempt ${currentAttempt})`);
     console.log(command);
     childProcess.execSync(`MAESTRO_DRIVER_STARTUP_TIMEOUT=1500000 ${command}`, {
