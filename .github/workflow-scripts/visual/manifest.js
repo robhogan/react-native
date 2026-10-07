@@ -85,7 +85,11 @@ function environmentKey(platform, environment) {
           environment.screenSize,
           `${environment.density}dpi`,
         ]
-      : ['ios', environment.runtime, environment.deviceType];
+      : [
+          'ios',
+          String(environment.runtime).replace(/^iOS-/, ''),
+          environment.deviceType,
+        ];
   return [...readable.map(slug), hash].join('-');
 }
 

@@ -140,6 +140,14 @@ describe('visual regression', () => {
         }),
       );
     });
+    test('names iOS keys by runtime and device', () => {
+      expect(
+        environmentKey('ios', {
+          runtime: 'iOS-26-2',
+          deviceType: 'iPhone-17-Pro',
+        }),
+      ).toMatch(/^ios-26-2-iphone-17-pro-[0-9a-f]{8}$/);
+    });
   });
 
   describe('validateCapture', () => {
@@ -434,7 +442,7 @@ describe('visual regression', () => {
             diffRatio: 0.03,
             expected: {},
             captured: {},
-            diffImage: Buffer.from(''),
+            hasDiffImage: true,
           },
         ],
         imageUrl: (kind, id) => `https://cdn.example/${kind}/${id}.png`,

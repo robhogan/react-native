@@ -80,7 +80,7 @@ function renderCheckOutput({
     if (result.captured != null) {
       row.push(['Captured', cell('captured')]);
     }
-    if (result.diffImage != null) {
+    if (result.hasDiffImage) {
       row.push(['Diff', cell('diff')]);
     }
     const details =
@@ -98,7 +98,7 @@ function renderCheckOutput({
         `| ${row.map(([, html]) => html).join(' | ')} |`,
       ].join('\n'),
     );
-    if (result.diffImage != null && images.length < MAX_IMAGES) {
+    if (result.hasDiffImage && images.length < MAX_IMAGES) {
       images.push({
         alt: `${result.id} diff`,
         image_url: imageUrl('diff', result.id),

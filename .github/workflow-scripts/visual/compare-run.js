@@ -213,7 +213,10 @@ function stageBaseline({outDir, captureDir, manifest, sha}) {
 }
 
 function serializableResults(results) {
-  return results.map(({diffImage, ...result}) => result);
+  return results.map(({diffImage, ...result}) => ({
+    ...result,
+    hasDiffImage: diffImage != null,
+  }));
 }
 
 async function prepare() {
