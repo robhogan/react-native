@@ -103,7 +103,7 @@ jobs:
           script: |
             adb shell settings put system font_scale 1.0
             mkdir -p "$VISUAL_OUTPUT_DIR"
-            node .github/workflow-scripts/maestro-android.js /tmp/rntester-android/app-arm64-v8a-release.apk com.facebook.react.uiapp "$VISUAL_FLOWS" release . /tmp/visual-android-state.json
+            node .github/workflow-scripts/visual/capture.js android /tmp/rntester-android/app-arm64-v8a-release.apk com.facebook.react.uiapp "$VISUAL_FLOWS" "$VISUAL_OUTPUT_DIR"
             node .github/workflow-scripts/visual/manifest.js android "$VISUAL_OUTPUT_DIR" "$VISUAL_OUTPUT_DIR/manifest.json"
       - name: Upload captures
         uses: ./.github/actions/upload-artifact
@@ -117,7 +117,9 @@ jobs:
         uses: ./.github/actions/upload-artifact
         with:
           name: visual-maestro-logs-android
-          path: /tmp/MaestroLogs
+          path: |
+            ~/.maestro/tests
+            visual-capture-report-*.xml
           if-no-files-found: ignore
 
   build_ios:
@@ -179,7 +181,7 @@ jobs:
       - name: Capture
         run: |
           mkdir -p "$VISUAL_OUTPUT_DIR"
-          node .github/workflow-scripts/maestro-ios.js /tmp/RNTesterBuild/RNTester.app com.meta.RNTester.localDevelopment "$VISUAL_FLOWS" Hermes Release . "$DEVICE_MODEL" "$DEVICE_OS"
+          node .github/workflow-scripts/visual/capture.js ios /tmp/RNTesterBuild/RNTester.app com.meta.RNTester.localDevelopment "$VISUAL_FLOWS" "$VISUAL_OUTPUT_DIR" "${{ steps.simulator.outputs.udid }}"
           node .github/workflow-scripts/visual/manifest.js ios "$VISUAL_OUTPUT_DIR" "$VISUAL_OUTPUT_DIR/manifest.json" "${{ steps.simulator.outputs.udid }}"
       - name: Upload captures
         uses: ./.github/actions/upload-artifact
@@ -188,3 +190,12 @@ jobs:
           path: ${{ env.VISUAL_OUTPUT_DIR }}
           if-no-files-found: error
           retention-days: 14
+      - name: Upload Maestro logs
+        if: failure()
+        uses: ./.github/actions/upload-artifact
+        with:
+          name: visual-maestro-logs-ios
+          path: |
+            ~/.maestro/tests
+            visual-capture-report-*.xml
+          if-no-files-found: ignore

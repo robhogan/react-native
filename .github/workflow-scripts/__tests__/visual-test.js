@@ -12,6 +12,11 @@ const {
   differenceFingerprint,
   gateDecision,
 } = require('../visual/approval');
+const {
+  collectFlows,
+  failedFlowsFromJUnit,
+  maestroArgs,
+} = require('../visual/capture');
 const {compareCapture, compareImages, policyFor} = require('../visual/compare');
 const {buildManifest, environmentKey, sha256} = require('../visual/manifest');
 const {readPngDimensions} = require('../visual/png');
@@ -425,6 +430,70 @@ describe('visual regression', () => {
         }
       },
     );
+  });
+
+  describe('capture', () => {
+    test('collects top-level flows in order and ignores other files', () => {
+      fs.writeFileSync(path.join(directory, 'b.yml'), '');
+      fs.writeFileSync(path.join(directory, 'a.yaml'), '');
+      fs.writeFileSync(path.join(directory, 'notes.md'), '');
+      fs.mkdirSync(path.join(directory, 'helpers'));
+      fs.writeFileSync(path.join(directory, 'helpers/open.yml'), '');
+      expect(collectFlows(directory)).toEqual([
+        path.join(directory, 'a.yaml'),
+        path.join(directory, 'b.yml'),
+      ]);
+    });
+
+    test('rejects flows Maestro would report under the same name', () => {
+      fs.writeFileSync(path.join(directory, 'a.yml'), '');
+      fs.writeFileSync(path.join(directory, 'a.yaml'), '');
+      expect(() => collectFlows(directory)).toThrow("both report as 'a'");
+    });
+
+    test('reads failed flows from a Maestro JUnit report', () => {
+      const flows = ['/flows/text-a.yml', '/flows/text-b.yml', '/flows/c.yml'];
+      const report = [
+        '<testcase id="text-b" name="text-b" file="/flows/text-b.yml" status="ERROR">',
+        '<testcase id="text-a" name="text-a" file="/flows/text-a.yml" status="SUCCESS"/>',
+        '<testcase id="c" name="c" status="ERROR">',
+      ].join('\n');
+      expect(failedFlowsFromJUnit(report, flows)).toEqual([
+        '/flows/text-b.yml',
+        '/flows/c.yml',
+      ]);
+      expect(() =>
+        failedFlowsFromJUnit('<testcase name="other" status="ERROR">', flows),
+      ).toThrow("unknown flow 'other'");
+      expect(failedFlowsFromJUnit('', flows)).toEqual([]);
+    });
+
+    test.each([
+      [1, undefined, false],
+      [2, 'UDID', true],
+    ])('builds Maestro arguments for attempt %d', (attempt, udid, reuse) => {
+      const args = maestroArgs({
+        flows: ['/f/a.yml', '/f/b.yml'],
+        appId: 'com.example',
+        outputDir: '/out',
+        reportPath: '/r.xml',
+        udid,
+        attempt,
+      });
+      expect(
+        args.slice(args.indexOf('test'), args.indexOf('test') + 3),
+      ).toEqual(['test', '/f/a.yml', '/f/b.yml']);
+      expect(args).toEqual(
+        expect.arrayContaining([
+          '--format=junit',
+          '--output=/r.xml',
+          'APP_ID=com.example',
+          'VISUAL_OUTPUT_DIR=/out',
+        ]),
+      );
+      expect(args.includes('--no-reinstall-driver')).toBe(reuse);
+      expect(args.includes('--udid=UDID')).toBe(udid != null);
+    });
   });
 
   describe('renderCheckOutput', () => {
