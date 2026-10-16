@@ -45,6 +45,7 @@ const fs = require('fs');
 const path = require('path');
 
 const BASELINE_SEARCH_DEPTH = 20;
+const PLATFORMS = ['android', 'ios'];
 // The default Actions token posts as this bot. Only its comments are edited.
 const COMMENT_AUTHOR = 'github-actions[bot]';
 
@@ -203,6 +204,20 @@ async function comparePlatform({
   };
 }
 
+function missingCapture(platform, context) {
+  return {
+    platform,
+    environmentKey: null,
+    manifest: null,
+    baseline: null,
+    results: [],
+    error: {
+      title: 'no capture',
+      summary: `Test All run ${context.runId} has no ${platform} capture, so there is nothing to compare. Its capture job failed or didn't run: check the run for a build or capture failure.`,
+    },
+  };
+}
+
 function stageBaseline({outDir, captureDir, manifest, sha}) {
   const prefix = baselinePrefix(manifest.environmentKey, sha);
   for (const image of manifest.images) {
@@ -243,11 +258,15 @@ async function prepare() {
   const prefix = reportPrefix(context);
 
   const platforms = [];
-  for (const entry of fs.readdirSync(artifactsDir, {withFileTypes: true})) {
-    if (!entry.isDirectory() || !entry.name.startsWith('visual-capture-')) {
+  for (const expectedPlatform of PLATFORMS) {
+    const captureDir = path.join(
+      artifactsDir,
+      `visual-capture-${expectedPlatform}`,
+    );
+    if (!fs.existsSync(captureDir)) {
+      platforms.push(missingCapture(expectedPlatform, context));
       continue;
     }
-    const captureDir = path.join(artifactsDir, entry.name);
     const result = await comparePlatform({
       github,
       context,
@@ -257,6 +276,11 @@ async function prepare() {
       outDir,
       prefix,
     });
+    if (result.platform !== expectedPlatform) {
+      throw new Error(
+        `visual-capture-${expectedPlatform}: manifest is for ${result.platform}`,
+      );
+    }
     if (context.kind === 'main') {
       stageBaseline({
         outDir,
@@ -282,7 +306,7 @@ async function prepare() {
     fingerprint,
     platforms: platforms.map(({manifest, results, ...platform}) => ({
       ...platform,
-      git: manifest.git,
+      git: manifest?.git ?? null,
       results: serializableResults(results),
     })),
   };

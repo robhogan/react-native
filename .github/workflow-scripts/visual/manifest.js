@@ -34,6 +34,7 @@ const KEYED_PROPERTIES = {
     'fontScale',
     'locale',
     'animatorDurationScale',
+    'emulatorVersion',
   ],
   ios: ['runtime', 'deviceType', 'appearance', 'contentSizeCategory', 'locale'],
 };
@@ -145,6 +146,19 @@ function run(command, args) {
     .trim();
 }
 
+/** The emulator package's version, from the Android SDK. */
+function readEmulatorVersion() {
+  const sdk = process.env.ANDROID_HOME ?? process.env.ANDROID_SDK_ROOT;
+  if (sdk == null) {
+    return null;
+  }
+  const properties = fs.readFileSync(
+    path.join(sdk, 'emulator', 'source.properties'),
+    'utf8',
+  );
+  return /^Pkg\.Revision=(\S+)$/m.exec(properties)?.[1] ?? null;
+}
+
 function readAndroidEnvironment() {
   const getprop = name => run('adb', ['shell', 'getprop', name]);
   const setting = (namespace, name) =>
@@ -164,6 +178,7 @@ function readAndroidEnvironment() {
     fontScale: setting('system', 'font_scale'),
     locale: getprop('persist.sys.locale') || getprop('ro.product.locale'),
     animatorDurationScale: setting('global', 'animator_duration_scale'),
+    emulatorVersion: readEmulatorVersion(),
   };
 }
 

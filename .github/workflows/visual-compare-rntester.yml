@@ -1,7 +1,8 @@
 # Trusted half of RNTester visual regression testing. Runs from the default
-# branch after Visual Capture RNTester completes, including for pull requests
-# from forks. The capture artifacts are treated as inert data: they are
-# validated before any image is decoded, and nothing in them is executed.
+# branch after Test All completes, including for pull requests from forks, and
+# compares whatever visual-capture-rntester.yml captured in that run. The
+# capture artifacts are treated as inert data: they are validated before any
+# image is decoded, and nothing in them is executed.
 #
 # Pull requests: compare with the baseline for the base commit (or its
 #   nearest ancestor with one), upload a report, and set check runs.
@@ -11,7 +12,7 @@ name: Visual Compare RNTester
 
 on:
   workflow_run:
-    workflows: [Visual Capture RNTester]
+    workflows: [Test All]
     types: [completed]
 
 permissions:
@@ -30,8 +31,32 @@ env:
   VISUAL_CONFIG: packages/rn-tester/visual-tests/config.json
 
 jobs:
+  find_captures:
+    # Test All can fail for reasons unrelated to rendering, so a failed run is
+    # still compared. A platform with no capture is reported as such.
+    if: contains(fromJSON('["success", "failure"]'), github.event.workflow_run.conclusion)
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+    outputs:
+      found: ${{ steps.find.outputs.found }}
+      captures: ${{ steps.find.outputs.captures }}
+    steps:
+      - name: Find captures
+        id: find
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+        run: |
+          CAPTURES=$(gh api --paginate "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID/artifacts" \
+            --jq '.artifacts[] | select(.name | startswith("visual-capture-")) | .name' | tr '\n' ' ')
+          echo "Captures: ${CAPTURES:-none}"
+          echo "found=$([[ -n "$CAPTURES" ]] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+          echo "captures=$CAPTURES" >> "$GITHUB_OUTPUT"
+
   compare:
-    if: github.event.workflow_run.conclusion == 'success'
+    needs: find_captures
+    if: needs.find_captures.outputs.found == 'true'
     runs-on: ubuntu-latest
     permissions:
       actions: read
@@ -49,11 +74,22 @@ jobs:
         uses: ./.github/actions/setup-node
       - name: Install node dependencies
         uses: ./.github/actions/yarn-install
-      - name: Download captures
+      # Downloaded by name: a pattern that matches one artifact extracts it
+      # without the per-artifact directory that compare-run.js reads.
+      - name: Download Android capture
+        if: contains(needs.find_captures.outputs.captures, 'visual-capture-android')
         uses: actions/download-artifact@v7
         with:
-          pattern: visual-capture-*
-          path: ${{ env.VISUAL_ARTIFACTS_DIR }}
+          name: visual-capture-android
+          path: ${{ env.VISUAL_ARTIFACTS_DIR }}/visual-capture-android
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
+      - name: Download iOS capture
+        if: contains(needs.find_captures.outputs.captures, 'visual-capture-ios')
+        uses: actions/download-artifact@v7
+        with:
+          name: visual-capture-ios
+          path: ${{ env.VISUAL_ARTIFACTS_DIR }}/visual-capture-ios
           run-id: ${{ github.event.workflow_run.id }}
           github-token: ${{ github.token }}
       - name: Compare

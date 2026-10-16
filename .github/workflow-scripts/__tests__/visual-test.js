@@ -51,6 +51,7 @@ const ANDROID_ENVIRONMENT = {
   fontScale: '1.0',
   locale: 'en-US',
   animatorDurationScale: '0.0',
+  emulatorVersion: '37.2.12',
 };
 
 function makePng(width, height, paint = () => [255, 255, 255, 255]) {
@@ -122,9 +123,12 @@ describe('visual regression', () => {
       );
     });
 
-    test('changes when any keyed property drifts', () => {
+    test.each([
+      ['fontScale', '1.15'],
+      ['emulatorVersion', '37.3.1'],
+    ])('changes when %s drifts', (property, value) => {
       expect(
-        environmentKey('android', {...ANDROID_ENVIRONMENT, fontScale: '1.15'}),
+        environmentKey('android', {...ANDROID_ENVIRONMENT, [property]: value}),
       ).not.toBe(environmentKey('android', ANDROID_ENVIRONMENT));
     });
 
