@@ -70,4 +70,4 @@ RNTester provides both integration and unit tests. You can run them all by hitti
 
 ## Visual tests
 
-CI captures screenshots of selected RNTester examples on Android and iOS and compares them with `main`. See [visual-tests/README.md](visual-tests/README.md) to add a test or review a failure.
+CI captures screenshots of selected RNTester examples on Android and iOS and compares them with `main`. To add a test or review a failure, see [visual-tests/README.md](visual-tests/README.md).
